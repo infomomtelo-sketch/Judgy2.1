@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
+import { useAuth } from '../context/AuthContext';
 import ChatHeader from '../components/chat/ChatHeader';
 import ChatMessages from '../components/chat/ChatMessages';
 import ChatInput from '../components/chat/ChatInput';
 import ToolsPanel from '../components/chat/ToolsPanel';
+import UpgradeModal from '../components/subscription/UpgradeModal';
 import axios from 'axios';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -17,12 +20,24 @@ const ChatPage = () => {
     return stored || uuidv4();
   });
   const [isMobileToolsOpen, setIsMobileToolsOpen] = useState(false);
+  const [remainingMessages, setRemainingMessages] = useState(-1);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const messagesEndRef = useRef(null);
+  
+  const { user, subscription, refreshSubscription, isPro } = useAuth();
+  const navigate = useNavigate();
 
   // Save session ID to localStorage
   useEffect(() => {
     localStorage.setItem('chat_session_id', sessionId);
   }, [sessionId]);
+
+  // Update remaining messages from subscription
+  useEffect(() => {
+    if (subscription) {
+      setRemainingMessages(subscription.remaining_messages);
+    }
+  }, [subscription]);
 
   // Load chat history on mount
   useEffect(() => {
@@ -52,6 +67,12 @@ const ChatPage = () => {
   const sendMessage = useCallback(async (content) => {
     if (!content.trim() || isLoading) return;
 
+    // Check if user has remaining messages (for free plan)
+    if (remainingMessages === 0) {
+      setShowUpgradeModal(true);
+      return;
+    }
+
     const userMessage = {
       id: uuidv4(),
       role: 'user',
@@ -76,20 +97,29 @@ const ChatPage = () => {
       };
 
       setMessages(prev => [...prev, aiMessage]);
+      setRemainingMessages(response.data.remaining_messages);
     } catch (error) {
       console.error('Error sending message:', error);
-      const errorMessage = {
-        id: uuidv4(),
-        role: 'assistant',
-        content: 'Sorry, I encountered an error. Please try again.',
-        timestamp: new Date(),
-        isError: true
-      };
-      setMessages(prev => [...prev, errorMessage]);
+      
+      // Check if it's a limit exceeded error
+      if (error.response?.status === 403) {
+        setShowUpgradeModal(true);
+        // Remove the user message we just added
+        setMessages(prev => prev.slice(0, -1));
+      } else {
+        const errorMessage = {
+          id: uuidv4(),
+          role: 'assistant',
+          content: 'Sorry, I encountered an error. Please try again.',
+          timestamp: new Date(),
+          isError: true
+        };
+        setMessages(prev => [...prev, errorMessage]);
+      }
     } finally {
       setIsLoading(false);
     }
-  }, [sessionId, isLoading]);
+  }, [sessionId, isLoading, remainingMessages]);
 
   const handleContinue = useCallback(() => {
     sendMessage('Please continue');
@@ -106,7 +136,10 @@ const ChatPage = () => {
     setSessionId(newSessionId);
     setMessages([]);
     localStorage.setItem('chat_session_id', newSessionId);
-  }, [sessionId]);
+    
+    // Refresh subscription to get updated message count
+    refreshSubscription();
+  }, [sessionId, refreshSubscription]);
 
   return (
     <div className="flex h-screen w-full overflow-hidden">
@@ -116,6 +149,8 @@ const ChatPage = () => {
           onNewChat={handleNewChat}
           onToggleTools={() => setIsMobileToolsOpen(!isMobileToolsOpen)}
           isMobileToolsOpen={isMobileToolsOpen}
+          remainingMessages={remainingMessages}
+          isPro={isPro}
         />
         
         <div className="flex-1 overflow-hidden flex flex-col">
@@ -130,6 +165,8 @@ const ChatPage = () => {
             onContinue={handleContinue}
             isLoading={isLoading}
             hasMessages={messages.length > 0}
+            remainingMessages={remainingMessages}
+            onUpgrade={() => setShowUpgradeModal(true)}
           />
         </div>
       </div>
@@ -138,6 +175,13 @@ const ChatPage = () => {
       <ToolsPanel 
         isOpen={isMobileToolsOpen}
         onClose={() => setIsMobileToolsOpen(false)}
+      />
+
+      {/* Upgrade Modal */}
+      <UpgradeModal 
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        onUpgrade={() => navigate('/pricing')}
       />
     </div>
   );
