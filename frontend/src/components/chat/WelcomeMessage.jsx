@@ -12,7 +12,7 @@ const WelcomeMessage = () => {
         Welcome to AI Assistant
       </h2>
       <p className="text-muted-foreground text-center max-w-md mb-8">
-        I'm here to provide step-by-step guidance on any topic. Ask me anything and I'll break it down into clear, manageable steps.
+        I&apos;m here to provide step-by-step guidance on any topic. Ask me anything and I&apos;ll break it down into clear, manageable steps.
       </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-xl">
