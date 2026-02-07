@@ -1,13 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { Send, Mic, ArrowRight, Loader2, Zap } from 'lucide-react';
+import { Send, Mic, ArrowRight, Loader2, Zap, Crown, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const ChatInput = ({ onSendMessage, onContinue, isLoading, hasMessages, remainingMessages, onUpgrade }) => {
   const [input, setInput] = useState('');
   const textareaRef = useRef(null);
+  const navigate = useNavigate();
 
   // Auto-resize textarea
   useEffect(() => {
@@ -36,22 +38,60 @@ const ChatInput = ({ onSendMessage, onContinue, isLoading, hasMessages, remainin
   };
 
   const isLimitReached = remainingMessages === 0;
+  const isLowOnMessages = remainingMessages > 0 && remainingMessages <= 2;
 
   return (
     <div className="border-t border-border bg-card/80 backdrop-blur-sm p-4">
       <div className="max-w-3xl mx-auto">
-        {/* Limit Warning */}
+        {/* Limit Reached Warning */}
         {isLimitReached && (
-          <div className="flex items-center justify-center gap-2 mb-3 p-3 rounded-lg bg-destructive/10 border border-destructive/20">
-            <Zap className="w-4 h-4 text-destructive" />
-            <span className="text-sm text-destructive">Daily limit reached.</span>
+          <div className="mb-4 p-4 rounded-xl bg-gradient-to-r from-primary/5 to-accent/5 border border-primary/20">
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center shrink-0">
+                <Crown className="w-5 h-5 text-primary-foreground" />
+              </div>
+              <div className="flex-1">
+                <h4 className="font-medium text-foreground mb-1">Daily limit reached</h4>
+                <p className="text-sm text-muted-foreground mb-3">
+                  You&apos;ve used all 5 free messages today. Upgrade to Pro for unlimited access.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <Button 
+                    size="sm"
+                    className="gradient-primary"
+                    onClick={() => navigate('/pricing')}
+                  >
+                    <Crown className="w-4 h-4 mr-1" />
+                    Upgrade to Pro - $9.99/mo
+                  </Button>
+                  <Button 
+                    variant="ghost"
+                    size="sm"
+                    className="text-muted-foreground"
+                    onClick={onUpgrade}
+                  >
+                    Learn more
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Low Messages Warning */}
+        {isLowOnMessages && !isLimitReached && (
+          <div className="flex items-center justify-center gap-2 mb-3 p-2 rounded-lg bg-muted/50">
+            <Zap className="w-4 h-4 text-primary" />
+            <span className="text-sm text-muted-foreground">
+              Only {remainingMessages} message{remainingMessages > 1 ? 's' : ''} left today.
+            </span>
             <Button 
               variant="link" 
               size="sm" 
-              className="text-primary p-0 h-auto"
-              onClick={onUpgrade}
+              className="text-primary p-0 h-auto text-sm"
+              onClick={() => navigate('/pricing')}
             >
-              Upgrade to Pro
+              Upgrade for unlimited
             </Button>
           </div>
         )}
@@ -76,7 +116,7 @@ const ChatInput = ({ onSendMessage, onContinue, isLoading, hasMessages, remainin
           <div className={cn(
             "flex items-end gap-2 p-2 rounded-2xl border bg-background shadow-sm transition-all duration-200",
             isLimitReached 
-              ? "border-destructive/30 bg-destructive/5" 
+              ? "border-muted bg-muted/30 opacity-75" 
               : "border-border focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary/50"
           )}>
             <Textarea
@@ -131,7 +171,14 @@ const ChatInput = ({ onSendMessage, onContinue, isLoading, hasMessages, remainin
             
             {/* Mobile message counter */}
             {remainingMessages !== -1 && remainingMessages > 0 && (
-              <Badge variant="secondary" className="sm:hidden text-[10px] px-2 py-0">
+              <Badge 
+                variant="secondary" 
+                className={cn(
+                  "sm:hidden text-[10px] px-2 py-0",
+                  isLowOnMessages && "bg-primary/10 text-primary"
+                )}
+              >
+                <Sparkles className="w-2.5 h-2.5 mr-1" />
                 {remainingMessages} left
               </Badge>
             )}
