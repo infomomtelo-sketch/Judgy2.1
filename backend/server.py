@@ -42,10 +42,12 @@ SUBSCRIPTION_PLANS = {
         "price": 0,
         "price_display": "$0",
         "interval": "month",
+        "description": "Perfect for trying out the AI Assistant",
         "features": [
             "5 messages per day",
             "Basic AI responses",
             "Standard response time",
+            "24-hour chat history",
             "Community support"
         ],
         "limits": {
@@ -60,12 +62,14 @@ SUBSCRIPTION_PLANS = {
         "price": 999,  # in cents
         "price_display": "$9.99",
         "interval": "month",
+        "description": "Best for individuals who need unlimited access",
         "features": [
             "Unlimited messages",
             "Priority AI responses",
-            "Full chat history",
+            "30-day chat history",
             "Email support",
-            "Advanced formatting"
+            "Advanced formatting",
+            "Export conversations"
         ],
         "limits": {
             "messages_per_day": -1,  # unlimited
@@ -79,13 +83,15 @@ SUBSCRIPTION_PLANS = {
         "price": 2999,  # in cents
         "price_display": "$29.99",
         "interval": "month",
+        "description": "For teams and businesses needing advanced features",
         "features": [
             "Everything in Pro",
             "API access",
-            "Team collaboration",
-            "Priority support",
+            "Team collaboration (up to 10 users)",
+            "Priority 24/7 support",
             "Custom integrations",
-            "Analytics dashboard"
+            "Analytics dashboard",
+            "Dedicated account manager"
         ],
         "limits": {
             "messages_per_day": -1,
