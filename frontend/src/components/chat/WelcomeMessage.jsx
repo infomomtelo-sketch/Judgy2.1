@@ -1,7 +1,11 @@
 import React from 'react';
-import { Sparkles, MessageCircle, ListChecks, Lightbulb } from 'lucide-react';
+import { Sparkles, MessageCircle, ListChecks, Lightbulb, Crown, Zap } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
+import { Badge } from '@/components/ui/badge';
 
 const WelcomeMessage = () => {
+  const { user, isPro, isEnterprise } = useAuth();
+
   return (
     <div className="flex flex-col items-center justify-center py-12 px-4 animate-fade-in">
       <div className="w-16 h-16 rounded-2xl gradient-primary shadow-glow flex items-center justify-center mb-6">
@@ -9,11 +13,24 @@ const WelcomeMessage = () => {
       </div>
       
       <h2 className="font-display text-2xl font-semibold text-foreground mb-2">
-        Welcome to AI Assistant
+        Welcome{user?.name ? `, ${user.name.split(' ')[0]}` : ''}!
       </h2>
-      <p className="text-muted-foreground text-center max-w-md mb-8">
+      <p className="text-muted-foreground text-center max-w-md mb-4">
         I&apos;m here to provide step-by-step guidance on any topic. Ask me anything and I&apos;ll break it down into clear, manageable steps.
       </p>
+
+      {/* Plan Status */}
+      {isPro || isEnterprise ? (
+        <Badge className="mb-8 gradient-primary text-primary-foreground px-4 py-1">
+          <Crown className="w-3 h-3 mr-1" />
+          {isEnterprise ? 'Enterprise' : 'Pro'} Plan - Unlimited Messages
+        </Badge>
+      ) : (
+        <Badge variant="secondary" className="mb-8 px-4 py-1">
+          <Zap className="w-3 h-3 mr-1 text-primary" />
+          Free Plan - 5 messages/day
+        </Badge>
+      )}
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-xl">
         <FeatureCard 
@@ -31,6 +48,25 @@ const WelcomeMessage = () => {
           title="Continue"
           description="Request more details anytime"
         />
+      </div>
+
+      {/* Quick Start Suggestions */}
+      <div className="mt-8 w-full max-w-xl">
+        <p className="text-sm text-muted-foreground text-center mb-3">Try asking:</p>
+        <div className="flex flex-wrap justify-center gap-2">
+          {[
+            "How do I learn programming?",
+            "Explain quantum computing",
+            "Tips for productivity"
+          ].map((suggestion, i) => (
+            <span 
+              key={i}
+              className="px-3 py-1.5 text-sm bg-muted hover:bg-muted/80 rounded-full cursor-pointer transition-colors text-muted-foreground hover:text-foreground"
+            >
+              {suggestion}
+            </span>
+          ))}
+        </div>
       </div>
     </div>
   );

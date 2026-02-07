@@ -12,10 +12,22 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { MessageSquarePlus, PanelRightOpen, PanelRightClose, Sparkles, User, LogOut, Crown, CreditCard, Zap } from 'lucide-react';
+import { 
+  MessageSquarePlus, 
+  PanelRightOpen, 
+  PanelRightClose, 
+  Sparkles, 
+  LogOut, 
+  Crown, 
+  CreditCard, 
+  Zap,
+  Building,
+  Settings,
+  HelpCircle
+} from 'lucide-react';
 
 const ChatHeader = ({ onNewChat, onToggleTools, isMobileToolsOpen, remainingMessages, isPro }) => {
-  const { user, logout } = useAuth();
+  const { user, logout, isEnterprise } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -32,6 +44,26 @@ const ChatHeader = ({ onNewChat, onToggleTools, isMobileToolsOpen, remainingMess
       .slice(0, 2) || 'U';
   };
 
+  const getPlanBadge = () => {
+    if (isEnterprise) {
+      return (
+        <Badge className="hidden sm:flex gap-1 bg-gradient-to-r from-accent to-success text-accent-foreground px-3 py-1">
+          <Building className="w-3 h-3" />
+          Enterprise
+        </Badge>
+      );
+    }
+    if (isPro) {
+      return (
+        <Badge className="hidden sm:flex gap-1 gradient-primary text-primary-foreground px-3 py-1">
+          <Crown className="w-3 h-3" />
+          Pro
+        </Badge>
+      );
+    }
+    return null;
+  };
+
   return (
     <header className="flex items-center justify-between px-4 py-3 border-b border-border bg-card/80 backdrop-blur-sm">
       <div className="flex items-center gap-3">
@@ -46,24 +78,20 @@ const ChatHeader = ({ onNewChat, onToggleTools, isMobileToolsOpen, remainingMess
 
       <div className="flex items-center gap-2">
         {/* Message Counter for Free Users */}
-        {!isPro && remainingMessages !== -1 && (
+        {!isPro && !isEnterprise && remainingMessages !== -1 && (
           <Badge 
             variant="secondary" 
-            className="hidden sm:flex gap-1 px-3 py-1 cursor-pointer hover:bg-secondary/80"
+            className="hidden sm:flex gap-1 px-3 py-1 cursor-pointer hover:bg-secondary/80 transition-colors"
             onClick={() => navigate('/pricing')}
           >
-            <Zap className="w-3 h-3" />
-            {remainingMessages} left today
+            <Zap className="w-3 h-3 text-primary" />
+            <span className="font-medium">{remainingMessages}</span>
+            <span className="text-muted-foreground">left today</span>
           </Badge>
         )}
 
-        {/* Pro Badge */}
-        {isPro && (
-          <Badge className="hidden sm:flex gap-1 gradient-primary text-primary-foreground px-3 py-1">
-            <Crown className="w-3 h-3" />
-            Pro
-          </Badge>
-        )}
+        {/* Plan Badge */}
+        {getPlanBadge()}
 
         <Button 
           variant="ghost" 
@@ -102,25 +130,54 @@ const ChatHeader = ({ onNewChat, onToggleTools, isMobileToolsOpen, remainingMess
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="rounded-full">
-              <Avatar className="w-8 h-8">
-                <AvatarFallback className="bg-secondary text-secondary-foreground text-xs">
+              <Avatar className="w-8 h-8 border-2 border-primary/20">
+                <AvatarFallback className="bg-secondary text-secondary-foreground text-xs font-medium">
                   {getInitials(user?.name)}
                 </AvatarFallback>
               </Avatar>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel>
-              <div className="flex flex-col">
-                <span className="font-medium">{user?.name}</span>
-                <span className="text-xs text-muted-foreground font-normal">{user?.email}</span>
+          <DropdownMenuContent align="end" className="w-64">
+            <DropdownMenuLabel className="pb-2">
+              <div className="flex items-center gap-3">
+                <Avatar className="w-10 h-10">
+                  <AvatarFallback className="bg-primary/10 text-primary text-sm font-medium">
+                    {getInitials(user?.name)}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-foreground truncate">{user?.name}</p>
+                  <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+                </div>
               </div>
             </DropdownMenuLabel>
+            
+            {/* Current Plan Info */}
+            <div className="px-2 py-2 mx-2 mb-2 rounded-lg bg-muted/50">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">Current Plan</span>
+                <Badge variant="secondary" className="text-xs capitalize">
+                  {user?.subscription_plan || 'Free'}
+                </Badge>
+              </div>
+              {!isPro && !isEnterprise && remainingMessages !== -1 && (
+                <div className="flex items-center justify-between mt-1">
+                  <span className="text-xs text-muted-foreground">Messages today</span>
+                  <span className="text-xs font-medium">{remainingMessages}/5</span>
+                </div>
+              )}
+            </div>
+            
             <DropdownMenuSeparator />
             
             <DropdownMenuItem onClick={() => navigate('/pricing')} className="cursor-pointer">
               <CreditCard className="w-4 h-4 mr-2" />
-              {isPro ? 'Manage Subscription' : 'Upgrade to Pro'}
+              {isPro || isEnterprise ? 'Manage Subscription' : 'Upgrade to Pro'}
+              {!isPro && !isEnterprise && (
+                <Badge variant="secondary" className="ml-auto text-xs bg-primary/10 text-primary">
+                  Popular
+                </Badge>
+              )}
             </DropdownMenuItem>
             
             <DropdownMenuSeparator />
