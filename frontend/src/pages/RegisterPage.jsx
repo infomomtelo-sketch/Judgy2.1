@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Loader2, Mail, Lock, User, AlertCircle, CheckCircle } from 'lucide-react';
 
 // JudgyGPT Logo Image
-const JUDGY_LOGO = "https://cdn.pixabay.com/photo/2022/02/13/08/20/woman-7010576_1280.png";
+const JUDGY_LOGO = "https://customer-assets.emergentagent.com/job_chat-assist-26/artifacts/ze789p6s_7DEC28F8-D66A-46B0-99EA-84F4FF846DBB.png";
 
 const RegisterPage = () => {
   const [name, setName] = useState('');
