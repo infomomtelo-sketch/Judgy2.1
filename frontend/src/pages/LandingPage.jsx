@@ -181,13 +181,13 @@ const LandingPage = () => {
                 </div>
 
                 <div className="flex gap-3">
-                  <a href="https://diplomat.judgygptonline.com" target="_blank" rel="noopener noreferrer" className="flex-1">
+                  <a href="https://chatgpt.com/g/g-6987ec32bdd48191b905193f05f3477e-the-diplomat" target="_blank" rel="noopener noreferrer" className="flex-1">
                     <Button className="w-full bg-gradient-to-r from-amber-500 to-pink-500 hover:from-amber-600 hover:to-pink-600 text-white">
                       Talk to The Diplomat
                       <ArrowRight className="w-4 h-4 ml-2" />
                     </Button>
                   </a>
-                  <a href="https://diplomat.judgygptonline.com" target="_blank" rel="noopener noreferrer">
+                  <a href="https://chatgpt.com/g/g-6987ec32bdd48191b905193f05f3477e-the-diplomat" target="_blank" rel="noopener noreferrer">
                     <Button variant="outline" size="icon" className="border-pink-500/50 hover:border-pink-500">
                       <ExternalLink className="w-4 h-4" />
                     </Button>
@@ -259,7 +259,7 @@ const LandingPage = () => {
                 JudgyGPT
               </Button>
             </Link>
-            <a href="https://diplomat.judgygptonline.com" target="_blank" rel="noopener noreferrer">
+            <a href="https://chatgpt.com/g/g-6987ec32bdd48191b905193f05f3477e-the-diplomat" target="_blank" rel="noopener noreferrer">
               <Button size="lg" className="bg-gradient-to-r from-amber-500 to-pink-500 hover:from-amber-600 hover:to-pink-600 text-white px-8 h-14">
                 <Scale className="w-5 h-5 mr-2" />
                 The Diplomat
@@ -300,7 +300,7 @@ const LandingPage = () => {
                   </Link>
                 </li>
                 <li>
-                  <a href="https://diplomat.judgygptonline.com" className="hover:text-foreground transition-colors flex items-center gap-2">
+                  <a href="https://chatgpt.com/g/g-6987ec32bdd48191b905193f05f3477e-the-diplomat" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors flex items-center gap-2">
                     <Scale className="w-4 h-4" />
                     The Diplomat
                   </a>
