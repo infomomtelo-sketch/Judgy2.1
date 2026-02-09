@@ -45,9 +45,9 @@ const RegisterPage = () => {
   };
 
   const benefits = [
-    '5 free messages daily',
-    'Step-by-step AI guidance',
-    'Upgrade anytime for unlimited access'
+    '5 free roasts daily',
+    'Honest advice (with sass)',
+    'Upgrade anytime for unlimited'
   ];
 
   return (
