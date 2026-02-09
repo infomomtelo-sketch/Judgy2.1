@@ -38,14 +38,14 @@ security = HTTPBearer(auto_error=False)
 SUBSCRIPTION_PLANS = {
     "free": {
         "id": "free",
-        "name": "Free",
+        "name": "Judgement Lite",
         "price": 0,
         "price_display": "$0",
         "interval": "month",
-        "description": "Perfect for trying out the AI Assistant",
+        "description": "Get a taste of the sass - perfect for trying out",
         "features": [
-            "5 messages per day",
-            "Basic AI responses",
+            "5 roasts per day",
+            "Basic judgments",
             "Standard response time",
             "24-hour chat history",
             "Community support"
@@ -56,48 +56,64 @@ SUBSCRIPTION_PLANS = {
         },
         "popular": False
     },
-    "pro": {
-        "id": "pro",
-        "name": "Pro",
-        "price": 999,  # in cents
-        "price_display": "$9.99",
+    "standard": {
+        "id": "standard",
+        "name": "Talk to Me Nice",
+        "price": 699,  # in cents
+        "price_display": "$6.99",
         "interval": "month",
-        "description": "Best for individuals who need unlimited access",
+        "description": "For those who want the full experience",
+        "features": [
+            "50 messages per day",
+            "Priority responses",
+            "7-day chat history",
+            "Email support",
+            "Slightly nicer tone 😏"
+        ],
+        "limits": {
+            "messages_per_day": 50,
+            "history_days": 7
+        },
+        "popular": True
+    },
+    "premium": {
+        "id": "premium",
+        "name": "Bring the Whole Drama",
+        "price": 1499,  # in cents
+        "price_display": "$14.99",
+        "interval": "month",
+        "description": "Unlimited sass for the bold and brave",
         "features": [
             "Unlimited messages",
-            "Priority AI responses",
+            "VIP priority responses",
             "30-day chat history",
-            "Email support",
-            "Advanced formatting",
+            "Priority support",
+            "Full dramatic experience 💅",
             "Export conversations"
         ],
         "limits": {
             "messages_per_day": -1,  # unlimited
             "history_days": 30
         },
-        "popular": True
-    },
-    "enterprise": {
-        "id": "enterprise",
-        "name": "Enterprise",
-        "price": 2999,  # in cents
-        "price_display": "$29.99",
-        "interval": "month",
-        "description": "For teams and businesses needing advanced features",
-        "features": [
-            "Everything in Pro",
-            "API access",
-            "Team collaboration (up to 10 users)",
-            "Priority 24/7 support",
-            "Custom integrations",
-            "Analytics dashboard",
-            "Dedicated account manager"
-        ],
-        "limits": {
-            "messages_per_day": -1,
-            "history_days": 365
-        },
         "popular": False
+    }
+}
+
+# One-time purchases (for future implementation)
+ONE_TIME_PRODUCTS = {
+    "witness_pass": {
+        "id": "witness_pass",
+        "name": "Witness Pass",
+        "price": 499,
+        "price_display": "$4.99",
+        "description": "Per session access"
+    },
+    "extra_invite": {
+        "id": "extra_invite", 
+        "name": "Extra Invite",
+        "price": 299,
+        "price_display": "$2.99",
+        "description": "Invite a friend to witness the drama"
     }
 }
 
