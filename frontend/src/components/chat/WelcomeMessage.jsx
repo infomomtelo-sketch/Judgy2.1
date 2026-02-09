@@ -12,11 +12,11 @@ const WelcomeMessage = () => {
         <Sparkles className="w-8 h-8 text-primary-foreground" />
       </div>
       
-      <h2 className="font-display text-2xl font-semibold text-foreground mb-2">
-        Welcome{user?.name ? `, ${user.name.split(' ')[0]}` : ''}!
-      </h2>
+      <h1 className="font-display text-2xl font-bold text-foreground mb-2">
+        Welcome to JudgyGPT
+      </h1>
       <p className="text-muted-foreground text-center max-w-md mb-4">
-        I&apos;m here to provide step-by-step guidance on any topic. Ask me anything and I&apos;ll break it down into clear, manageable steps.
+        I&apos;m here to give you the advice you need (with a side of sass). Ask me anything - I&apos;ll be honest, helpful, and only slightly judgmental. 💅
       </p>
 
       {/* Plan Status */}
