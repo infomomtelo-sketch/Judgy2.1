@@ -322,10 +322,10 @@ const PricingPage = () => {
       <section className="border-t border-border bg-muted/30 py-16 px-4">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="font-display text-3xl font-bold text-foreground mb-4">
-            Ready to get started?
+            Ready to get roasted?
           </h2>
           <p className="text-muted-foreground mb-8">
-            Join thousands of users who trust AI Assistant for step-by-step guidance.
+            Join thousands of users who trust JudgyGPT for honest advice (with a side of sass).
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/register">
