@@ -17,8 +17,8 @@ import {
 // JudgyGPT Logo
 const JUDGY_LOGO = "https://customer-assets.emergentagent.com/job_chat-assist-26/artifacts/ze789p6s_7DEC28F8-D66A-46B0-99EA-84F4FF846DBB.png";
 
-// The Diplomat Logo (using same for now - replace with actual diplomat logo)
-const DIPLOMAT_LOGO = "https://customer-assets.emergentagent.com/job_chat-assist-26/artifacts/ze789p6s_7DEC28F8-D66A-46B0-99EA-84F4FF846DBB.png";
+// The Diplomat Logo
+const DIPLOMAT_LOGO = "https://customer-assets.emergentagent.com/job_ai-persona-hub-8/artifacts/k884xcbn_IMG_6765.png";
 
 const LandingPage = () => {
   return (
