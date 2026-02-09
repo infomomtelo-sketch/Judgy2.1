@@ -4,11 +4,14 @@ import { useAuth } from '../context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Sparkles, Check, ArrowLeft, Loader2, Crown, Zap, Drama, Shield, Clock, Headphones, MessageSquare, History } from 'lucide-react';
+import { Check, ArrowLeft, Loader2, Crown, Zap, Drama, Shield, Clock, Headphones, MessageSquare, History, Sparkles } from 'lucide-react';
 import axios from 'axios';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
+
+// JudgyGPT Logo Image
+const JUDGY_LOGO = "https://cdn.pixabay.com/photo/2022/02/13/08/20/woman-7010576_1280.png";
 
 const PricingPage = () => {
   const [plans, setPlans] = useState([]);
