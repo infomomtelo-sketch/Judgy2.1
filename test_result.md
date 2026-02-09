@@ -250,50 +250,17 @@ frontend:
           comment: "Initial assessment - need to test navigation button functionality and routing"
 
 backend:
-  - task: "Authentication API endpoints"
+  - task: "Landing page static content delivery"
     implemented: true
-    working: true
+    working: "NA"
     file: "/app/backend/server.py"
     stuck_count: 0
-    priority: "high"
-    needs_retesting: false
+    priority: "medium"
+    needs_retesting: true
     status_history:
         - working: "NA"
           agent: "testing"
-          comment: "Initial assessment - need to test authentication API integration with frontend"
-        - working: true
-          agent: "testing"
-          comment: "✅ PASSED: Authentication API endpoints working correctly. Registration and login API calls successful, JWT token handling functional, user data properly returned."
-
-  - task: "Subscription API endpoints"
-    implemented: true
-    working: true
-    file: "/app/backend/server.py"
-    stuck_count: 0
-    priority: "high"
-    needs_retesting: false
-    status_history:
-        - working: "NA"
-          agent: "testing"
-          comment: "Initial assessment - need to test subscription API integration and message limits"
-        - working: true
-          agent: "testing"
-          comment: "✅ PASSED: Subscription API working correctly. Message counter tracking functional, subscription plans API returning correct data (Free/Pro/Enterprise), message limits enforced properly."
-
-  - task: "Chat API with message limits"
-    implemented: true
-    working: true
-    file: "/app/backend/server.py"
-    stuck_count: 0
-    priority: "high"
-    needs_retesting: false
-    status_history:
-        - working: "NA"
-          agent: "testing"
-          comment: "Initial assessment - need to test chat API with subscription-based message limits"
-        - working: true
-          agent: "testing"
-          comment: "✅ PASSED: Chat API with message limits working perfectly. AI responses generated correctly, message counter decrements properly, session management functional, chat history maintained."
+          comment: "Initial assessment - need to verify backend serves landing page content properly"
 
 metadata:
   created_by: "testing_agent"
