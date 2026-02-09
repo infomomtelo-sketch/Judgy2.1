@@ -4,7 +4,15 @@ import { useAuth } from '../context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Check, ArrowLeft, Loader2, Crown, Zap, Drama, Shield, Clock, Headphones, MessageSquare, History, Sparkles } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Check, ArrowLeft, Loader2, Crown, Zap, Drama, Shield, Clock, Headphones, MessageSquare, History, Sparkles, CreditCard, AlertCircle } from 'lucide-react';
 import axios from 'axios';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -17,6 +25,8 @@ const PricingPage = () => {
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [subscribing, setSubscribing] = useState(null);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState(null);
   
   const { isAuthenticated, user, subscribe } = useAuth();
   const navigate = useNavigate();
@@ -35,22 +45,38 @@ const PricingPage = () => {
     fetchPlans();
   }, []);
 
-  const handleSubscribe = async (planId) => {
+  const handleSubscribeClick = (plan) => {
     if (!isAuthenticated) {
-      navigate('/register', { state: { selectedPlan: planId } });
+      navigate('/register', { state: { selectedPlan: plan.id } });
       return;
     }
 
-    if (user?.subscription_plan === planId) return;
+    if (user?.subscription_plan === plan.id) return;
 
-    setSubscribing(planId);
+    // For free plan, subscribe directly
+    if (plan.id === 'free') {
+      handleConfirmSubscribe(plan);
+      return;
+    }
+
+    // For paid plans, show confirmation modal
+    setSelectedPlan(plan);
+    setShowConfirmModal(true);
+  };
+
+  const handleConfirmSubscribe = async (plan) => {
+    const planToUse = plan || selectedPlan;
+    setSubscribing(planToUse.id);
+    setShowConfirmModal(false);
+    
     try {
-      await subscribe(planId);
+      await subscribe(planToUse.id);
       navigate('/chat');
     } catch (error) {
       console.error('Subscription failed:', error);
     } finally {
       setSubscribing(null);
+      setSelectedPlan(null);
     }
   };
 
@@ -99,7 +125,7 @@ const PricingPage = () => {
       {/* Header */}
       <header className="border-b border-border bg-card/80 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link to="/chat" className="flex items-center gap-3">
+          <Link to="/" className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-primary shadow-glow">
               <img 
                 src={JUDGY_LOGO} 
@@ -137,7 +163,7 @@ const PricingPage = () => {
           Choose Your Drama Level
         </Badge>
         <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-4">
-          Pick Your Sass Package 💅
+          Pick Your Sass Level 💅
         </h1>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
           From gentle roasts to full-on drama. Choose how much truth you can handle.
@@ -146,7 +172,7 @@ const PricingPage = () => {
 
       {/* Pricing Cards */}
       <section className="max-w-6xl mx-auto px-4 pb-20">
-        <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
+        <div className="grid md:grid-cols-3 gap-8">
           {plans.map((plan) => {
             const isCurrentPlan = user?.subscription_plan === plan.id;
             const isPopular = plan.popular;
@@ -156,7 +182,7 @@ const PricingPage = () => {
                 key={plan.id} 
                 className={`relative flex flex-col transition-all duration-300 hover:shadow-xl ${
                   isPopular 
-                    ? 'border-2 border-primary shadow-lg shadow-primary/10 scale-[1.02] lg:scale-105' 
+                    ? 'border-2 border-primary shadow-lg shadow-primary/10 md:scale-105' 
                     : 'border-border hover:border-primary/30'
                 }`}
               >
@@ -219,7 +245,7 @@ const PricingPage = () => {
                     }`}
                     variant={isPopular || plan.id === 'premium' ? 'default' : 'outline'}
                     disabled={isCurrentPlan || subscribing === plan.id}
-                    onClick={() => handleSubscribe(plan.id)}
+                    onClick={() => handleSubscribeClick(plan)}
                   >
                     {subscribing === plan.id ? (
                       <>
@@ -241,7 +267,7 @@ const PricingPage = () => {
                     ) : (
                       <>
                         <Crown className="w-4 h-4 mr-2" />
-                        Subscribe
+                        Subscribe Now
                       </>
                     )}
                   </Button>
@@ -255,7 +281,7 @@ const PricingPage = () => {
         <div className="mt-16 max-w-2xl mx-auto">
           <h3 className="font-display text-xl font-semibold text-center mb-6">One-Time Purchases</h3>
           <div className="grid sm:grid-cols-2 gap-4">
-            <Card className="p-4">
+            <Card className="p-4 hover:shadow-md transition-shadow">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center">
                   <Sparkles className="w-6 h-6 text-accent" />
@@ -267,7 +293,7 @@ const PricingPage = () => {
                 <Badge variant="secondary" className="text-lg font-bold">$4.99</Badge>
               </div>
             </Card>
-            <Card className="p-4">
+            <Card className="p-4 hover:shadow-md transition-shadow">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
                   <Crown className="w-6 h-6 text-primary" />
@@ -310,7 +336,7 @@ const PricingPage = () => {
             />
             <FaqItem 
               question="Can I switch plans?"
-              answer="Absolutely! Upgrade or downgrade whenever you want. We won't judge... okay, we will, but that's the point."
+              answer="Absolutely! Upgrade or downgrade whenever you want. We won't judge... okay, we will, but that's the point. 😏"
             />
             <FaqItem 
               question="What's a Witness Pass?"
@@ -339,14 +365,84 @@ const PricingPage = () => {
                 Start Free
               </Button>
             </Link>
-            <Link to="/chat">
+            <Link to="/">
               <Button size="lg" variant="outline" className="px-8">
-                Try Demo
+                Learn More
               </Button>
             </Link>
           </div>
         </div>
       </section>
+
+      {/* Payment Confirmation Modal */}
+      <Dialog open={showConfirmModal} onOpenChange={setShowConfirmModal}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <div className="mx-auto w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
+              <CreditCard className="w-8 h-8 text-primary" />
+            </div>
+            <DialogTitle className="text-center text-xl">
+              Confirm Subscription
+            </DialogTitle>
+            <DialogDescription className="text-center">
+              You&apos;re about to subscribe to <strong>{selectedPlan?.name}</strong>
+            </DialogDescription>
+          </DialogHeader>
+
+          {selectedPlan && (
+            <div className="py-4">
+              <div className="bg-muted/50 rounded-xl p-4 mb-4">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-muted-foreground">Plan</span>
+                  <span className="font-semibold text-foreground">{selectedPlan.name}</span>
+                </div>
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-muted-foreground">Price</span>
+                  <span className="font-semibold text-foreground">{selectedPlan.price_display}/month</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">Billing</span>
+                  <span className="font-semibold text-foreground">Monthly</span>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-2 p-3 bg-amber-500/10 border border-amber-500/20 rounded-lg">
+                <AlertCircle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+                <p className="text-sm text-amber-700 dark:text-amber-400">
+                  <strong>Demo Mode:</strong> This is a preview environment. In production, you&apos;ll be redirected to secure Stripe checkout.
+                </p>
+              </div>
+            </div>
+          )}
+
+          <DialogFooter className="flex flex-col gap-2 sm:flex-col">
+            <Button 
+              className="w-full gradient-primary"
+              onClick={() => handleConfirmSubscribe(null)}
+              disabled={subscribing}
+            >
+              {subscribing ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                  Processing...
+                </>
+              ) : (
+                <>
+                  <Check className="w-4 h-4 mr-2" />
+                  Confirm Subscription
+                </>
+              )}
+            </Button>
+            <Button 
+              variant="ghost" 
+              className="w-full"
+              onClick={() => setShowConfirmModal(false)}
+            >
+              Cancel
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
