@@ -7,6 +7,7 @@ import DiplomatChatPage from "./pages/DiplomatChatPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import PricingPage from "./pages/PricingPage";
+import GrowthPlanPage from "./pages/GrowthPlanPage";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 // Detect if we're on diplomat subdomain
