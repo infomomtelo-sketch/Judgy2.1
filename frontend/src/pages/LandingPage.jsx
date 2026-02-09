@@ -36,6 +36,7 @@ const LandingPage = () => {
           <div className="hidden md:flex items-center gap-6">
             <a href="#personalities" className="text-muted-foreground hover:text-foreground transition-colors">Meet the AIs</a>
             <a href="#about" className="text-muted-foreground hover:text-foreground transition-colors">About</a>
+            <Link to="/growth" className="text-muted-foreground hover:text-foreground transition-colors">Growth Plan</Link>
             <a href="#contact" className="text-muted-foreground hover:text-foreground transition-colors">Contact</a>
           </div>
 
