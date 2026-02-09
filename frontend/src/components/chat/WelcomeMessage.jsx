@@ -55,9 +55,9 @@ const WelcomeMessage = () => {
         <p className="text-sm text-muted-foreground text-center mb-3">Try asking:</p>
         <div className="flex flex-wrap justify-center gap-2">
           {[
-            "How do I learn programming?",
-            "Explain quantum computing",
-            "Tips for productivity"
+            "My landlord is being difficult",
+            "Should I text my ex?",
+            "How do I ask for a raise?"
           ].map((suggestion, i) => (
             <span 
               key={i}
