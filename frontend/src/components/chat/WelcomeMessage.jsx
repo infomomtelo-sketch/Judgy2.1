@@ -1,10 +1,35 @@
 import React from 'react';
-import { Sparkles, MessageCircle, ListChecks, Lightbulb, Crown, Zap } from 'lucide-react';
+import { Sparkles, MessageCircle, ListChecks, Lightbulb, Crown, Zap, Drama } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { Badge } from '@/components/ui/badge';
 
 const WelcomeMessage = () => {
-  const { user, isPro, isEnterprise } = useAuth();
+  const { user, isPremium, isFullDrama } = useAuth();
+
+  const getPlanBadge = () => {
+    if (isFullDrama) {
+      return (
+        <Badge className="mb-8 bg-gradient-to-r from-pink-500 to-purple-600 text-white px-4 py-1">
+          <Drama className="w-3 h-3 mr-1" />
+          Bring the Whole Drama - Unlimited 💅
+        </Badge>
+      );
+    }
+    if (isPremium) {
+      return (
+        <Badge className="mb-8 gradient-primary text-primary-foreground px-4 py-1">
+          <Crown className="w-3 h-3 mr-1" />
+          Talk to Me Nice - 50/day
+        </Badge>
+      );
+    }
+    return (
+      <Badge variant="secondary" className="mb-8 px-4 py-1">
+        <Zap className="w-3 h-3 mr-1 text-primary" />
+        Judgement Lite - 5 roasts/day
+      </Badge>
+    );
+  };
 
   return (
     <div className="flex flex-col items-center justify-center py-12 px-4 animate-fade-in">
@@ -20,17 +45,7 @@ const WelcomeMessage = () => {
       </p>
 
       {/* Plan Status */}
-      {isPro || isEnterprise ? (
-        <Badge className="mb-8 gradient-primary text-primary-foreground px-4 py-1">
-          <Crown className="w-3 h-3 mr-1" />
-          {isEnterprise ? 'Enterprise' : 'Pro'} Plan - Unlimited Judgments
-        </Badge>
-      ) : (
-        <Badge variant="secondary" className="mb-8 px-4 py-1">
-          <Zap className="w-3 h-3 mr-1 text-primary" />
-          Free Plan - 5 roasts/day
-        </Badge>
-      )}
+      {getPlanBadge()}
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-xl">
         <FeatureCard 

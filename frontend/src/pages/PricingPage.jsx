@@ -4,8 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Sparkles, Check, ArrowLeft, Loader2, Crown, Zap, Building, X, Shield, Clock, Headphones, Code, Users, BarChart3, Infinity, MessageSquare, History, Palette } from 'lucide-react';
+import { Sparkles, Check, ArrowLeft, Loader2, Crown, Zap, Drama, Shield, Clock, Headphones, MessageSquare, History } from 'lucide-react';
 import axios from 'axios';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -15,9 +14,8 @@ const PricingPage = () => {
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [subscribing, setSubscribing] = useState(null);
-  const [billingCycle, setBillingCycle] = useState('monthly');
   
-  const { isAuthenticated, user, subscribe, subscription } = useAuth();
+  const { isAuthenticated, user, subscribe } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -55,26 +53,33 @@ const PricingPage = () => {
 
   const getPlanIcon = (planId) => {
     switch (planId) {
-      case 'pro':
+      case 'premium':
+        return <Drama className="w-7 h-7" />;
+      case 'standard':
         return <Crown className="w-7 h-7" />;
-      case 'enterprise':
-        return <Building className="w-7 h-7" />;
       default:
         return <Zap className="w-7 h-7" />;
     }
   };
 
+  const getPlanColor = (planId) => {
+    switch (planId) {
+      case 'premium':
+        return 'bg-gradient-to-br from-pink-500 to-purple-600 text-white';
+      case 'standard':
+        return 'gradient-primary text-primary-foreground shadow-glow';
+      default:
+        return 'bg-muted text-muted-foreground';
+    }
+  };
+
   const getFeatureIcon = (feature) => {
     const lowerFeature = feature.toLowerCase();
-    if (lowerFeature.includes('unlimited') || lowerFeature.includes('messages')) return <Infinity className="w-4 h-4" />;
-    if (lowerFeature.includes('priority') || lowerFeature.includes('response')) return <Zap className="w-4 h-4" />;
+    if (lowerFeature.includes('unlimited') || lowerFeature.includes('messages') || lowerFeature.includes('roasts')) return <MessageSquare className="w-4 h-4" />;
+    if (lowerFeature.includes('priority') || lowerFeature.includes('vip')) return <Zap className="w-4 h-4" />;
     if (lowerFeature.includes('history')) return <History className="w-4 h-4" />;
     if (lowerFeature.includes('support')) return <Headphones className="w-4 h-4" />;
-    if (lowerFeature.includes('api')) return <Code className="w-4 h-4" />;
-    if (lowerFeature.includes('team') || lowerFeature.includes('collaboration')) return <Users className="w-4 h-4" />;
-    if (lowerFeature.includes('analytics') || lowerFeature.includes('dashboard')) return <BarChart3 className="w-4 h-4" />;
-    if (lowerFeature.includes('formatting') || lowerFeature.includes('advanced')) return <Palette className="w-4 h-4" />;
-    if (lowerFeature.includes('custom') || lowerFeature.includes('integration')) return <Shield className="w-4 h-4" />;
+    if (lowerFeature.includes('drama') || lowerFeature.includes('nice')) return <Sparkles className="w-4 h-4" />;
     return <Check className="w-4 h-4" />;
   };
 
@@ -122,44 +127,22 @@ const PricingPage = () => {
       <section className="py-16 px-4 text-center">
         <Badge variant="secondary" className="mb-4 px-4 py-1">
           <Sparkles className="w-3 h-3 mr-1" />
-          Pricing Plans
+          Choose Your Drama Level
         </Badge>
         <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-4">
-          Simple, transparent pricing
+          Pick Your Sass Package 💅
         </h1>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
-          Choose the perfect plan for your needs. Start free and upgrade as you grow. 
-          All plans include our sassy-but-helpful AI assistant.
+          From gentle roasts to full-on drama. Choose how much truth you can handle.
         </p>
-
-        {/* Billing Toggle */}
-        <div className="flex items-center justify-center gap-4 mb-8">
-          <Tabs value={billingCycle} onValueChange={setBillingCycle} className="bg-muted rounded-lg p-1">
-            <TabsList className="grid grid-cols-2 bg-transparent">
-              <TabsTrigger value="monthly" className="data-[state=active]:bg-background rounded-md px-6">
-                Monthly
-              </TabsTrigger>
-              <TabsTrigger value="yearly" className="data-[state=active]:bg-background rounded-md px-6">
-                Yearly
-                <Badge variant="secondary" className="ml-2 bg-success/10 text-success text-xs">
-                  Save 20%
-                </Badge>
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
-        </div>
       </section>
 
       {/* Pricing Cards */}
-      <section className="max-w-7xl mx-auto px-4 pb-20">
+      <section className="max-w-6xl mx-auto px-4 pb-20">
         <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
           {plans.map((plan) => {
             const isCurrentPlan = user?.subscription_plan === plan.id;
             const isPopular = plan.popular;
-            const yearlyPrice = plan.price > 0 ? Math.round(plan.price * 0.8 * 12 / 100) : 0;
-            const displayPrice = billingCycle === 'yearly' && plan.price > 0 
-              ? `$${(yearlyPrice / 12).toFixed(2)}`
-              : plan.price_display;
             
             return (
               <Card 
@@ -180,20 +163,12 @@ const PricingPage = () => {
                 )}
 
                 <CardHeader className="text-center pb-2 pt-8">
-                  <div className={`w-16 h-16 mx-auto rounded-2xl flex items-center justify-center mb-4 ${
-                    plan.id === 'free' 
-                      ? 'bg-muted text-muted-foreground' 
-                      : plan.id === 'pro'
-                        ? 'gradient-primary text-primary-foreground shadow-glow'
-                        : 'bg-gradient-to-br from-accent to-success text-accent-foreground'
-                  }`}>
+                  <div className={`w-16 h-16 mx-auto rounded-2xl flex items-center justify-center mb-4 ${getPlanColor(plan.id)}`}>
                     {getPlanIcon(plan.id)}
                   </div>
                   <CardTitle className="text-2xl font-display">{plan.name}</CardTitle>
                   <CardDescription className="text-sm mt-2">
-                    {plan.id === 'free' && 'Perfect for trying out'}
-                    {plan.id === 'pro' && 'Best for individuals'}
-                    {plan.id === 'enterprise' && 'For teams & businesses'}
+                    {plan.description}
                   </CardDescription>
                 </CardHeader>
 
@@ -201,14 +176,9 @@ const PricingPage = () => {
                   {/* Price */}
                   <div className="text-center mb-6">
                     <div className="flex items-baseline justify-center gap-1">
-                      <span className="text-5xl font-bold text-foreground">{displayPrice}</span>
-                      <span className="text-muted-foreground">/{billingCycle === 'yearly' ? 'mo' : 'month'}</span>
+                      <span className="text-5xl font-bold text-foreground">{plan.price_display}</span>
+                      <span className="text-muted-foreground">/month</span>
                     </div>
-                    {billingCycle === 'yearly' && plan.price > 0 && (
-                      <p className="text-sm text-success mt-1">
-                        ${yearlyPrice}/year (billed annually)
-                      </p>
-                    )}
                     {plan.id === 'free' && (
                       <p className="text-sm text-muted-foreground mt-1">Free forever</p>
                     )}
@@ -216,16 +186,6 @@ const PricingPage = () => {
 
                   {/* Features */}
                   <div className="space-y-3">
-                    {plan.id === 'pro' && (
-                      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">
-                        Everything in Free, plus:
-                      </p>
-                    )}
-                    {plan.id === 'enterprise' && (
-                      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">
-                        Everything in Pro, plus:
-                      </p>
-                    )}
                     {plan.features.map((feature, i) => (
                       <div key={i} className="flex items-start gap-3">
                         <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${
@@ -242,13 +202,15 @@ const PricingPage = () => {
                 <CardFooter className="pt-6 pb-6">
                   <Button
                     className={`w-full h-12 text-base font-medium ${
-                      isPopular 
-                        ? 'gradient-primary hover:opacity-90 shadow-lg' 
-                        : isCurrentPlan 
-                          ? 'bg-secondary text-secondary-foreground' 
-                          : ''
+                      plan.id === 'premium'
+                        ? 'bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white shadow-lg'
+                        : isPopular 
+                          ? 'gradient-primary hover:opacity-90 shadow-lg' 
+                          : isCurrentPlan 
+                            ? 'bg-secondary text-secondary-foreground' 
+                            : ''
                     }`}
-                    variant={isPopular ? 'default' : 'outline'}
+                    variant={isPopular || plan.id === 'premium' ? 'default' : 'outline'}
                     disabled={isCurrentPlan || subscribing === plan.id}
                     onClick={() => handleSubscribe(plan.id)}
                   >
@@ -264,9 +226,15 @@ const PricingPage = () => {
                       </>
                     ) : plan.id === 'free' ? (
                       'Get Started Free'
+                    ) : plan.id === 'premium' ? (
+                      <>
+                        <Drama className="w-4 h-4 mr-2" />
+                        Bring the Drama
+                      </>
                     ) : (
                       <>
-                        Subscribe to {plan.name}
+                        <Crown className="w-4 h-4 mr-2" />
+                        Subscribe
                       </>
                     )}
                   </Button>
@@ -274,6 +242,37 @@ const PricingPage = () => {
               </Card>
             );
           })}
+        </div>
+
+        {/* One-time purchases */}
+        <div className="mt-16 max-w-2xl mx-auto">
+          <h3 className="font-display text-xl font-semibold text-center mb-6">One-Time Purchases</h3>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <Card className="p-4">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center">
+                  <Sparkles className="w-6 h-6 text-accent" />
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-medium text-foreground">Witness Pass</h4>
+                  <p className="text-sm text-muted-foreground">Per session access</p>
+                </div>
+                <Badge variant="secondary" className="text-lg font-bold">$4.99</Badge>
+              </div>
+            </Card>
+            <Card className="p-4">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                  <Crown className="w-6 h-6 text-primary" />
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-medium text-foreground">Extra Invite</h4>
+                  <p className="text-sm text-muted-foreground">Invite a friend to witness</p>
+                </div>
+                <Badge variant="secondary" className="text-lg font-bold">$2.99</Badge>
+              </div>
+            </Card>
+          </div>
         </div>
 
         {/* Trust Badges */}
@@ -289,7 +288,7 @@ const PricingPage = () => {
             </div>
             <div className="flex items-center gap-2">
               <Headphones className="w-5 h-5 text-accent" />
-              <span className="text-sm">24/7 Support</span>
+              <span className="text-sm">Support available</span>
             </div>
           </div>
         </div>
@@ -299,20 +298,20 @@ const PricingPage = () => {
           <h2 className="font-display text-2xl font-bold text-center mb-8">Frequently Asked Questions</h2>
           <div className="space-y-4">
             <FaqItem 
-              question="Can I switch plans later?"
-              answer="Yes! You can upgrade or downgrade your plan at any time. Changes take effect immediately, and we'll prorate any payments."
+              question="What's the difference between the plans?"
+              answer="Judgement Lite gives you 5 roasts per day. Talk to Me Nice bumps you up to 50 with slightly nicer treatment. Bring the Whole Drama? Unlimited sass, no holding back."
             />
             <FaqItem 
-              question="What happens when I reach my daily limit on Free?"
-              answer="You'll see an upgrade prompt. Your limit resets every 24 hours, or you can upgrade to Pro for unlimited messages."
+              question="Can I switch plans?"
+              answer="Absolutely! Upgrade or downgrade whenever you want. We won't judge... okay, we will, but that's the point."
             />
             <FaqItem 
-              question="Is there a free trial for Pro?"
-              answer="Our Free plan is essentially a trial! Use 5 messages per day to experience the AI assistant before upgrading."
+              question="What's a Witness Pass?"
+              answer="It's a one-time purchase that lets a friend watch your conversation in real-time. Perfect for when you need backup or just want someone to see the drama unfold."
             />
             <FaqItem 
-              question="What payment methods do you accept?"
-              answer="We accept all major credit cards (Visa, Mastercard, American Express) and PayPal through our secure payment processor."
+              question="Is my data safe?"
+              answer="Yes! We only judge your life choices, not your data security. All conversations are encrypted."
             />
           </div>
         </div>
@@ -322,20 +321,20 @@ const PricingPage = () => {
       <section className="border-t border-border bg-muted/30 py-16 px-4">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="font-display text-3xl font-bold text-foreground mb-4">
-            Ready to get roasted?
+            Ready to get roasted? 🔥
           </h2>
           <p className="text-muted-foreground mb-8">
-            Join thousands of users who trust JudgyGPT for honest advice (with a side of sass).
+            Join thousands who trust JudgyGPT for brutally honest advice.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/register">
               <Button size="lg" className="gradient-primary px-8">
-                Start Free Trial
+                Start Free
               </Button>
             </Link>
             <Link to="/chat">
               <Button size="lg" variant="outline" className="px-8">
-                View Demo
+                Try Demo
               </Button>
             </Link>
           </div>
