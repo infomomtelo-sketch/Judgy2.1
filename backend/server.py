@@ -522,7 +522,7 @@ async def send_chat_message(request: ChatRequest, user: User = Depends(require_a
         )
     
     try:
-        chat = get_chat_instance(request.session_id, user.subscription_plan)
+        chat = get_chat_instance(request.session_id, user.subscription_plan, request.personality)
         
         # Create user message
         user_message = UserMessage(text=request.message)
