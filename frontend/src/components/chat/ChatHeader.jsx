@@ -71,7 +71,7 @@ const ChatHeader = ({ onNewChat, onToggleTools, isMobileToolsOpen, remainingMess
           <Sparkles className="w-5 h-5 text-primary-foreground" />
         </div>
         <div>
-          <h1 className="font-display text-lg font-semibold text-foreground">AI Assistant</h1>
+          <h1 className="font-display text-lg font-semibold text-foreground">JudgyGPT</h1>
           <p className="text-xs text-muted-foreground">Step-by-step guidance</p>
         </div>
       </div>
