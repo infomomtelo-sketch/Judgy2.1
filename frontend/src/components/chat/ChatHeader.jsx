@@ -72,7 +72,7 @@ const ChatHeader = ({ onNewChat, onToggleTools, isMobileToolsOpen, remainingMess
         </div>
         <div>
           <h1 className="font-display text-lg font-semibold text-foreground">JudgyGPT</h1>
-          <p className="text-xs text-muted-foreground">Step-by-step guidance</p>
+          <p className="text-xs text-muted-foreground">Sassy advice, real help</p>
         </div>
       </div>
 
