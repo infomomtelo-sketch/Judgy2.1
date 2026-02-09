@@ -1,7 +1,7 @@
 # JudgyGPT Online - Product Requirements Document
 
 ## Original Problem Statement
-Build a web application called "JudgyGPT" - a sarcastic, bossy, yet helpful AI chat assistant with subscription-based monetization.
+Build a web application called "JudgyGPT" - a sarcastic, bossy, yet helpful AI chat assistant with subscription-based monetization, plus "The Diplomat" - JudgyGPT's ex-husband for relationship advice.
 
 ## Product Overview
 **Domain:** judgygptonline.com
@@ -13,17 +13,18 @@ JudgyGPT Online is a hub for AI personalities that provide honest advice with un
 
 ## Architecture
 
-### Current Setup
+### URL Structure
 ```
-judgygptonline.com (Hub Landing Page)
-├── /chat → JudgyGPT AI Chat (hosted on Emergent)
-├── /pricing → Subscription plans
-├── /login, /register → Authentication
-└── "The Diplomat" button → ChatGPT GPT (external link)
+judgygptonline.com → Hub Landing Page
+judgygptonline.com/chat → JudgyGPT Chat
+judgygptonline.com/diplomat → The Diplomat Chat
+judgygptonline.com/pricing → Subscription Plans
+
+diplomat.judgygptonline.com → The Diplomat (subdomain)
 ```
 
 ### Tech Stack
-- **Frontend:** React, Tailwind CSS, shadcn/ui, Framer Motion
+- **Frontend:** React, Tailwind CSS, shadcn/ui
 - **Backend:** Python, FastAPI
 - **Database:** MongoDB
 - **AI:** OpenAI GPT-4o via Emergent LLM Key
@@ -37,45 +38,65 @@ judgygptonline.com (Hub Landing Page)
 
 ## Completed Features ✅
 - [x] User authentication (register/login)
-- [x] AI chat with JudgyGPT personality
+- [x] JudgyGPT AI chat with sassy personality
+- [x] **The Diplomat AI chat** (built into app!)
 - [x] Hub landing page with both AI personalities
 - [x] Custom logos for both JudgyGPT and The Diplomat
 - [x] Pricing page with 3 subscription tiers
 - [x] Subscription confirmation modal
-- [x] The Diplomat links to ChatGPT GPT
+- [x] Subdomain support for diplomat.judgygptonline.com
 - [x] Responsive design
-- [x] 3-panel chat layout
+- [x] SEO optimization (meta tags, Open Graph, sitemap)
+- [x] Navigation between both AIs
+
+## Cloudflare DNS Settings
+```
+Type    Name        Target                              Proxy
+CNAME   @           [deployed-url].emergentagent.com    ✅ Proxied
+CNAME   www         judgygptonline.com                  ✅ Proxied  
+CNAME   diplomat    [deployed-url].emergentagent.com    ✅ Proxied
+```
 
 ## In Progress 🔄
 - [ ] Deploy to production
-- [ ] Connect custom domain (judgygptonline.com) via Cloudflare
+- [ ] Configure Cloudflare DNS
 
 ## Upcoming Tasks (P1)
 - [ ] Integrate real Stripe payments
+- [ ] Add Google Analytics
 - [ ] Implement "Witnesses" feature (live audience)
-- [ ] Add JudgyGPT "ex-husband" backstory to AI prompt
 
 ## Future Tasks (P2)
-- [ ] **Build The Diplomat INTO JudgyGPT app** (bundle under one subscription)
 - [ ] Real-time voice input/output
-- [ ] Shout/curse detection for different AI modes
-- [ ] Merch store integration (Printful/Shopify)
-- [ ] Production email services (hello@, support@)
+- [ ] Merch store integration
+- [ ] Email marketing setup
+- [ ] Mobile app version
 
 ## Key Files
-- `/app/backend/server.py` - API & AI logic
+- `/app/backend/server.py` - API & both AI personalities
 - `/app/frontend/src/pages/LandingPage.jsx` - Hub page
-- `/app/frontend/src/pages/ChatPage.jsx` - Chat interface
+- `/app/frontend/src/pages/ChatPage.jsx` - JudgyGPT chat
+- `/app/frontend/src/pages/DiplomatChatPage.jsx` - The Diplomat chat
 - `/app/frontend/src/pages/PricingPage.jsx` - Subscription plans
-- `/app/frontend/src/config/personalities.js` - AI personality configs
+- `/app/frontend/public/sitemap.xml` - SEO sitemap
+- `/app/memory/GROWTH_PLAN.md` - Marketing & growth guide
 
-## External Links
-- **The Diplomat (ChatGPT):** https://chatgpt.com/g/g-6987ec32bdd48191b905193f05f3477e-the-diplomat
+## AI Personalities
 
-## Deployment Notes
-- Preview URL: https://ai-persona-hub-8.preview.emergentagent.com
-- Production: Deploy via Emergent → Configure Cloudflare DNS
-- Subdomains (optional): judgy.judgygptonline.com, diplomat.judgygptonline.com
+### JudgyGPT
+- **Tone:** Sassy, bossy, playful roasts
+- **Style:** "Bless your heart" energy
+- **Emojis:** 🙄 💅 ✨
+
+### The Diplomat  
+- **Tone:** Warm, self-deprecating, wise
+- **Style:** "Dad friend who's been through stuff"
+- **Backstory:** JudgyGPT's ex-husband, married 7 years
+- **Emojis:** 😅 🤝 💪
+
+## External Resources
+- **The Diplomat (ChatGPT GPT):** https://chatgpt.com/g/g-6987ec32bdd48191b905193f05f3477e-the-diplomat
+- **Growth Plan:** /app/memory/GROWTH_PLAN.md
 
 ## Last Updated
 December 2025
