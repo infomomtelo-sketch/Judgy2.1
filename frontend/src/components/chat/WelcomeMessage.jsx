@@ -1,7 +1,10 @@
 import React from 'react';
-import { Sparkles, MessageCircle, ListChecks, Lightbulb, Crown, Zap, Drama } from 'lucide-react';
+import { MessageCircle, ListChecks, Lightbulb, Crown, Zap, Drama } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { Badge } from '@/components/ui/badge';
+
+// JudgyGPT Logo Image
+const JUDGY_LOGO = "https://cdn.pixabay.com/photo/2022/02/13/08/20/woman-7010576_1280.png";
 
 const WelcomeMessage = () => {
   const { user, isPremium, isFullDrama } = useAuth();
@@ -33,8 +36,12 @@ const WelcomeMessage = () => {
 
   return (
     <div className="flex flex-col items-center justify-center py-12 px-4 animate-fade-in">
-      <div className="w-16 h-16 rounded-2xl gradient-primary shadow-glow flex items-center justify-center mb-6">
-        <Sparkles className="w-8 h-8 text-primary-foreground" />
+      <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-primary shadow-glow mb-6 bg-gradient-to-br from-primary/20 to-accent/20">
+        <img 
+          src={JUDGY_LOGO} 
+          alt="JudgyGPT" 
+          className="w-full h-full object-cover"
+        />
       </div>
       
       <h1 className="font-display text-2xl font-bold text-foreground mb-2">
