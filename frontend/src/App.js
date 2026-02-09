@@ -42,6 +42,7 @@ function App() {
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/pricing" element={<PricingPage />} />
                 <Route path="/diplomat" element={<DiplomatChatPage />} />
+                <Route path="/growth" element={<GrowthPlanPage />} />
                 <Route 
                   path="/chat" 
                   element={
