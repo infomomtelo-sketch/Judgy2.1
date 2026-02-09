@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Test the AI Chat Assistant application with subscription system at https://chat-assist-26.preview.emergentagent.com. The application has authentication system (login/register), subscription plans (Free/Pro/Enterprise), chat with message limits, user menu with avatar dropdown, and mobile responsive design."
+user_problem_statement: "Test the JudgyGPT landing page at https://chat-assist-26.preview.emergentagent.com. The landing page should have: 1) Navigation with logo, nav links (How It Works, Pricing, Merch, FAQ), Sign In, Get Roasted Free button, 2) Hero Section with 'The AI That Keeps It Real 💅' headline, JudgyGPT logo, chat preview mockup, 3) How It Works section with 3 steps, 4) Features section, 5) Pricing with 3 plans, 6) Merch Section, 7) Testimonials with 3 review cards, 8) FAQ with expandable questions, 9) Footer with logo, links, emails. Test desktop view (1920x900), mobile view (390x844), navigation clicks, and scroll through all sections."
 
 frontend:
   - task: "Registration flow - Create new account and verify redirect to chat"
