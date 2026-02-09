@@ -5,7 +5,8 @@ import { useAuth } from '../context/AuthContext';
 import ChatHeader from '../components/chat/ChatHeader';
 import ChatMessages from '../components/chat/ChatMessages';
 import ChatInput from '../components/chat/ChatInput';
-import ToolsPanel from '../components/chat/ToolsPanel';
+import LeftPanel from '../components/chat/LeftPanel';
+import RightPanel from '../components/chat/RightPanel';
 import UpgradeModal from '../components/subscription/UpgradeModal';
 import axios from 'axios';
 
@@ -19,12 +20,13 @@ const ChatPage = () => {
     const stored = localStorage.getItem('chat_session_id');
     return stored || uuidv4();
   });
-  const [isMobileToolsOpen, setIsMobileToolsOpen] = useState(false);
   const [remainingMessages, setRemainingMessages] = useState(-1);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [leftPanelOpen, setLeftPanelOpen] = useState(false);
+  const [rightPanelOpen, setRightPanelOpen] = useState(false);
   const messagesEndRef = useRef(null);
   
-  const { user, subscription, refreshSubscription, isPro } = useAuth();
+  const { user, subscription, refreshSubscription, isPremium } = useAuth();
   const navigate = useNavigate();
 
   // Save session ID to localStorage
@@ -110,7 +112,7 @@ const ChatPage = () => {
         const errorMessage = {
           id: uuidv4(),
           role: 'assistant',
-          content: 'Sorry, I encountered an error. Please try again.',
+          content: 'Ugh, something went wrong on my end. Try again, I guess. 🙄',
           timestamp: new Date(),
           isError: true
         };
@@ -142,15 +144,25 @@ const ChatPage = () => {
   }, [sessionId, refreshSubscription]);
 
   return (
-    <div className="flex h-screen w-full overflow-hidden">
-      {/* Main Chat Area */}
+    <div className="flex h-screen w-full overflow-hidden bg-background">
+      {/* Left Panel - User Info */}
+      <LeftPanel 
+        isOpen={leftPanelOpen}
+        onClose={() => setLeftPanelOpen(false)}
+        user={user}
+        subscription={subscription}
+      />
+
+      {/* Main Chat Area - Center */}
       <div className="flex flex-col flex-1 min-w-0">
         <ChatHeader 
           onNewChat={handleNewChat}
-          onToggleTools={() => setIsMobileToolsOpen(!isMobileToolsOpen)}
-          isMobileToolsOpen={isMobileToolsOpen}
+          onToggleLeft={() => setLeftPanelOpen(!leftPanelOpen)}
+          onToggleRight={() => setRightPanelOpen(!rightPanelOpen)}
+          leftPanelOpen={leftPanelOpen}
+          rightPanelOpen={rightPanelOpen}
           remainingMessages={remainingMessages}
-          isPro={isPro}
+          isPremium={isPremium}
         />
         
         <div className="flex-1 overflow-hidden flex flex-col">
@@ -171,10 +183,10 @@ const ChatPage = () => {
         </div>
       </div>
 
-      {/* Tools Panel - Right Side */}
-      <ToolsPanel 
-        isOpen={isMobileToolsOpen}
-        onClose={() => setIsMobileToolsOpen(false)}
+      {/* Right Panel - Audience/Witnesses */}
+      <RightPanel 
+        isOpen={rightPanelOpen}
+        onClose={() => setRightPanelOpen(false)}
       />
 
       {/* Upgrade Modal */}
