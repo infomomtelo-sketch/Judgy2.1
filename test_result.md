@@ -269,10 +269,22 @@ metadata:
   run_ui: true
 
 test_plan:
-  current_focus: []
+  current_focus:
+    - "Navigation section - Logo, nav links (How It Works, Pricing, Merch, FAQ), Sign In, Get Roasted Free button"
+    - "Hero Section - 'The AI That Keeps It Real 💅' headline, JudgyGPT logo, chat preview mockup"
+    - "How It Works section - 3 steps: Spill the Tea, Get Roasted, Get Helped"
+    - "Features section - Real Talk, Tough Love, Witness Mode (coming soon), Voice Chat (coming soon)"
+    - "Pricing section - 3 plans: Judgement Lite ($0), Talk to Me Nice ($6.99), Bring the Whole Drama ($14.99)"
+    - "Merch Section - 'Wear the Judgment' with mugs, t-shirts, hats, stickers preview"
+    - "Testimonials section - 3 review cards"
+    - "FAQ section - Expandable questions"
+    - "Footer section - Logo, links, emails (hello@judgygptonline.com, support@judgygptonline.com)"
+    - "Desktop view (1920x900) - verify all sections load properly"
+    - "Mobile view (390x844) - verify responsive design"
+    - "Navigation functionality - 'Get Roasted Free' should go to /register, 'Sign In' should go to /login"
   stuck_tasks: []
   test_all: true
-  test_priority: "completed"
+  test_priority: "high_first"
 
 agent_communication:
     - agent: "testing"
