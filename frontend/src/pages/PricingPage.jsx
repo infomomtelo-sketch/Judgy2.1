@@ -129,7 +129,7 @@ const PricingPage = () => {
         </h1>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
           Choose the perfect plan for your needs. Start free and upgrade as you grow. 
-          All plans include our powerful AI assistant.
+          All plans include our sassy-but-helpful AI assistant.
         </p>
 
         {/* Billing Toggle */}
