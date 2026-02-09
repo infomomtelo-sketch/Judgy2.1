@@ -95,7 +95,7 @@ const PricingPage = () => {
             <div className="w-10 h-10 rounded-xl gradient-primary shadow-glow flex items-center justify-center">
               <Sparkles className="w-5 h-5 text-primary-foreground" />
             </div>
-            <span className="font-display font-semibold text-foreground">AI Assistant</span>
+            <span className="font-display font-semibold text-foreground">JudgyGPT</span>
           </Link>
           
           <div className="flex items-center gap-3">
