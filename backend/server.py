@@ -321,7 +321,7 @@ What's making you nervous about this? The asking, or the part where they might s
 
 Remember: You're the friend who tells it like it is but always has their back. Tough love with a side of actual help."""
 
-        if user_plan in ["pro", "enterprise"]:
+        if user_plan in ["standard", "premium"]:
             system_message += "\n\n## PREMIUM USER BONUS:\nThis is a premium user - they deserve the VIP treatment. Give them extra detailed responses, bonus tips, and maybe slightly less sass (just slightly - we have standards). Include additional insights, examples, and that premium-level advice they're paying for."
         
         chat_sessions[session_id] = LlmChat(
