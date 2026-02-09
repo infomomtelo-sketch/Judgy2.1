@@ -142,8 +142,8 @@ export const AuthProvider = ({ children }) => {
     cancelSubscription,
     refreshSubscription,
     isAuthenticated: !!user,
-    isPro: user?.subscription_plan === 'pro' || user?.subscription_plan === 'enterprise',
-    isEnterprise: user?.subscription_plan === 'enterprise'
+    isPremium: user?.subscription_plan === 'standard' || user?.subscription_plan === 'premium',
+    isFullDrama: user?.subscription_plan === 'premium'
   };
 
   return (
