@@ -150,8 +150,8 @@ const LandingPage = () => {
               
               <div className="relative">
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="w-20 h-20 rounded-2xl overflow-hidden border-2 border-pink-500 shadow-lg bg-gradient-to-br from-amber-100 to-rose-100 flex items-center justify-center">
-                    <Scale className="w-10 h-10 text-pink-600" />
+                  <div className="w-20 h-20 rounded-2xl overflow-hidden border-2 border-pink-500 shadow-lg">
+                    <img src={DIPLOMAT_LOGO} alt="The Diplomat" className="w-full h-full object-cover" />
                   </div>
                   <div>
                     <h3 className="font-display text-2xl font-bold text-foreground">The Diplomat</h3>
