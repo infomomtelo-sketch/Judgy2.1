@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { Send, Mic, ArrowRight, Loader2, Zap, Crown, Sparkles } from 'lucide-react';
+import { Send, Mic, ArrowRight, Loader2, Zap, Crown, Sparkles, Drama } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const ChatInput = ({ onSendMessage, onContinue, isLoading, hasMessages, remainingMessages, onUpgrade }) => {
@@ -48,12 +48,12 @@ const ChatInput = ({ onSendMessage, onContinue, isLoading, hasMessages, remainin
           <div className="mb-4 p-4 rounded-xl bg-gradient-to-r from-primary/5 to-accent/5 border border-primary/20">
             <div className="flex items-start gap-3">
               <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center shrink-0">
-                <Crown className="w-5 h-5 text-primary-foreground" />
+                <Zap className="w-5 h-5 text-primary-foreground" />
               </div>
               <div className="flex-1">
-                <h4 className="font-medium text-foreground mb-1">Daily limit reached</h4>
+                <h4 className="font-medium text-foreground mb-1">Out of roasts! 🙈</h4>
                 <p className="text-sm text-muted-foreground mb-3">
-                  You&apos;ve used all 5 free messages today. Upgrade to Pro for unlimited access.
+                  You&apos;ve used all your free roasts today. Upgrade to keep the sass coming!
                 </p>
                 <div className="flex flex-wrap gap-2">
                   <Button 
@@ -62,15 +62,15 @@ const ChatInput = ({ onSendMessage, onContinue, isLoading, hasMessages, remainin
                     onClick={() => navigate('/pricing')}
                   >
                     <Crown className="w-4 h-4 mr-1" />
-                    Upgrade to Pro - $9.99/mo
+                    Talk to Me Nice - $6.99
                   </Button>
                   <Button 
-                    variant="ghost"
                     size="sm"
-                    className="text-muted-foreground"
-                    onClick={onUpgrade}
+                    className="bg-gradient-to-r from-pink-500 to-purple-600 text-white"
+                    onClick={() => navigate('/pricing')}
                   >
-                    Learn more
+                    <Drama className="w-4 h-4 mr-1" />
+                    Full Drama - $14.99
                   </Button>
                 </div>
               </div>
@@ -83,7 +83,7 @@ const ChatInput = ({ onSendMessage, onContinue, isLoading, hasMessages, remainin
           <div className="flex items-center justify-center gap-2 mb-3 p-2 rounded-lg bg-muted/50">
             <Zap className="w-4 h-4 text-primary" />
             <span className="text-sm text-muted-foreground">
-              Only {remainingMessages} message{remainingMessages > 1 ? 's' : ''} left today.
+              Only {remainingMessages} roast{remainingMessages > 1 ? 's' : ''} left today.
             </span>
             <Button 
               variant="link" 
@@ -91,7 +91,7 @@ const ChatInput = ({ onSendMessage, onContinue, isLoading, hasMessages, remainin
               className="text-primary p-0 h-auto text-sm"
               onClick={() => navigate('/pricing')}
             >
-              Upgrade for unlimited
+              Upgrade for more
             </Button>
           </div>
         )}
@@ -124,7 +124,7 @@ const ChatInput = ({ onSendMessage, onContinue, isLoading, hasMessages, remainin
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder={isLimitReached ? "Upgrade to continue chatting..." : "Ask me anything..."}
+              placeholder={isLimitReached ? "Upgrade to continue the roasting..." : "Spill the tea... ☕"}
               disabled={isLoading || isLimitReached}
               className="flex-1 min-h-[44px] max-h-[200px] resize-none border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 text-foreground placeholder:text-muted-foreground py-3 px-2"
               rows={1}
@@ -166,7 +166,7 @@ const ChatInput = ({ onSendMessage, onContinue, isLoading, hasMessages, remainin
 
           <div className="flex items-center justify-between mt-2 px-1">
             <p className="text-[10px] text-muted-foreground">
-              Press Enter to send, Shift + Enter for new line
+              Enter to send • Shift+Enter for new line
             </p>
             
             {/* Mobile message counter */}
