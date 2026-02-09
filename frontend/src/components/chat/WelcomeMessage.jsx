@@ -23,12 +23,12 @@ const WelcomeMessage = () => {
       {isPro || isEnterprise ? (
         <Badge className="mb-8 gradient-primary text-primary-foreground px-4 py-1">
           <Crown className="w-3 h-3 mr-1" />
-          {isEnterprise ? 'Enterprise' : 'Pro'} Plan - Unlimited Messages
+          {isEnterprise ? 'Enterprise' : 'Pro'} Plan - Unlimited Judgments
         </Badge>
       ) : (
         <Badge variant="secondary" className="mb-8 px-4 py-1">
           <Zap className="w-3 h-3 mr-1 text-primary" />
-          Free Plan - 5 messages/day
+          Free Plan - 5 roasts/day
         </Badge>
       )}
 
@@ -36,17 +36,17 @@ const WelcomeMessage = () => {
         <FeatureCard 
           icon={<MessageCircle className="w-5 h-5" />}
           title="Ask Anything"
-          description="Get help with any topic or task"
+          description="Get real talk on any topic"
         />
         <FeatureCard 
           icon={<ListChecks className="w-5 h-5" />}
-          title="Step-by-Step"
-          description="Clear, organized instructions"
+          title="Honest Advice"
+          description="No sugarcoating here"
         />
         <FeatureCard 
           icon={<Lightbulb className="w-5 h-5" />}
-          title="Continue"
-          description="Request more details anytime"
+          title="Actually Helpful"
+          description="Sass with substance"
         />
       </div>
 
