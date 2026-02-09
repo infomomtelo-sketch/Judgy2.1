@@ -300,10 +300,10 @@ const LandingPage = () => {
                   </Link>
                 </li>
                 <li>
-                  <a href="https://chatgpt.com/g/g-6987ec32bdd48191b905193f05f3477e-the-diplomat" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors flex items-center gap-2">
+                  <Link to="/diplomat" className="hover:text-foreground transition-colors flex items-center gap-2">
                     <Scale className="w-4 h-4" />
                     The Diplomat
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
