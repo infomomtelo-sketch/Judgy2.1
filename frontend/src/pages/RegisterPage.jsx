@@ -58,8 +58,8 @@ const RegisterPage = () => {
           <div className="w-14 h-14 rounded-2xl gradient-primary shadow-glow flex items-center justify-center mb-4">
             <Sparkles className="w-7 h-7 text-primary-foreground" />
           </div>
-          <h1 className="font-display text-2xl font-bold text-foreground">AI Assistant</h1>
-          <p className="text-muted-foreground text-sm">Step-by-step guidance</p>
+          <h1 className="font-display text-2xl font-bold text-foreground">JudgyGPT</h1>
+          <p className="text-muted-foreground text-sm">Sassy advice, real help 💅</p>
         </div>
 
         <Card className="border-border shadow-lg">
