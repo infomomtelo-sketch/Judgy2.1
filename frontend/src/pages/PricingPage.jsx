@@ -100,8 +100,12 @@ const PricingPage = () => {
       <header className="border-b border-border bg-card/80 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link to="/chat" className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl gradient-primary shadow-glow flex items-center justify-center">
-              <Sparkles className="w-5 h-5 text-primary-foreground" />
+            <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-primary shadow-glow">
+              <img 
+                src={JUDGY_LOGO} 
+                alt="JudgyGPT" 
+                className="w-full h-full object-cover"
+              />
             </div>
             <span className="font-display font-semibold text-foreground">JudgyGPT</span>
           </Link>
