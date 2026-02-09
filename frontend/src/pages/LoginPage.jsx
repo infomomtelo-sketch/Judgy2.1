@@ -5,7 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Sparkles, Loader2, Mail, Lock, AlertCircle } from 'lucide-react';
+import { Loader2, Mail, Lock, AlertCircle } from 'lucide-react';
+
+// JudgyGPT Logo Image
+const JUDGY_LOGO = "https://cdn.pixabay.com/photo/2022/02/13/08/20/woman-7010576_1280.png";
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
