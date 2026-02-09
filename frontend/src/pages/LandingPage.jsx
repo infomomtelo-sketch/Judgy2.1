@@ -259,12 +259,12 @@ const LandingPage = () => {
                 JudgyGPT
               </Button>
             </Link>
-            <a href="https://chatgpt.com/g/g-6987ec32bdd48191b905193f05f3477e-the-diplomat" target="_blank" rel="noopener noreferrer">
+            <Link to="/diplomat">
               <Button size="lg" className="bg-gradient-to-r from-amber-500 to-pink-500 hover:from-amber-600 hover:to-pink-600 text-white px-8 h-14">
                 <Scale className="w-5 h-5 mr-2" />
                 The Diplomat
               </Button>
-            </a>
+            </Link>
           </div>
         </div>
       </section>
