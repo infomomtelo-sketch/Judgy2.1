@@ -665,6 +665,11 @@ Sitemap: https://judgygptonline.com/sitemap.xml
 """
     return Response(content=robots, media_type="text/plain")
 
+@app.get("/health")
+async def health_check():
+    """Health check endpoint for Kubernetes"""
+    return {"status": "healthy"}
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
