@@ -670,6 +670,11 @@ async def health_check():
     """Health check endpoint for Kubernetes"""
     return {"status": "healthy"}
 
+@app.get("/api/health")
+async def api_health_check():
+    """Health check endpoint for Kubernetes (with /api prefix)"""
+    return {"status": "healthy"}
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
