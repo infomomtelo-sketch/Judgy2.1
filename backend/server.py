@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Depends
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.responses import Response
 from dotenv import load_dotenv
@@ -6,14 +6,17 @@ from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
+import asyncio
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict, EmailStr
-from typing import List, Optional
+from typing import List, Optional, Dict
 import uuid
 from datetime import datetime, timezone, timedelta
 from emergentintegrations.llm.chat import LlmChat, UserMessage
+from emergentintegrations.payments.stripe.checkout import StripeCheckout, CheckoutSessionResponse, CheckoutStatusResponse, CheckoutSessionRequest
 import hashlib
 import secrets
+import resend
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -23,8 +26,16 @@ mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
-# LLM API Key
+# API Keys
 EMERGENT_LLM_KEY = os.environ.get('EMERGENT_LLM_KEY')
+STRIPE_API_KEY = os.environ.get('STRIPE_API_KEY')
+RESEND_API_KEY = os.environ.get('RESEND_API_KEY')
+SENDER_EMAIL = os.environ.get('SENDER_EMAIL', 'onboarding@resend.dev')
+ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', 'admin@judgygptonline.com')
+
+# Initialize Resend
+if RESEND_API_KEY:
+    resend.api_key = RESEND_API_KEY
 
 # Create the main app
 app = FastAPI()
@@ -40,7 +51,7 @@ SUBSCRIPTION_PLANS = {
     "free": {
         "id": "free",
         "name": "Judgement Lite",
-        "price": 0,
+        "price": 0.00,
         "price_display": "$0",
         "interval": "month",
         "description": "Get a taste of the sass - perfect for trying out",
@@ -60,7 +71,7 @@ SUBSCRIPTION_PLANS = {
     "standard": {
         "id": "standard",
         "name": "Talk to Me Nice",
-        "price": 699,  # in cents
+        "price": 6.99,
         "price_display": "$6.99",
         "interval": "month",
         "description": "For those who want the full experience",
@@ -80,7 +91,7 @@ SUBSCRIPTION_PLANS = {
     "premium": {
         "id": "premium",
         "name": "Bring the Whole Drama",
-        "price": 1499,  # in cents
+        "price": 14.99,
         "price_display": "$14.99",
         "interval": "month",
         "description": "Unlimited sass for the bold and brave",
@@ -93,7 +104,7 @@ SUBSCRIPTION_PLANS = {
             "Export conversations"
         ],
         "limits": {
-            "messages_per_day": -1,  # unlimited
+            "messages_per_day": -1,
             "history_days": 30
         },
         "popular": False
