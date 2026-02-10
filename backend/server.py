@@ -610,6 +610,61 @@ async def create_new_session(user: User = Depends(require_auth)):
 # Include the router in the main app
 app.include_router(api_router)
 
+# Sitemap for SEO
+SITEMAP_XML = """<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://judgygptonline.com/</loc>
+    <lastmod>2025-01-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://judgygptonline.com/chat</loc>
+    <lastmod>2025-01-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://judgygptonline.com/diplomat</loc>
+    <lastmod>2025-01-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://judgygptonline.com/pricing</loc>
+    <lastmod>2025-01-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://judgygptonline.com/growth</loc>
+    <lastmod>2025-01-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://diplomat.judgygptonline.com/</loc>
+    <lastmod>2025-01-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+</urlset>"""
+
+@app.get("/sitemap.xml")
+async def get_sitemap():
+    return Response(content=SITEMAP_XML, media_type="application/xml")
+
+@app.get("/robots.txt")
+async def get_robots():
+    robots = """User-agent: *
+Allow: /
+Disallow: /api/
+
+Sitemap: https://judgygptonline.com/sitemap.xml
+"""
+    return Response(content=robots, media_type="text/plain")
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
