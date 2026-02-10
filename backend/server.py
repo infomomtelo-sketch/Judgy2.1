@@ -184,13 +184,54 @@ class ChatMessage(BaseModel):
 class ChatRequest(BaseModel):
     session_id: str
     message: str
-    personality: str = "judgy"  # "judgy" or "diplomat"
+    personality: str = "judgy"
 
 class ChatResponse(BaseModel):
     session_id: str
     response: str
     message_id: str
-    remaining_messages: int  # -1 for unlimited
+    remaining_messages: int
+
+# New models for additional features
+class CheckoutRequest(BaseModel):
+    plan_id: str
+    origin_url: str
+
+class PasswordResetRequest(BaseModel):
+    email: EmailStr
+
+class PasswordResetConfirm(BaseModel):
+    token: str
+    new_password: str
+
+class ProfileUpdate(BaseModel):
+    name: Optional[str] = None
+    email: Optional[EmailStr] = None
+
+class ChatSession(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    name: str = "New Chat"
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class PaymentTransaction(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    user_email: str
+    session_id: str
+    plan_id: str
+    amount: float
+    currency: str = "usd"
+    status: str = "pending"
+    payment_status: str = "pending"
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    metadata: Optional[Dict] = None
 
 # ============== HELPER FUNCTIONS ==============
 
