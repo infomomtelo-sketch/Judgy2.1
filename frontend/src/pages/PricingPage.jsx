@@ -231,6 +231,32 @@ const PricingPage = () => {
 
       {/* Hero Section */}
       <section className="py-16 px-4 text-center">
+        {/* Payment Success Message */}
+        {paymentSuccess && (
+          <div className="max-w-md mx-auto mb-8 p-4 bg-green-100 border border-green-300 rounded-xl">
+            <div className="flex items-center gap-3 text-green-800">
+              <Check className="w-6 h-6" />
+              <div>
+                <p className="font-semibold">Payment Successful! 🎉</p>
+                <p className="text-sm">Redirecting you to chat...</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Payment Error Message */}
+        {paymentError && (
+          <div className="max-w-md mx-auto mb-8 p-4 bg-red-100 border border-red-300 rounded-xl">
+            <div className="flex items-center gap-3 text-red-800">
+              <AlertCircle className="w-6 h-6" />
+              <div>
+                <p className="font-semibold">Payment Issue</p>
+                <p className="text-sm">{paymentError}</p>
+              </div>
+            </div>
+          </div>
+        )}
+
         <Badge variant="secondary" className="mb-4 px-4 py-1">
           <Sparkles className="w-3 h-3 mr-1" />
           Choose Your Drama Level
