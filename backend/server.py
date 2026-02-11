@@ -498,9 +498,182 @@ async def get_current_subscription(user: User = Depends(require_auth)):
         "remaining_messages": access["remaining"]
     }
 
+# ============== STRIPE PAYMENT ROUTES ==============
+
+class CreateCheckoutRequest(BaseModel):
+    plan_id: str
+    origin_url: str
+
+@api_router.post("/checkout/create")
+async def create_checkout_session(request: CreateCheckoutRequest, http_request: Request, user: User = Depends(require_auth)):
+    """Create a Stripe checkout session for subscription"""
+    if request.plan_id not in SUBSCRIPTION_PLANS:
+        raise HTTPException(status_code=400, detail="Invalid plan")
+    
+    plan = SUBSCRIPTION_PLANS[request.plan_id]
+    
+    # Free plan doesn't need checkout
+    if request.plan_id == "free":
+        await db.users.update_one(
+            {"id": user.id},
+            {"$set": {
+                "subscription_plan": "free",
+                "subscription_status": "active",
+                "subscription_start": None,
+                "subscription_end": None
+            }}
+        )
+        return {"success": True, "message": "Switched to free plan"}
+    
+    # Create Stripe checkout session
+    try:
+        host_url = request.origin_url.rstrip('/')
+        webhook_url = f"{str(http_request.base_url).rstrip('/')}/api/webhook/stripe"
+        
+        stripe_checkout = StripeCheckout(api_key=STRIPE_API_KEY, webhook_url=webhook_url)
+        
+        success_url = f"{host_url}/pricing?session_id={{CHECKOUT_SESSION_ID}}&success=true"
+        cancel_url = f"{host_url}/pricing?cancelled=true"
+        
+        checkout_request = CheckoutSessionRequest(
+            amount=plan["price"],
+            currency="usd",
+            success_url=success_url,
+            cancel_url=cancel_url,
+            metadata={
+                "user_id": user.id,
+                "user_email": user.email,
+                "plan_id": request.plan_id,
+                "plan_name": plan["name"]
+            }
+        )
+        
+        session = await stripe_checkout.create_checkout_session(checkout_request)
+        
+        # Create payment transaction record
+        transaction = PaymentTransaction(
+            user_id=user.id,
+            user_email=user.email,
+            session_id=session.session_id,
+            plan_id=request.plan_id,
+            amount=plan["price"],
+            currency="usd",
+            status="pending",
+            payment_status="pending",
+            metadata={"plan_name": plan["name"]}
+        )
+        
+        await db.payment_transactions.insert_one(transaction.model_dump())
+        
+        return {"url": session.url, "session_id": session.session_id}
+        
+    except Exception as e:
+        logging.error(f"Stripe checkout error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Payment error: {str(e)}")
+
+@api_router.get("/checkout/status/{session_id}")
+async def get_checkout_status(session_id: str, http_request: Request, user: User = Depends(require_auth)):
+    """Check the status of a checkout session"""
+    try:
+        webhook_url = f"{str(http_request.base_url).rstrip('/')}/api/webhook/stripe"
+        stripe_checkout = StripeCheckout(api_key=STRIPE_API_KEY, webhook_url=webhook_url)
+        
+        status = await stripe_checkout.get_checkout_status(session_id)
+        
+        # Update transaction record
+        transaction = await db.payment_transactions.find_one({"session_id": session_id})
+        
+        if status.payment_status == "paid" and transaction and transaction.get("payment_status") != "paid":
+            # Payment successful - update user subscription
+            now = datetime.now(timezone.utc)
+            end_date = now + timedelta(days=30)
+            
+            plan_id = transaction.get("plan_id", "standard")
+            
+            await db.users.update_one(
+                {"id": user.id},
+                {"$set": {
+                    "subscription_plan": plan_id,
+                    "subscription_status": "active",
+                    "subscription_start": now.isoformat(),
+                    "subscription_end": end_date.isoformat()
+                }}
+            )
+            
+            # Update transaction
+            await db.payment_transactions.update_one(
+                {"session_id": session_id},
+                {"$set": {
+                    "status": "completed",
+                    "payment_status": "paid",
+                    "updated_at": now.isoformat()
+                }}
+            )
+        
+        return {
+            "status": status.status,
+            "payment_status": status.payment_status,
+            "amount_total": status.amount_total,
+            "currency": status.currency
+        }
+        
+    except Exception as e:
+        logging.error(f"Checkout status error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Status check error: {str(e)}")
+
+@api_router.post("/webhook/stripe")
+async def stripe_webhook(request: Request):
+    """Handle Stripe webhooks"""
+    try:
+        body = await request.body()
+        signature = request.headers.get("Stripe-Signature")
+        
+        webhook_url = f"{str(request.base_url).rstrip('/')}/api/webhook/stripe"
+        stripe_checkout = StripeCheckout(api_key=STRIPE_API_KEY, webhook_url=webhook_url)
+        
+        webhook_response = await stripe_checkout.handle_webhook(body, signature)
+        
+        if webhook_response.payment_status == "paid":
+            session_id = webhook_response.session_id
+            metadata = webhook_response.metadata
+            
+            # Update transaction and user
+            transaction = await db.payment_transactions.find_one({"session_id": session_id})
+            if transaction and transaction.get("payment_status") != "paid":
+                user_id = metadata.get("user_id") or transaction.get("user_id")
+                plan_id = metadata.get("plan_id") or transaction.get("plan_id")
+                
+                now = datetime.now(timezone.utc)
+                end_date = now + timedelta(days=30)
+                
+                await db.users.update_one(
+                    {"id": user_id},
+                    {"$set": {
+                        "subscription_plan": plan_id,
+                        "subscription_status": "active",
+                        "subscription_start": now.isoformat(),
+                        "subscription_end": end_date.isoformat()
+                    }}
+                )
+                
+                await db.payment_transactions.update_one(
+                    {"session_id": session_id},
+                    {"$set": {
+                        "status": "completed",
+                        "payment_status": "paid",
+                        "updated_at": now.isoformat()
+                    }}
+                )
+        
+        return {"received": True}
+        
+    except Exception as e:
+        logging.error(f"Webhook error: {str(e)}")
+        return {"received": True, "error": str(e)}
+
 @api_router.post("/subscriptions/subscribe")
 async def subscribe(data: SubscriptionUpdate, user: User = Depends(require_auth)):
-    """Subscribe to a plan (mock payment - in production, integrate with Stripe)"""
+    """Subscribe to a plan - redirects to checkout for paid plans"""
     if data.plan_id not in SUBSCRIPTION_PLANS:
         raise HTTPException(status_code=400, detail="Invalid plan")
     
@@ -519,25 +692,11 @@ async def subscribe(data: SubscriptionUpdate, user: User = Depends(require_auth)
         )
         return {"message": "Switched to free plan", "plan": plan}
     
-    # For paid plans, simulate successful payment
-    # In production, this would redirect to Stripe Checkout
-    now = datetime.now(timezone.utc)
-    end_date = now + timedelta(days=30)
-    
-    await db.users.update_one(
-        {"id": user.id},
-        {"$set": {
-            "subscription_plan": data.plan_id,
-            "subscription_status": "active",
-            "subscription_start": now.isoformat(),
-            "subscription_end": end_date.isoformat()
-        }}
-    )
-    
+    # For paid plans, indicate checkout is needed
     return {
-        "message": f"Successfully subscribed to {plan['name']}",
-        "plan": plan,
-        "subscription_end": end_date
+        "message": "Checkout required",
+        "requires_checkout": True,
+        "plan": plan
     }
 
 @api_router.post("/subscriptions/cancel")
