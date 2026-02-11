@@ -27,9 +27,63 @@ const PricingPage = () => {
   const [subscribing, setSubscribing] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [paymentError, setPaymentError] = useState(null);
   
-  const { isAuthenticated, user, subscribe } = useAuth();
+  const { isAuthenticated, user, subscribe, refreshSubscription } = useAuth();
   const navigate = useNavigate();
+
+  // Check for payment success on page load
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const sessionId = urlParams.get('session_id');
+    const success = urlParams.get('success');
+    const cancelled = urlParams.get('cancelled');
+
+    if (cancelled) {
+      setPaymentError('Payment was cancelled. You can try again when ready.');
+      window.history.replaceState({}, '', '/pricing');
+    }
+
+    if (sessionId && success) {
+      // Poll for payment status
+      pollPaymentStatus(sessionId);
+    }
+  }, []);
+
+  const pollPaymentStatus = async (sessionId, attempts = 0) => {
+    const maxAttempts = 10;
+    const pollInterval = 2000;
+
+    if (attempts >= maxAttempts) {
+      setPaymentError('Payment verification timed out. Please check your email for confirmation.');
+      return;
+    }
+
+    try {
+      const response = await axios.get(`${API}/checkout/status/${sessionId}`);
+      
+      if (response.data.payment_status === 'paid') {
+        setPaymentSuccess(true);
+        await refreshSubscription();
+        window.history.replaceState({}, '', '/pricing');
+        setTimeout(() => navigate('/chat'), 2000);
+        return;
+      } else if (response.data.status === 'expired') {
+        setPaymentError('Payment session expired. Please try again.');
+        window.history.replaceState({}, '', '/pricing');
+        return;
+      }
+
+      // Continue polling
+      setTimeout(() => pollPaymentStatus(sessionId, attempts + 1), pollInterval);
+    } catch (error) {
+      console.error('Error checking payment status:', error);
+      if (attempts < maxAttempts) {
+        setTimeout(() => pollPaymentStatus(sessionId, attempts + 1), pollInterval);
+      }
+    }
+  };
 
   useEffect(() => {
     const fetchPlans = async () => {
@@ -68,12 +122,31 @@ const PricingPage = () => {
     const planToUse = plan || selectedPlan;
     setSubscribing(planToUse.id);
     setShowConfirmModal(false);
+    setPaymentError(null);
     
     try {
-      await subscribe(planToUse.id);
-      navigate('/chat');
+      if (planToUse.id === 'free') {
+        await subscribe(planToUse.id);
+        navigate('/chat');
+        return;
+      }
+
+      // For paid plans, create Stripe checkout session
+      const response = await axios.post(`${API}/checkout/create`, {
+        plan_id: planToUse.id,
+        origin_url: window.location.origin
+      });
+
+      if (response.data.url) {
+        // Redirect to Stripe Checkout
+        window.location.href = response.data.url;
+      } else if (response.data.success) {
+        // Free plan success
+        navigate('/chat');
+      }
     } catch (error) {
       console.error('Subscription failed:', error);
+      setPaymentError(error.response?.data?.detail || 'Payment failed. Please try again.');
     } finally {
       setSubscribing(null);
       setSelectedPlan(null);
