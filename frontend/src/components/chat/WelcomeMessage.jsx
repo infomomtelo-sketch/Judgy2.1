@@ -1,5 +1,5 @@
 import React from 'react';
-import { MessageCircle, ListChecks, Lightbulb, Crown, Zap, Drama } from 'lucide-react';
+import { MessageCircle, ListChecks, Lightbulb, Crown, Zap, Drama, Flame, Target, Swords } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { Badge } from '@/components/ui/badge';
 
@@ -12,7 +12,7 @@ const WelcomeMessage = () => {
   const getPlanBadge = () => {
     if (isFullDrama) {
       return (
-        <Badge className="mb-8 bg-gradient-to-r from-pink-500 to-purple-600 text-white px-4 py-1">
+        <Badge className="mb-6 bg-gradient-to-r from-pink-500 to-purple-600 text-white px-4 py-1">
           <Drama className="w-3 h-3 mr-1" />
           Bring the Whole Drama - Unlimited 💅
         </Badge>
@@ -20,14 +20,14 @@ const WelcomeMessage = () => {
     }
     if (isPremium) {
       return (
-        <Badge className="mb-8 gradient-primary text-primary-foreground px-4 py-1">
+        <Badge className="mb-6 gradient-primary text-primary-foreground px-4 py-1">
           <Crown className="w-3 h-3 mr-1" />
           Talk to Me Nice - 50/day
         </Badge>
       );
     }
     return (
-      <Badge variant="secondary" className="mb-8 px-4 py-1">
+      <Badge variant="secondary" className="mb-6 px-4 py-1">
         <Zap className="w-3 h-3 mr-1 text-primary" />
         Judgement Lite - 5 roasts/day
       </Badge>
@@ -35,8 +35,8 @@ const WelcomeMessage = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center py-12 px-4 animate-fade-in">
-      <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-primary shadow-glow mb-6 bg-gradient-to-br from-primary/20 to-accent/20">
+    <div className="flex flex-col items-center justify-center py-8 px-4 animate-fade-in">
+      <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-primary shadow-glow mb-6 bg-gradient-to-br from-primary/20 to-accent/20">
         <img 
           src={JUDGY_LOGO} 
           alt="JudgyGPT" 
@@ -44,63 +44,77 @@ const WelcomeMessage = () => {
         />
       </div>
       
-      <h1 className="font-display text-2xl font-bold text-foreground mb-2">
-        Welcome to JudgyGPT
+      <h1 className="font-display text-3xl font-bold text-foreground mb-2">
+        Go Ahead... Test Me 💅
       </h1>
       <p className="text-muted-foreground text-center max-w-md mb-4">
-        I&apos;m here to give you the advice you need (with a side of sass). Ask me anything - I&apos;ll be honest, helpful, and only slightly judgmental. 💅
+        I dare you. Ask me anything. I&apos;ll give you the truth your friends are too nice to say.
       </p>
 
       {/* Plan Status */}
       {getPlanBadge()}
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-xl">
-        <FeatureCard 
-          icon={<MessageCircle className="w-5 h-5" />}
-          title="Ask Anything"
-          description="Get real talk on any topic"
+      {/* Challenge Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-xl mb-8">
+        <ChallengeCard 
+          icon={<Flame className="w-5 h-5 text-orange-500" />}
+          title="Roast Me"
+          description="If you can handle it"
+          color="from-orange-500/10 to-red-500/10"
         />
-        <FeatureCard 
-          icon={<ListChecks className="w-5 h-5" />}
-          title="Honest Advice"
-          description="No sugarcoating here"
+        <ChallengeCard 
+          icon={<Target className="w-5 h-5 text-blue-500" />}
+          title="Real Talk"
+          description="No sugarcoating"
+          color="from-blue-500/10 to-cyan-500/10"
         />
-        <FeatureCard 
-          icon={<Lightbulb className="w-5 h-5" />}
-          title="Actually Helpful"
-          description="Sass with substance"
+        <ChallengeCard 
+          icon={<Swords className="w-5 h-5 text-purple-500" />}
+          title="Challenge Me"
+          description="Try to stump me"
+          color="from-purple-500/10 to-pink-500/10"
         />
       </div>
 
-      {/* Quick Start Suggestions */}
-      <div className="mt-8 w-full max-w-xl">
-        <p className="text-sm text-muted-foreground text-center mb-3">Try asking:</p>
+      {/* Quick Challenges */}
+      <div className="w-full max-w-xl">
+        <p className="text-sm text-muted-foreground text-center mb-3 flex items-center justify-center gap-2">
+          <Flame className="w-4 h-4 text-orange-500" />
+          Popular challenges:
+        </p>
         <div className="flex flex-wrap justify-center gap-2">
           {[
-            "My landlord is being difficult",
-            "Should I text my ex?",
-            "How do I ask for a raise?"
+            "🔥 Roast my life choices",
+            "💔 Should I text my ex?",
+            "💰 Am I being underpaid?",
+            "🎭 Judge my decisions",
+            "💪 Give me tough love",
+            "🤔 What should I do?"
           ].map((suggestion, i) => (
             <span 
               key={i}
-              className="px-3 py-1.5 text-sm bg-muted hover:bg-muted/80 rounded-full cursor-pointer transition-colors text-muted-foreground hover:text-foreground"
+              className="px-4 py-2 text-sm bg-muted hover:bg-primary/10 hover:border-primary/30 border border-transparent rounded-full cursor-pointer transition-all text-muted-foreground hover:text-foreground font-medium"
             >
               {suggestion}
             </span>
           ))}
         </div>
       </div>
+      
+      <p className="mt-8 text-xs text-muted-foreground">
+        Type anything below and hit send. I&apos;m ready. Are you? 😏
+      </p>
     </div>
   );
 };
 
-const FeatureCard = ({ icon, title, description }) => {
+const ChallengeCard = ({ icon, title, description, color }) => {
   return (
-    <div className="flex flex-col items-center p-4 rounded-xl bg-card border border-border hover:border-primary/30 hover:shadow-md transition-all duration-200">
-      <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center text-primary mb-3">
+    <div className={`flex flex-col items-center p-4 rounded-xl bg-gradient-to-br ${color} border border-border hover:border-primary/30 hover:shadow-lg transition-all duration-200 cursor-pointer`}>
+      <div className="w-12 h-12 rounded-full bg-background/80 flex items-center justify-center mb-3 shadow-sm">
         {icon}
       </div>
-      <h3 className="font-medium text-sm text-foreground mb-1">{title}</h3>
+      <h3 className="font-semibold text-sm text-foreground mb-1">{title}</h3>
       <p className="text-xs text-muted-foreground text-center">{description}</p>
     </div>
   );
