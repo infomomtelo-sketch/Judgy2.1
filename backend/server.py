@@ -469,6 +469,102 @@ async def logout(credentials: HTTPAuthorizationCredentials = Depends(security)):
         del active_tokens[credentials.credentials]
     return {"message": "Logged out successfully"}
 
+# Password reset tokens storage (in production, use Redis or DB)
+password_reset_tokens = {}
+
+@api_router.post("/auth/forgot-password")
+async def forgot_password(data: PasswordResetRequest):
+    """Request password reset - sends email with reset link"""
+    user_doc = await db.users.find_one({"email": data.email})
+    
+    # Always return success to prevent email enumeration
+    if not user_doc:
+        return {"message": "If an account with that email exists, we've sent a password reset link."}
+    
+    # Generate reset token
+    reset_token = secrets.token_urlsafe(32)
+    expiry = datetime.now(timezone.utc) + timedelta(hours=1)
+    
+    password_reset_tokens[reset_token] = {
+        "user_id": user_doc["id"],
+        "email": data.email,
+        "expiry": expiry
+    }
+    
+    # Send email with reset link
+    try:
+        if RESEND_API_KEY and RESEND_API_KEY != "re_test_key":
+            reset_link = f"https://judgygptonline.com/reset-password?token={reset_token}"
+            
+            resend.Emails.send({
+                "from": SENDER_EMAIL,
+                "to": data.email,
+                "subject": "Reset Your JudgyGPT Password 💅",
+                "html": f"""
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+                    <h1 style="color: #0891b2;">Reset Your Password</h1>
+                    <p>Hey there! Someone (hopefully you) requested a password reset for your JudgyGPT account.</p>
+                    <p>Click the button below to reset your password:</p>
+                    <a href="{reset_link}" style="display: inline-block; background: linear-gradient(to right, #0891b2, #06b6d4); color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; margin: 20px 0;">
+                        Reset Password
+                    </a>
+                    <p style="color: #666; font-size: 14px;">This link expires in 1 hour.</p>
+                    <p style="color: #666; font-size: 14px;">If you didn't request this, just ignore this email. Your password won't change.</p>
+                    <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
+                    <p style="color: #999; font-size: 12px;">— JudgyGPT (yes, even password reset emails have attitude 💅)</p>
+                </div>
+                """
+            })
+        else:
+            # Log for testing when no email service
+            logging.info(f"Password reset token for {data.email}: {reset_token}")
+    except Exception as e:
+        logging.error(f"Failed to send password reset email: {e}")
+    
+    return {"message": "If an account with that email exists, we've sent a password reset link."}
+
+@api_router.post("/auth/reset-password")
+async def reset_password(data: PasswordResetConfirm):
+    """Reset password using token"""
+    token_data = password_reset_tokens.get(data.token)
+    
+    if not token_data:
+        raise HTTPException(status_code=400, detail="Invalid or expired reset token")
+    
+    if datetime.now(timezone.utc) > token_data["expiry"]:
+        del password_reset_tokens[data.token]
+        raise HTTPException(status_code=400, detail="Reset token has expired. Please request a new one.")
+    
+    if len(data.new_password) < 6:
+        raise HTTPException(status_code=400, detail="Password must be at least 6 characters")
+    
+    # Update password
+    new_password_hash = hash_password(data.new_password)
+    
+    await db.users.update_one(
+        {"id": token_data["user_id"]},
+        {"$set": {"password_hash": new_password_hash}}
+    )
+    
+    # Remove used token
+    del password_reset_tokens[data.token]
+    
+    return {"message": "Password reset successfully! You can now log in with your new password."}
+
+@api_router.get("/auth/verify-reset-token/{token}")
+async def verify_reset_token(token: str):
+    """Verify if a reset token is valid"""
+    token_data = password_reset_tokens.get(token)
+    
+    if not token_data:
+        raise HTTPException(status_code=400, detail="Invalid reset token")
+    
+    if datetime.now(timezone.utc) > token_data["expiry"]:
+        del password_reset_tokens[token]
+        raise HTTPException(status_code=400, detail="Reset token has expired")
+    
+    return {"valid": True, "email": token_data["email"]}
+
 @api_router.get("/auth/me", response_model=UserResponse)
 async def get_me(user: User = Depends(require_auth)):
     return UserResponse(
