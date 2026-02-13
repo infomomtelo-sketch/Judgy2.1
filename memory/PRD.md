@@ -1,102 +1,170 @@
 # JudgyGPT Online - Product Requirements Document
 
-## Original Problem Statement
-Build a web application called "JudgyGPT" - a sarcastic, bossy, yet helpful AI chat assistant with subscription-based monetization, plus "The Diplomat" - JudgyGPT's ex-husband for relationship advice.
-
 ## Product Overview
-**Domain:** judgygptonline.com
-**Tagline:** "AI Personalities with Attitude"
+**Name:** JudgyGPT  
+**Domain:** judgygptonline.com  
+**Tagline:** "Go ahead... Test Me 💅"
 
-JudgyGPT Online is a hub for AI personalities that provide honest advice with unique personalities:
-1. **JudgyGPT** - Sassy life coach (main app)
-2. **The Diplomat** - Marriage & relationship advisor (JudgyGPT's ex-husband)
+An AI chatbot with personality that gives brutally honest advice with sass.
 
-## Architecture
+---
 
-### URL Structure
-```
-judgygptonline.com → Hub Landing Page
-judgygptonline.com/chat → JudgyGPT Chat
-judgygptonline.com/diplomat → The Diplomat Chat
-judgygptonline.com/pricing → Subscription Plans
+## ✅ COMPLETED FEATURES
 
-diplomat.judgygptonline.com → The Diplomat (subdomain)
-```
+### Core Features:
+- [x] User authentication (register/login)
+- [x] Password reset via email
+- [x] JudgyGPT AI chat with sassy personality
+- [x] "Test Me" interactive landing page
+- [x] Challenge-based chat prompts
+- [x] 3-tier subscription system
+- [x] Real Stripe payment integration
+- [x] Chat history & sessions
+- [x] Mobile responsive design
 
-### Tech Stack
-- **Frontend:** React, Tailwind CSS, shadcn/ui
-- **Backend:** Python, FastAPI
-- **Database:** MongoDB
-- **AI:** OpenAI GPT-4o via Emergent LLM Key
+### UI/UX:
+- [x] Modern "Test Me" landing page
+- [x] Challenge cards in chat
+- [x] Navigation in chat header (Home, Share, etc.)
+- [x] User dropdown menu with quick actions
+- [x] Forgot password flow
+- [x] Payment success/error handling
 
-## Subscription Plans
+### Technical:
+- [x] Health check endpoints for deployment
+- [x] SEO meta tags & Open Graph
+- [x] Sitemap & robots.txt
+- [x] Stripe checkout sessions
+- [x] Resend email integration
+
+---
+
+## 📋 SUBSCRIPTION PLANS
+
 | Plan | Price | Messages/Day |
 |------|-------|--------------|
 | Judgement Lite | $0 | 5 |
-| Talk to Me Nice | $6.99 | 50 |
-| Bring the Whole Drama | $14.99 | Unlimited |
+| Talk to Me Nice | $6.99/mo | 50 |
+| Bring the Whole Drama | $14.99/mo | Unlimited |
 
-## Completed Features ✅
-- [x] User authentication (register/login)
-- [x] JudgyGPT AI chat with sassy personality
-- [x] **The Diplomat AI chat** (built into app!)
-- [x] Hub landing page with both AI personalities
-- [x] Custom logos for both JudgyGPT and The Diplomat
-- [x] Pricing page with 3 subscription tiers
-- [x] Subscription confirmation modal
-- [x] Subdomain support for diplomat.judgygptonline.com
-- [x] Responsive design
-- [x] SEO optimization (meta tags, Open Graph, sitemap)
-- [x] Navigation between both AIs
+---
 
-## Cloudflare DNS Settings
+## 🗂️ FILE STRUCTURE
+
 ```
-Type    Name        Target                              Proxy
-CNAME   @           [deployed-url].emergentagent.com    ✅ Proxied
-CNAME   www         judgygptonline.com                  ✅ Proxied  
-CNAME   diplomat    [deployed-url].emergentagent.com    ✅ Proxied
+/app
+├── backend/
+│   ├── server.py          # FastAPI backend
+│   ├── requirements.txt   # Python dependencies
+│   └── .env               # Environment variables
+├── frontend/
+│   ├── src/
+│   │   ├── pages/         # React pages
+│   │   ├── components/    # React components
+│   │   └── context/       # Auth context
+│   └── public/            # Static files
+└── memory/
+    ├── PRD.md             # This file
+    ├── MARKETING_STRATEGY.md
+    ├── WEEKLY_CALENDAR.md
+    ├── MARKETING_RESOURCES.md
+    ├── SOCIAL_MEDIA_KIT.md
+    └── GROWTH_PLAN.md
 ```
 
-## In Progress 🔄
+---
+
+## 🔧 ENVIRONMENT VARIABLES
+
+### Backend (.env):
+```
+MONGO_URL=mongodb://...
+DB_NAME=test_database
+EMERGENT_LLM_KEY=sk-emergent-...
+STRIPE_API_KEY=sk_test_...
+RESEND_API_KEY=re_...
+SENDER_EMAIL=onboarding@resend.dev
+```
+
+### Frontend (.env):
+```
+REACT_APP_BACKEND_URL=https://...
+```
+
+---
+
+## 📊 API ENDPOINTS
+
+### Auth:
+- POST `/api/auth/register`
+- POST `/api/auth/login`
+- POST `/api/auth/logout`
+- POST `/api/auth/forgot-password`
+- POST `/api/auth/reset-password`
+- GET `/api/auth/me`
+
+### Chat:
+- POST `/api/chat`
+- GET `/api/chat/{session_id}/history`
+- DELETE `/api/chat/{session_id}`
+
+### Subscriptions:
+- GET `/api/subscriptions/plans`
+- GET `/api/subscriptions/status`
+- POST `/api/subscriptions/subscribe`
+
+### Payments:
+- POST `/api/checkout/create`
+- GET `/api/checkout/status/{session_id}`
+- POST `/api/webhook/stripe`
+
+### Utility:
+- GET `/api/health`
+- GET `/health`
+- GET `/sitemap.xml`
+- GET `/robots.txt`
+
+---
+
+## 📈 MARKETING ASSETS
+
+Created marketing materials at:
+- `/app/memory/MARKETING_STRATEGY.md` - Complete 90-day strategy
+- `/app/memory/WEEKLY_CALENDAR.md` - Daily posting schedule
+- `/app/memory/MARKETING_RESOURCES.md` - Tools & templates
+- `/app/memory/SOCIAL_MEDIA_KIT.md` - Ready-to-post content
+- `/app/memory/GROWTH_PLAN.md` - Growth tracker
+
+---
+
+## 🎯 UPCOMING TASKS
+
+### P0 (Critical):
 - [ ] Deploy to production
-- [ ] Configure Cloudflare DNS
+- [ ] Configure production email (Resend)
+- [ ] Test full payment flow
 
-## Upcoming Tasks (P1)
-- [ ] Integrate real Stripe payments
-- [ ] Add Google Analytics
-- [ ] Implement "Witnesses" feature (live audience)
+### P1 (Important):
+- [ ] Google Analytics integration
+- [ ] Email verification on signup
+- [ ] User profile page
+- [ ] Chat export feature
 
-## Future Tasks (P2)
-- [ ] Real-time voice input/output
-- [ ] Merch store integration
-- [ ] Email marketing setup
-- [ ] Mobile app version
+### P2 (Nice to Have):
+- [ ] Multiple chat sessions
+- [ ] Admin dashboard
+- [ ] Voice input/output
 
-## Key Files
-- `/app/backend/server.py` - API & both AI personalities
-- `/app/frontend/src/pages/LandingPage.jsx` - Hub page
-- `/app/frontend/src/pages/ChatPage.jsx` - JudgyGPT chat
-- `/app/frontend/src/pages/DiplomatChatPage.jsx` - The Diplomat chat
-- `/app/frontend/src/pages/PricingPage.jsx` - Subscription plans
-- `/app/frontend/public/sitemap.xml` - SEO sitemap
-- `/app/memory/GROWTH_PLAN.md` - Marketing & growth guide
+---
 
-## AI Personalities
+## 📱 SOCIAL MEDIA ACCOUNTS TO CREATE
 
-### JudgyGPT
-- **Tone:** Sassy, bossy, playful roasts
-- **Style:** "Bless your heart" energy
-- **Emojis:** 🙄 💅 ✨
+- [ ] TikTok: @judgygpt
+- [ ] Instagram: @judgygptonline
+- [ ] Twitter/X: @judgygpt
+- [ ] YouTube: JudgyGPT
 
-### The Diplomat  
-- **Tone:** Warm, self-deprecating, wise
-- **Style:** "Dad friend who's been through stuff"
-- **Backstory:** JudgyGPT's ex-husband, married 7 years
-- **Emojis:** 😅 🤝 💪
-
-## External Resources
-- **The Diplomat (ChatGPT GPT):** https://chatgpt.com/g/g-6987ec32bdd48191b905193f05f3477e-the-diplomat
-- **Growth Plan:** /app/memory/GROWTH_PLAN.md
+---
 
 ## Last Updated
 December 2025
