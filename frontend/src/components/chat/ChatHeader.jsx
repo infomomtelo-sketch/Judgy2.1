@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -23,7 +23,12 @@ import {
   CreditCard, 
   Zap,
   Drama,
-  Users
+  Users,
+  Home,
+  Share2,
+  Download,
+  Sparkles,
+  TrendingUp
 } from 'lucide-react';
 
 // JudgyGPT Logo Image
@@ -36,6 +41,19 @@ const ChatHeader = ({ onNewChat, onToggleLeft, onToggleRight, leftPanelOpen, rig
   const handleLogout = async () => {
     await logout();
     navigate('/login');
+  };
+
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: 'JudgyGPT - Sassy AI Advice',
+        text: 'Get brutally honest advice from JudgyGPT! 💅',
+        url: 'https://judgygptonline.com'
+      });
+    } else {
+      navigator.clipboard.writeText('https://judgygptonline.com');
+      alert('Link copied to clipboard! 📋');
+    }
   };
 
   const getInitials = (name) => {
@@ -69,7 +87,7 @@ const ChatHeader = ({ onNewChat, onToggleLeft, onToggleRight, leftPanelOpen, rig
 
   return (
     <header className="flex items-center justify-between px-4 py-3 border-b border-border bg-card/80 backdrop-blur-sm">
-      {/* Left Toggle */}
+      {/* Left Controls */}
       <div className="flex items-center gap-2">
         <Button 
           variant="ghost" 
@@ -83,6 +101,18 @@ const ChatHeader = ({ onNewChat, onToggleLeft, onToggleRight, leftPanelOpen, rig
             <PanelLeftOpen className="w-5 h-5" />
           )}
         </Button>
+        
+        {/* Home Button */}
+        <Link to="/">
+          <Button 
+            variant="ghost" 
+            size="icon"
+            className="text-muted-foreground hover:text-foreground"
+            title="Home"
+          >
+            <Home className="w-5 h-5" />
+          </Button>
+        </Link>
       </div>
 
       {/* Center - Logo with Image */}
@@ -126,6 +156,17 @@ const ChatHeader = ({ onNewChat, onToggleLeft, onToggleRight, leftPanelOpen, rig
           title="New Chat"
         >
           <MessageSquarePlus className="w-5 h-5" />
+        </Button>
+
+        {/* Share Button */}
+        <Button 
+          variant="ghost" 
+          size="icon"
+          onClick={handleShare}
+          className="text-muted-foreground hover:text-foreground hidden sm:flex"
+          title="Share JudgyGPT"
+        >
+          <Share2 className="w-5 h-5" />
         </Button>
 
         {/* Right Panel Toggle */}
@@ -188,6 +229,12 @@ const ChatHeader = ({ onNewChat, onToggleLeft, onToggleRight, leftPanelOpen, rig
             
             <DropdownMenuSeparator />
             
+            {/* Quick Navigation */}
+            <DropdownMenuItem onClick={() => navigate('/')} className="cursor-pointer">
+              <Home className="w-4 h-4 mr-2" />
+              Home
+            </DropdownMenuItem>
+            
             <DropdownMenuItem onClick={() => navigate('/pricing')} className="cursor-pointer">
               <CreditCard className="w-4 h-4 mr-2" />
               {isPremium ? 'Manage Plan' : 'Upgrade'}
@@ -196,6 +243,16 @@ const ChatHeader = ({ onNewChat, onToggleLeft, onToggleRight, leftPanelOpen, rig
                   More sass
                 </Badge>
               )}
+            </DropdownMenuItem>
+            
+            <DropdownMenuItem onClick={() => navigate('/growth')} className="cursor-pointer">
+              <TrendingUp className="w-4 h-4 mr-2" />
+              Growth Plan
+            </DropdownMenuItem>
+            
+            <DropdownMenuItem onClick={handleShare} className="cursor-pointer">
+              <Share2 className="w-4 h-4 mr-2" />
+              Share JudgyGPT
             </DropdownMenuItem>
             
             <DropdownMenuSeparator />
