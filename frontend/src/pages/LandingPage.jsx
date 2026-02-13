@@ -57,27 +57,54 @@ const LandingPage = () => {
           </Badge>
           
           <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight">
-            Meet{' '}
-            <span className="text-gradient">JudgyGPT</span> 💅
+            Go ahead...{' '}
+            <span className="text-gradient">Test Me</span> 💅
           </h1>
           
           <p className="text-lg sm:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Your brutally honest AI bestie who tells it like it is. 
-            Get real advice with real personality - sass included, judgment-free zone optional.
+            Think you can stump me? Ask me anything. I dare you. 
+            Brutally honest advice with zero filter - your ego might not survive.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/chat">
               <Button size="lg" className="gradient-primary text-lg px-8 h-14 shadow-glow">
-                Start Chatting
+                Try Me, I Dare You
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </Link>
             <Link to="/pricing">
               <Button size="lg" variant="outline" className="text-lg px-8 h-14">
-                View Pricing
+                See What I Can Do
               </Button>
             </Link>
+          </div>
+          
+          {/* Challenge Prompts */}
+          <div className="mt-12 max-w-2xl mx-auto">
+            <p className="text-sm text-muted-foreground mb-4">🔥 Popular challenges:</p>
+            <div className="flex flex-wrap gap-2 justify-center">
+              <Link to="/chat">
+                <Badge variant="secondary" className="px-4 py-2 cursor-pointer hover:bg-primary/10 transition-colors">
+                  "Roast my life choices"
+                </Badge>
+              </Link>
+              <Link to="/chat">
+                <Badge variant="secondary" className="px-4 py-2 cursor-pointer hover:bg-primary/10 transition-colors">
+                  "Should I text my ex?"
+                </Badge>
+              </Link>
+              <Link to="/chat">
+                <Badge variant="secondary" className="px-4 py-2 cursor-pointer hover:bg-primary/10 transition-colors">
+                  "Give me tough love"
+                </Badge>
+              </Link>
+              <Link to="/chat">
+                <Badge variant="secondary" className="px-4 py-2 cursor-pointer hover:bg-primary/10 transition-colors">
+                  "Judge my decisions"
+                </Badge>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
