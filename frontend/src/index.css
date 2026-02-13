@@ -242,6 +242,157 @@ code {
     }
 }
 
+/* Animated Chat Background */
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes floatingOrbs {
+    0%, 100% {
+        transform: translate(0, 0) scale(1);
+    }
+    25% {
+        transform: translate(10px, -10px) scale(1.05);
+    }
+    50% {
+        transform: translate(-5px, 15px) scale(0.95);
+    }
+    75% {
+        transform: translate(-15px, -5px) scale(1.02);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 0.4;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+.chat-bg-animated {
+    position: relative;
+    background: linear-gradient(-45deg, 
+        hsl(199 89% 97%), 
+        hsl(175 77% 95%), 
+        hsl(210 40% 98%), 
+        hsl(280 60% 97%),
+        hsl(199 89% 96%));
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+}
+
+.chat-bg-animated::before {
+    content: '';
+    position: absolute;
+    top: 10%;
+    left: 10%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, hsl(199 89% 48% / 0.15) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: floatingOrbs 20s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.chat-bg-animated::after {
+    content: '';
+    position: absolute;
+    bottom: 20%;
+    right: 15%;
+    width: 250px;
+    height: 250px;
+    background: radial-gradient(circle, hsl(175 77% 43% / 0.12) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: floatingOrbs 25s ease-in-out infinite reverse;
+    pointer-events: none;
+}
+
+/* Dark mode animated background */
+.dark .chat-bg-animated {
+    background: linear-gradient(-45deg, 
+        hsl(220 30% 12%), 
+        hsl(240 25% 15%), 
+        hsl(200 35% 10%), 
+        hsl(280 30% 12%),
+        hsl(220 30% 14%));
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+}
+
+.dark .chat-bg-animated::before {
+    background: radial-gradient(circle, hsl(199 89% 48% / 0.1) 0%, transparent 70%);
+}
+
+.dark .chat-bg-animated::after {
+    background: radial-gradient(circle, hsl(280 60% 50% / 0.08) 0%, transparent 70%);
+}
+
+/* Message bubble styles with glassmorphism */
+.message-bubble-user {
+    background: linear-gradient(135deg, hsl(199 89% 48%), hsl(175 77% 43%));
+    color: white;
+    border-radius: 20px 20px 4px 20px;
+    box-shadow: 0 4px 15px hsl(199 89% 48% / 0.3);
+}
+
+.message-bubble-ai {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 20px 20px 20px 4px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.dark .message-bubble-ai {
+    background: rgba(30, 30, 40, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Extra floating elements */
+.floating-shape {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+.floating-shape-1 {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, hsl(199 89% 48% / 0.1), transparent);
+    top: 30%;
+    left: 5%;
+    animation: floatingOrbs 18s ease-in-out infinite;
+}
+
+.floating-shape-2 {
+    width: 150px;
+    height: 150px;
+    background: linear-gradient(135deg, hsl(280 60% 50% / 0.08), transparent);
+    top: 60%;
+    right: 10%;
+    animation: floatingOrbs 22s ease-in-out infinite 2s;
+}
+
+.floating-shape-3 {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, hsl(175 77% 43% / 0.1), transparent);
+    bottom: 20%;
+    left: 20%;
+    animation: floatingOrbs 15s ease-in-out infinite 1s;
+}
+
 @layer base {
     [data-debug-wrapper="true"] {
         display: contents !important;
