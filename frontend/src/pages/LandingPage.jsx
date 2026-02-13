@@ -193,17 +193,20 @@ const LandingPage = () => {
       <section className="py-20 px-4 bg-gradient-to-br from-primary/5 via-background to-primary/5">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="font-display text-3xl sm:text-4xl font-bold text-foreground mb-4">
-            Ready to Get Real Advice? 🔥
+            Still Scared? 😏
           </h2>
           <p className="text-xl text-muted-foreground mb-8">
-            Stop overthinking. Start chatting. Get the honest guidance you deserve.
+            Most people can't handle the truth. Can you?
           </p>
           <Link to="/chat">
-            <Button size="lg" className="gradient-primary px-8 h-14">
+            <Button size="lg" className="gradient-primary px-8 h-14 text-lg">
               <Gavel className="w-5 h-5 mr-2" />
-              Talk to JudgyGPT
+              Test Me Now
             </Button>
           </Link>
+          <p className="mt-4 text-sm text-muted-foreground">
+            Free to try • No filter • Real advice
+          </p>
         </div>
       </section>
 
