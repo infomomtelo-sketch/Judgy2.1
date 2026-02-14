@@ -505,10 +505,10 @@ const PricingPage = () => {
                 </div>
               </div>
 
-              <div className="flex items-start gap-2 p-3 bg-amber-500/10 border border-amber-500/20 rounded-lg">
-                <AlertCircle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
-                <p className="text-sm text-amber-700 dark:text-amber-400">
-                  <strong>Demo Mode:</strong> This is a preview environment. In production, you&apos;ll be redirected to secure Stripe checkout.
+              <div className="flex items-start gap-2 p-3 bg-green-500/10 border border-green-500/20 rounded-lg">
+                <Check className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
+                <p className="text-sm text-green-700 dark:text-green-400">
+                  Secure payment powered by Stripe. Cancel anytime.
                 </p>
               </div>
             </div>
