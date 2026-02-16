@@ -244,16 +244,20 @@ def verify_password(password: str, password_hash: str) -> bool:
 def generate_token() -> str:
     return secrets.token_urlsafe(32)
 
-# Token storage (in production, use Redis or JWT)
-active_tokens = {}
+# Token storage - NOW USING MONGODB for persistence across restarts
 
 async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)) -> Optional[User]:
     if not credentials:
         return None
     
     token = credentials.credentials
-    user_id = active_tokens.get(token)
     
+    # Look up token in database (persists across restarts)
+    token_doc = await db.auth_tokens.find_one({"token": token})
+    if not token_doc:
+        return None
+    
+    user_id = token_doc.get("user_id")
     if not user_id:
         return None
     
