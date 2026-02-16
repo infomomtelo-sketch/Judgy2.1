@@ -233,6 +233,38 @@ class PaymentTransaction(BaseModel):
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     metadata: Optional[Dict] = None
 
+# Community/Viral Feed Models
+class CommunityPost(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    post_type: str  # "roast", "redflag", "verdict"
+    user_id: Optional[str] = None  # None = anonymous
+    display_name: str = "Anonymous"
+    
+    # Original input (sanitized)
+    input_preview: str  # First 100 chars of input
+    
+    # AI Result
+    result_data: Dict  # The full AI response
+    
+    # Engagement
+    reactions: Dict = Field(default_factory=lambda: {"fire": 0, "skull": 0, "laugh": 0, "flag": 0})
+    reaction_users: Dict = Field(default_factory=dict)  # {reaction_type: [user_ids]}
+    view_count: int = 0
+    share_count: int = 0
+    
+    # Moderation
+    is_public: bool = True
+    is_featured: bool = False
+    reported: bool = False
+    
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class PostReaction(BaseModel):
+    post_id: str
+    reaction: str  # "fire", "skull", "laugh", "flag"
+
 # ============== HELPER FUNCTIONS ==============
 
 def hash_password(password: str) -> str:
