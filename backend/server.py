@@ -425,9 +425,13 @@ async def register(user_data: UserCreate):
     user_doc['created_at'] = user_doc['created_at'].isoformat()
     await db.users.insert_one(user_doc)
     
-    # Generate token
+    # Generate token and store in database (persists across restarts)
     token = generate_token()
-    active_tokens[token] = user.id
+    await db.auth_tokens.insert_one({
+        "token": token,
+        "user_id": user.id,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    })
     
     return TokenResponse(
         access_token=token,
@@ -451,9 +455,13 @@ async def login(credentials: UserLogin):
     
     user = User(**user_doc)
     
-    # Generate token
+    # Generate token and store in database (persists across restarts)
     token = generate_token()
-    active_tokens[token] = user.id
+    await db.auth_tokens.insert_one({
+        "token": token,
+        "user_id": user.id,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    })
     
     return TokenResponse(
         access_token=token,
@@ -469,8 +477,9 @@ async def login(credentials: UserLogin):
 
 @api_router.post("/auth/logout")
 async def logout(credentials: HTTPAuthorizationCredentials = Depends(security)):
-    if credentials and credentials.credentials in active_tokens:
-        del active_tokens[credentials.credentials]
+    if credentials:
+        # Remove token from database
+        await db.auth_tokens.delete_one({"token": credentials.credentials})
     return {"message": "Logged out successfully"}
 
 # Password reset tokens storage (in production, use Redis or DB)
