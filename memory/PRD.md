@@ -140,9 +140,12 @@ Created marketing materials at:
 ## 🎯 UPCOMING TASKS
 
 ### P0 (Critical):
+- [x] **FIXED: Payment Security Bug** (Feb 16, 2025) - Users could upgrade to paid plans without payment. Fixed by:
+  - `/api/subscriptions/subscribe` now rejects paid plans with 403 error
+  - Only `/api/checkout/create` -> Stripe -> webhook flow can upgrade to paid plans
+  - Added transaction ownership verification to checkout status endpoint
 - [ ] Deploy to production
 - [ ] Configure production email (Resend)
-- [ ] Test full payment flow
 
 ### P1 (Important):
 - [ ] Google Analytics integration
@@ -154,6 +157,7 @@ Created marketing materials at:
 - [ ] Multiple chat sessions
 - [ ] Admin dashboard
 - [ ] Voice input/output
+- [ ] Animated background for chat message bubbles
 
 ---
 
@@ -166,5 +170,20 @@ Created marketing materials at:
 
 ---
 
+## 🔒 SECURITY NOTES
+
+### Payment Flow (SECURE):
+1. User clicks "Subscribe" on paid plan
+2. Frontend calls `/api/checkout/create` → Returns Stripe checkout URL
+3. User completes payment on Stripe
+4. Stripe webhook calls `/api/webhook/stripe` OR user polls `/api/checkout/status`
+5. Backend verifies payment with Stripe API before updating subscription
+
+### Blocked Attack Vectors:
+- Direct calls to `/api/subscriptions/subscribe` with paid plan → 403 Forbidden
+- Checking another user's checkout status → 403 Forbidden
+
+---
+
 ## Last Updated
-December 2025
+February 16, 2025
