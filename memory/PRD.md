@@ -144,6 +144,12 @@ Created marketing materials at:
   - `/api/subscriptions/subscribe` now rejects paid plans with 403 error
   - Only `/api/checkout/create` -> Stripe -> webhook flow can upgrade to paid plans
   - Added transaction ownership verification to checkout status endpoint
+- [x] **FIXED: Token Persistence** (Feb 16, 2025) - Tokens now stored in MongoDB, survive server restarts
+- [x] **NEW: Viral Tools** (Feb 16, 2025) - Three shareable tools for viral growth:
+  - Roast My Bio (dating, LinkedIn, Instagram, Twitter)
+  - Red Flag Detector (conversation analysis)
+  - Who's Right? (argument verdict)
+  - All include shareable image cards + social sharing buttons
 - [ ] Deploy to production
 - [ ] Configure production email (Resend)
 
