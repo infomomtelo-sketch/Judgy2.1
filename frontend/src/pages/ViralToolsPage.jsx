@@ -314,6 +314,8 @@ const RedFlagDetectorTool = () => {
           type="redflag"
           title="Red Flag Report"
           icon={<AlertTriangle className="w-6 h-6 text-red-500" />}
+          inputPreview={conversation}
+          resultData={result}
         >
           <div className="space-y-4">
             <div className="flex items-center justify-between">
