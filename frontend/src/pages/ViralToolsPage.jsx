@@ -474,6 +474,8 @@ const WhosRightTool = () => {
           type="verdict"
           title="The Verdict Is In"
           icon={<Scale className="w-6 h-6 text-purple-500" />}
+          inputPreview={`Me: ${yourSide.substring(0, 50)}... vs Them: ${theirSide.substring(0, 50)}...`}
+          resultData={result}
         >
           <div className="space-y-4">
             <div className="text-center py-4">
