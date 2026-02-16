@@ -518,10 +518,12 @@ const WhosRightTool = () => {
 };
 
 // ==================== SHAREABLE CARD COMPONENT ====================
-const ShareableCard = React.forwardRef(({ type, title, icon, children }, ref) => {
+const ShareableCard = React.forwardRef(({ type, title, icon, children, inputPreview, resultData }, ref) => {
   const cardRef = useRef(null);
   const [copied, setCopied] = useState(false);
   const [downloading, setDownloading] = useState(false);
+  const [sharing, setSharing] = useState(false);
+  const [shared, setShared] = useState(false);
 
   const downloadImage = async () => {
     if (!cardRef.current) return;
@@ -566,6 +568,24 @@ const ShareableCard = React.forwardRef(({ type, title, icon, children }, ref) =>
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const shareToWall = async () => {
+    if (!inputPreview || !resultData) return;
+    setSharing(true);
+    try {
+      await axios.post(`${API}/community/share`, {
+        post_type: type,
+        input_preview: inputPreview,
+        result_data: resultData,
+        share_public: true,
+        display_name: "Anonymous"
+      });
+      setShared(true);
+    } catch (error) {
+      console.error('Share to wall failed:', error);
+    }
+    setSharing(false);
+  };
+
   return (
     <div className="space-y-4">
       {/* The shareable card */}
@@ -601,6 +621,31 @@ const ShareableCard = React.forwardRef(({ type, title, icon, children }, ref) =>
 
       {/* Share buttons */}
       <div className="flex flex-wrap gap-2">
+        {/* Share to Judgment Wall - Primary CTA */}
+        <Button 
+          onClick={shareToWall} 
+          className="gradient-primary"
+          size="sm" 
+          disabled={sharing || shared}
+        >
+          {sharing ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin mr-2" />
+              Posting...
+            </>
+          ) : shared ? (
+            <>
+              <Check className="w-4 h-4 mr-2" />
+              On the Wall!
+            </>
+          ) : (
+            <>
+              <Zap className="w-4 h-4 mr-2" />
+              Post to Wall
+            </>
+          )}
+        </Button>
+
         <Button onClick={downloadImage} variant="outline" size="sm" disabled={downloading}>
           {downloading ? (
             <Loader2 className="w-4 h-4 animate-spin mr-2" />
