@@ -150,8 +150,23 @@ Created marketing materials at:
   - Red Flag Detector (conversation analysis)
   - Who's Right? (argument verdict)
   - All include shareable image cards + social sharing buttons
+- [x] **NEW: Judgment Wall** (Feb 16, 2025) - Infinite scroll community feed at `/wall`:
+  - Users can "Post to Wall" anonymously from viral tools
+  - Hot/New/Top sorting + filter by type (roasts, flags, verdicts)
+  - Reaction system (🔥 💀 😂 🚩)
+  - View counts and engagement tracking
+  - Moderation/report system
 - [ ] Deploy to production
 - [ ] Configure production email (Resend)
+
+### Monetization Opportunities (Built-in hooks):
+| Free | Paid Potential |
+|------|----------------|
+| View feed | Priority posting / Boost |
+| 3 submissions/day | Unlimited submissions |
+| Basic reactions | See who reacted |
+| Ads between posts | Ad-free experience |
+| Anonymous only | Custom display name |
 
 ### P1 (Important):
 - [ ] Google Analytics integration
