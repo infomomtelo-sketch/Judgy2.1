@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Test the JudgyGPT landing page at https://ai-persona-hub-8.preview.emergentagent.com. The landing page should have: 1) Navigation with logo, nav links (How It Works, Pricing, Merch, FAQ), Sign In, Get Roasted Free button, 2) Hero Section with 'The AI That Keeps It Real 💅' headline, JudgyGPT logo, chat preview mockup, 3) How It Works section with 3 steps, 4) Features section, 5) Pricing with 3 plans, 6) Merch Section, 7) Testimonials with 3 review cards, 8) FAQ with expandable questions, 9) Footer with logo, links, emails. Test desktop view (1920x900), mobile view (390x844), navigation clicks, and scroll through all sections."
+user_problem_statement: "Test the JudgyGPT landing page at https://judgy-payment-fix.preview.emergentagent.com. The landing page should have: 1) Navigation with logo, nav links (How It Works, Pricing, Merch, FAQ), Sign In, Get Roasted Free button, 2) Hero Section with 'The AI That Keeps It Real 💅' headline, JudgyGPT logo, chat preview mockup, 3) How It Works section with 3 steps, 4) Features section, 5) Pricing with 3 plans, 6) Merch Section, 7) Testimonials with 3 review cards, 8) FAQ with expandable questions, 9) Footer with logo, links, emails. Test desktop view (1920x900), mobile view (390x844), navigation clicks, and scroll through all sections."
 
 frontend:
   - task: "Navigation section - Logo, nav links (How It Works, Pricing, Merch, FAQ), Sign In, Get Roasted Free button"
@@ -316,6 +316,6 @@ test_plan:
 
 agent_communication:
     - agent: "testing"
-      message: "Starting comprehensive testing of JudgyGPT landing page at https://ai-persona-hub-8.preview.emergentagent.com. Will test all sections: Navigation, Hero, How It Works, Features, Pricing, Merch, Testimonials, FAQ, Footer. Testing desktop (1920x900) and mobile (390x844) views, plus navigation functionality."
+      message: "Starting comprehensive testing of JudgyGPT landing page at https://judgy-payment-fix.preview.emergentagent.com. Will test all sections: Navigation, Hero, How It Works, Features, Pricing, Merch, Testimonials, FAQ, Footer. Testing desktop (1920x900) and mobile (390x844) views, plus navigation functionality."
     - agent: "testing"
       message: "✅ COMPREHENSIVE TESTING COMPLETE: JudgyGPT landing page testing completed successfully. 11 out of 12 tasks working perfectly. Successfully tested: 1) Navigation with all links and buttons functional, 2) Hero section with headline, logo, and chat preview, 3) How It Works 3-step process, 4) Features section with coming soon badges, 5) Pricing with all 3 tiers correctly displayed, 6) Merch section with 4 product categories, 7) Testimonials with 3 review cards and star ratings, 8) Footer with logo, links, and contact emails, 9) Desktop responsive design (1920x900), 10) Mobile responsive design (390x844), 11) Navigation functionality with correct routing. One minor issue found: FAQ expansion functionality not working properly - questions are visible but clicking doesn't expand answers."
