@@ -940,6 +940,185 @@ async def create_new_session(user: User = Depends(require_auth)):
     session_id = str(uuid.uuid4())
     return {"session_id": session_id}
 
+# ============== VIRAL TOOLS ROUTES ==============
+
+class RoastBioRequest(BaseModel):
+    bio: str
+    bio_type: str = "dating"
+
+class RedFlagRequest(BaseModel):
+    conversation: str
+
+class WhosRightRequest(BaseModel):
+    your_side: str
+    their_side: str
+    context: Optional[str] = ""
+
+@api_router.post("/viral/roast-bio")
+async def roast_bio(request: RoastBioRequest):
+    """Roast a user's bio and provide an improved version"""
+    try:
+        prompt = f"""You are JudgyGPT, a sarcastic but helpful AI. A user wants you to roast their {request.bio_type} bio.
+
+Their bio: "{request.bio}"
+
+Respond in EXACTLY this JSON format (no markdown, just raw JSON):
+{{
+    "roast": "Your sarcastic roast of the bio (2-3 sentences, be funny but not mean)",
+    "rating": <number 1-5 for cringe level>,
+    "improved_bio": "A genuinely better version of their bio that keeps their personality but is more engaging"
+}}"""
+
+        chat = LlmChat(
+            api_key=EMERGENT_LLM_KEY,
+            session_id=f"roast_{uuid.uuid4()}",
+            system_message="You are JudgyGPT. Respond only in valid JSON format."
+        ).with_model("openai", "gpt-4o")
+        
+        response = await chat.send_message(UserMessage(text=prompt))
+        
+        # Parse JSON response
+        import json
+        try:
+            # Clean up response if needed
+            cleaned = response.strip()
+            if cleaned.startswith("```"):
+                cleaned = cleaned.split("```")[1]
+                if cleaned.startswith("json"):
+                    cleaned = cleaned[4:]
+            result = json.loads(cleaned)
+        except:
+            result = {
+                "roast": "Your bio has the same energy as a 'live, laugh, love' sign at a garage sale. It's giving 'I peaked in 2015 and haven't updated my personality since.'",
+                "rating": 4,
+                "improved_bio": request.bio + " (But make it actually interesting next time 💅)"
+            }
+        
+        return result
+        
+    except Exception as e:
+        logging.error(f"Roast bio error: {str(e)}")
+        return {
+            "roast": "Even I'm speechless, and that's saying something. Your bio broke my sass circuits.",
+            "rating": 3,
+            "improved_bio": request.bio
+        }
+
+@api_router.post("/viral/red-flags")
+async def detect_red_flags(request: RedFlagRequest):
+    """Detect red flags in a conversation"""
+    try:
+        prompt = f"""You are JudgyGPT's Red Flag Detector. Analyze this conversation for red flags in dating/relationships.
+
+Conversation:
+"{request.conversation}"
+
+Respond in EXACTLY this JSON format (no markdown, just raw JSON):
+{{
+    "red_flags": ["red flag 1 with brief explanation", "red flag 2", "red flag 3"],
+    "danger_level": <number 1-10>,
+    "verdict": "One sentence summary verdict (e.g., 'Run.' or 'Proceed with caution' or 'Actually seems fine')",
+    "advice": "2-3 sentences of sassy but genuinely helpful advice"
+}}
+
+If there are no red flags, say so. Be honest but entertaining."""
+
+        chat = LlmChat(
+            api_key=EMERGENT_LLM_KEY,
+            session_id=f"redflag_{uuid.uuid4()}",
+            system_message="You are JudgyGPT's Red Flag Detector. Respond only in valid JSON format."
+        ).with_model("openai", "gpt-4o")
+        
+        response = await chat.send_message(UserMessage(text=prompt))
+        
+        import json
+        try:
+            cleaned = response.strip()
+            if cleaned.startswith("```"):
+                cleaned = cleaned.split("```")[1]
+                if cleaned.startswith("json"):
+                    cleaned = cleaned[4:]
+            result = json.loads(cleaned)
+        except:
+            result = {
+                "red_flags": ["Communication seems off", "Trust your gut on this one"],
+                "danger_level": 5,
+                "verdict": "Proceed with caution",
+                "advice": "When in doubt, trust your instincts. If something feels off, it probably is."
+            }
+        
+        return result
+        
+    except Exception as e:
+        logging.error(f"Red flag detection error: {str(e)}")
+        return {
+            "red_flags": ["Couldn't fully analyze - but if you're checking, that's a sign"],
+            "danger_level": 5,
+            "verdict": "Trust your gut",
+            "advice": "The fact that you're checking is telling. Trust your instincts."
+        }
+
+@api_router.post("/viral/whos-right")
+async def whos_right(request: WhosRightRequest):
+    """Judge who's right in an argument"""
+    try:
+        context_text = f"\nContext: {request.context}" if request.context else ""
+        
+        prompt = f"""You are JudgyGPT, the ultimate argument settler. Judge this dispute fairly but with your signature sass.
+
+Person A (the one asking) says: "{request.your_side}"
+
+Person B (the other party) says: "{request.their_side}"
+{context_text}
+
+Respond in EXACTLY this JSON format (no markdown, just raw JSON):
+{{
+    "winner": "You" or "Them" or "Both wrong" or "Both right" or something creative,
+    "your_score": <number 0-100 representing how right Person A is>,
+    "their_score": <number 0-100 representing how right Person B is>,
+    "verdict": "2-3 sentences explaining your judgment with sass",
+    "roast_both": "A short roast for both parties because let's be honest, everyone can improve"
+}}
+
+Be fair but entertaining. Sometimes the person asking is wrong - call it out!"""
+
+        chat = LlmChat(
+            api_key=EMERGENT_LLM_KEY,
+            session_id=f"verdict_{uuid.uuid4()}",
+            system_message="You are JudgyGPT, the sass-master judge. Respond only in valid JSON format."
+        ).with_model("openai", "gpt-4o")
+        
+        response = await chat.send_message(UserMessage(text=prompt))
+        
+        import json
+        try:
+            cleaned = response.strip()
+            if cleaned.startswith("```"):
+                cleaned = cleaned.split("```")[1]
+                if cleaned.startswith("json"):
+                    cleaned = cleaned[4:]
+            result = json.loads(cleaned)
+        except:
+            result = {
+                "winner": "It's complicated",
+                "your_score": 50,
+                "their_score": 50,
+                "verdict": "Both of you have points, but neither of you is fully right. Time for a real conversation.",
+                "roast_both": "Y'all both need to work on your communication skills. Just saying."
+            }
+        
+        return result
+        
+    except Exception as e:
+        logging.error(f"Who's right error: {str(e)}")
+        return {
+            "winner": "The drama",
+            "your_score": 50,
+            "their_score": 50,
+            "verdict": "I couldn't fully process this argument, but the real winner here is the drama itself.",
+            "roast_both": "Maybe try explaining it to each other instead of an AI? Just a thought."
+        }
+
 # Include the router in the main app
 app.include_router(api_router)
 
