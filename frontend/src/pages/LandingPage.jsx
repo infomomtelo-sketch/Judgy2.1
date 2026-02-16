@@ -109,6 +109,71 @@ const LandingPage = () => {
         </div>
       </section>
 
+      {/* Viral Tools Section */}
+      <section className="py-16 px-4 bg-gradient-to-r from-primary/5 via-accent/5 to-primary/5">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-10">
+            <Badge variant="default" className="mb-4 gradient-primary">
+              <Sparkles className="w-3 h-3 mr-1" />
+              NEW: Viral Tools
+            </Badge>
+            <h2 className="font-display text-3xl sm:text-4xl font-bold text-foreground mb-4">
+              Get Roasted. Get Real. Share the Chaos. 🔥
+            </h2>
+            <p className="text-muted-foreground max-w-xl mx-auto">
+              Three viral tools to expose the truth - and share the results with the world.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-3 gap-6">
+            <Link to="/tools" className="group">
+              <Card className="p-6 text-center hover:shadow-xl transition-all hover:-translate-y-1 border-2 border-transparent hover:border-orange-500/30 cursor-pointer h-full">
+                <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-orange-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <span className="text-2xl">🔥</span>
+                </div>
+                <h3 className="font-semibold text-foreground mb-2">Roast My Bio</h3>
+                <p className="text-sm text-muted-foreground">
+                  Paste your dating/LinkedIn bio. Get roasted AND fixed.
+                </p>
+              </Card>
+            </Link>
+
+            <Link to="/tools" className="group">
+              <Card className="p-6 text-center hover:shadow-xl transition-all hover:-translate-y-1 border-2 border-transparent hover:border-red-500/30 cursor-pointer h-full">
+                <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-red-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <span className="text-2xl">🚩</span>
+                </div>
+                <h3 className="font-semibold text-foreground mb-2">Red Flag Detector</h3>
+                <p className="text-sm text-muted-foreground">
+                  Paste that conversation. Find the flags you're ignoring.
+                </p>
+              </Card>
+            </Link>
+
+            <Link to="/tools" className="group">
+              <Card className="p-6 text-center hover:shadow-xl transition-all hover:-translate-y-1 border-2 border-transparent hover:border-purple-500/30 cursor-pointer h-full">
+                <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-purple-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <span className="text-2xl">⚖️</span>
+                </div>
+                <h3 className="font-semibold text-foreground mb-2">Who's Right?</h3>
+                <p className="text-sm text-muted-foreground">
+                  Submit your argument. Get the verdict. Settle it once and for all.
+                </p>
+              </Card>
+            </Link>
+          </div>
+
+          <div className="text-center mt-8">
+            <Link to="/tools">
+              <Button size="lg" className="gradient-primary">
+                Try the Viral Tools
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Features Section */}
       <section className="py-20 px-4 bg-muted/30">
         <div className="max-w-5xl mx-auto">
