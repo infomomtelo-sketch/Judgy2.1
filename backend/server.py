@@ -769,31 +769,31 @@ async def stripe_webhook(request: Request):
 
 @api_router.post("/subscriptions/subscribe")
 async def subscribe(data: SubscriptionUpdate, user: User = Depends(require_auth)):
-    """Subscribe to a plan - redirects to checkout for paid plans"""
+    """Subscribe to a plan - ONLY allows free plan. Paid plans MUST go through Stripe checkout."""
     if data.plan_id not in SUBSCRIPTION_PLANS:
         raise HTTPException(status_code=400, detail="Invalid plan")
     
     plan = SUBSCRIPTION_PLANS[data.plan_id]
     
-    # For free plan, just update
-    if data.plan_id == "free":
-        await db.users.update_one(
-            {"id": user.id},
-            {"$set": {
-                "subscription_plan": "free",
-                "subscription_status": "active",
-                "subscription_start": None,
-                "subscription_end": None
-            }}
+    # SECURITY: Only allow switching to FREE plan via this endpoint
+    # Paid plans MUST go through /checkout/create -> Stripe -> webhook
+    if data.plan_id != "free":
+        raise HTTPException(
+            status_code=403, 
+            detail="Paid subscriptions require payment. Please use the checkout flow."
         )
-        return {"message": "Switched to free plan", "plan": plan}
     
-    # For paid plans, indicate checkout is needed
-    return {
-        "message": "Checkout required",
-        "requires_checkout": True,
-        "plan": plan
-    }
+    # For free plan only - downgrade user
+    await db.users.update_one(
+        {"id": user.id},
+        {"$set": {
+            "subscription_plan": "free",
+            "subscription_status": "active",
+            "subscription_start": None,
+            "subscription_end": None
+        }}
+    )
+    return {"message": "Switched to free plan", "plan": plan}
 
 @api_router.post("/subscriptions/cancel")
 async def cancel_subscription(user: User = Depends(require_auth)):
