@@ -6,7 +6,7 @@ import ChatPage from "./pages/ChatPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import PricingPage from "./pages/PricingPage";
-import GrowthPlanPage from "./pages/GrowthPlanPage";
+import GrowthHubPage from "./pages/GrowthHubPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import ViralToolsPage from "./pages/ViralToolsPage";
