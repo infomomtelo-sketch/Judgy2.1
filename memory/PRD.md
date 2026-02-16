@@ -171,14 +171,13 @@ Created marketing materials at:
 ### P1 (Important):
 - [ ] Google Analytics integration
 - [ ] Email verification on signup
-- [ ] User profile page
-- [ ] Chat export feature
+- [ ] User profile/account page
+- [ ] Cancel subscription UI
 
 ### P2 (Nice to Have):
+- [ ] Animated chat bubbles
 - [ ] Multiple chat sessions
 - [ ] Admin dashboard
-- [ ] Voice input/output
-- [ ] Animated background for chat message bubbles
 
 ---
 
