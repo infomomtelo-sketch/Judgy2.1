@@ -671,21 +671,30 @@ async def create_checkout_session(request: CreateCheckoutRequest, http_request: 
 async def get_checkout_status(session_id: str, http_request: Request, user: User = Depends(require_auth)):
     """Check the status of a checkout session"""
     try:
+        # SECURITY: First verify this transaction belongs to the requesting user
+        transaction = await db.payment_transactions.find_one({"session_id": session_id})
+        
+        if not transaction:
+            raise HTTPException(status_code=404, detail="Transaction not found")
+        
+        # SECURITY: Ensure user can only check their own transactions
+        if transaction.get("user_id") != user.id:
+            raise HTTPException(status_code=403, detail="Unauthorized access to this transaction")
+        
         webhook_url = f"{str(http_request.base_url).rstrip('/')}/api/webhook/stripe"
         stripe_checkout = StripeCheckout(api_key=STRIPE_API_KEY, webhook_url=webhook_url)
         
+        # Get REAL status from Stripe (not user input)
         status = await stripe_checkout.get_checkout_status(session_id)
         
-        # Update transaction record
-        transaction = await db.payment_transactions.find_one({"session_id": session_id})
-        
-        if status.payment_status == "paid" and transaction and transaction.get("payment_status") != "paid":
-            # Payment successful - update user subscription
+        # Only update if Stripe confirms payment AND transaction not already processed
+        if status.payment_status == "paid" and transaction.get("payment_status") != "paid":
             now = datetime.now(timezone.utc)
             end_date = now + timedelta(days=30)
             
             plan_id = transaction.get("plan_id", "standard")
             
+            # Update user subscription
             await db.users.update_one(
                 {"id": user.id},
                 {"$set": {
@@ -696,7 +705,7 @@ async def get_checkout_status(session_id: str, http_request: Request, user: User
                 }}
             )
             
-            # Update transaction
+            # Mark transaction as completed
             await db.payment_transactions.update_one(
                 {"session_id": session_id},
                 {"$set": {
@@ -705,6 +714,8 @@ async def get_checkout_status(session_id: str, http_request: Request, user: User
                     "updated_at": now.isoformat()
                 }}
             )
+            
+            logging.info(f"Subscription activated for user {user.id}, plan: {plan_id}")
         
         return {
             "status": status.status,
@@ -713,6 +724,8 @@ async def get_checkout_status(session_id: str, http_request: Request, user: User
             "currency": status.currency
         }
         
+    except HTTPException:
+        raise
     except Exception as e:
         logging.error(f"Checkout status error: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Status check error: {str(e)}")
