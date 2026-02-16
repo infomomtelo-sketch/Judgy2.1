@@ -1151,6 +1151,162 @@ Be fair but entertaining. Sometimes the person asking is wrong - call it out!"""
             "roast_both": "Maybe try explaining it to each other instead of an AI? Just a thought."
         }
 
+# ============== COMMUNITY FEED ROUTES ==============
+
+@api_router.post("/community/posts")
+async def create_community_post(
+    post_type: str,
+    input_preview: str,
+    result_data: Dict,
+    share_public: bool = True,
+    display_name: str = "Anonymous",
+    user: Optional[User] = Depends(get_current_user)
+):
+    """Create a new community post from viral tool result"""
+    # Sanitize input preview (first 150 chars, no personal info)
+    sanitized_preview = input_preview[:150].strip()
+    
+    post = CommunityPost(
+        post_type=post_type,
+        user_id=user.id if user else None,
+        display_name=display_name if display_name else "Anonymous",
+        input_preview=sanitized_preview,
+        result_data=result_data,
+        is_public=share_public
+    )
+    
+    post_doc = post.model_dump()
+    post_doc['created_at'] = post_doc['created_at'].isoformat()
+    await db.community_posts.insert_one(post_doc)
+    
+    return {"id": post.id, "message": "Posted to community!"}
+
+class ShareToFeedRequest(BaseModel):
+    post_type: str
+    input_preview: str
+    result_data: Dict
+    share_public: bool = True
+    display_name: str = "Anonymous"
+
+@api_router.post("/community/share")
+async def share_to_community(
+    request: ShareToFeedRequest,
+    user: Optional[User] = Depends(get_current_user)
+):
+    """Share a viral tool result to the community feed"""
+    sanitized_preview = request.input_preview[:150].strip()
+    
+    post = CommunityPost(
+        post_type=request.post_type,
+        user_id=user.id if user else None,
+        display_name=request.display_name if request.display_name else "Anonymous",
+        input_preview=sanitized_preview,
+        result_data=request.result_data,
+        is_public=request.share_public
+    )
+    
+    post_doc = post.model_dump()
+    post_doc['created_at'] = post_doc['created_at'].isoformat()
+    await db.community_posts.insert_one(post_doc)
+    
+    return {"id": post.id, "message": "Shared to the Judgment Wall!"}
+
+@api_router.get("/community/feed")
+async def get_community_feed(
+    page: int = 1,
+    limit: int = 20,
+    sort: str = "hot",  # "hot", "new", "top"
+    post_type: Optional[str] = None  # filter by type
+):
+    """Get community feed with infinite scroll pagination"""
+    skip = (page - 1) * limit
+    
+    # Build query
+    query = {"is_public": True, "reported": False}
+    if post_type:
+        query["post_type"] = post_type
+    
+    # Sort options
+    if sort == "new":
+        sort_key = [("created_at", -1)]
+    elif sort == "top":
+        # Sort by total reactions
+        sort_key = [("view_count", -1), ("created_at", -1)]
+    else:  # "hot" - combination of recency and engagement
+        sort_key = [("is_featured", -1), ("created_at", -1)]
+    
+    posts = await db.community_posts.find(
+        query,
+        {"_id": 0}
+    ).sort(sort_key).skip(skip).limit(limit).to_list(limit)
+    
+    # Get total count for pagination
+    total = await db.community_posts.count_documents(query)
+    
+    return {
+        "posts": posts,
+        "page": page,
+        "limit": limit,
+        "total": total,
+        "has_more": skip + len(posts) < total
+    }
+
+@api_router.post("/community/react/{post_id}")
+async def react_to_post(
+    post_id: str,
+    reaction: PostReaction,
+    user: Optional[User] = Depends(get_current_user)
+):
+    """Add reaction to a post"""
+    valid_reactions = ["fire", "skull", "laugh", "flag"]
+    if reaction.reaction not in valid_reactions:
+        raise HTTPException(status_code=400, detail="Invalid reaction type")
+    
+    # Check if post exists
+    post = await db.community_posts.find_one({"id": post_id})
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found")
+    
+    # Update reaction count
+    update_key = f"reactions.{reaction.reaction}"
+    await db.community_posts.update_one(
+        {"id": post_id},
+        {"$inc": {update_key: 1}}
+    )
+    
+    # Increment view count too
+    await db.community_posts.update_one(
+        {"id": post_id},
+        {"$inc": {"view_count": 1}}
+    )
+    
+    return {"message": "Reaction added!", "reaction": reaction.reaction}
+
+@api_router.get("/community/trending")
+async def get_trending_posts(limit: int = 5):
+    """Get trending/featured posts for homepage"""
+    posts = await db.community_posts.find(
+        {"is_public": True, "reported": False},
+        {"_id": 0}
+    ).sort([
+        ("is_featured", -1),
+        ("reactions.fire", -1),
+        ("created_at", -1)
+    ]).limit(limit).to_list(limit)
+    
+    return posts
+
+@api_router.post("/community/report/{post_id}")
+async def report_post(post_id: str):
+    """Report a post for moderation"""
+    result = await db.community_posts.update_one(
+        {"id": post_id},
+        {"$set": {"reported": True}}
+    )
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Post not found")
+    return {"message": "Post reported for review"}
+
 # Include the router in the main app
 app.include_router(api_router)
 
