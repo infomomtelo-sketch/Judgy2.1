@@ -203,6 +203,8 @@ const RoastMyBioTool = () => {
           type="roast"
           title="Bio Roast Results"
           icon={<Flame className="w-6 h-6 text-orange-500" />}
+          inputPreview={bio}
+          resultData={result}
         >
           <div className="space-y-4">
             <div>
