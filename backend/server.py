@@ -1307,6 +1307,209 @@ async def report_post(post_id: str):
         raise HTTPException(status_code=404, detail="Post not found")
     return {"message": "Post reported for review"}
 
+# ============== GROWTH HUB ROUTES ==============
+
+class ContentGeneratorRequest(BaseModel):
+    content_type: str  # caption, hook, thread, bio
+    topic: str
+    platform: str  # tiktok, instagram, twitter, linkedin
+
+class CalendarRequest(BaseModel):
+    weeks: int = 1
+
+class ViralIdeasRequest(BaseModel):
+    category: str = "all"
+
+class CoachRequest(BaseModel):
+    message: str
+    context: str = ""
+
+@api_router.post("/growth/generate-content")
+async def generate_content(request: ContentGeneratorRequest):
+    """AI-powered content generator for social media"""
+    try:
+        prompt = f"""You are a viral social media content expert for JudgyGPT - a sassy AI that roasts bios, detects red flags, and settles arguments.
+
+Generate a {request.content_type} for {request.platform} about: {request.topic}
+
+The content should be:
+- Engaging and shareable
+- Have a hook that stops the scroll
+- Include a call-to-action to try JudgyGPT
+- Match the platform's style ({request.platform})
+
+Respond in JSON format:
+{{
+    "content": "The actual content/caption/hook",
+    "hashtags": ["#hashtag1", "#hashtag2", "#hashtag3", "#hashtag4", "#hashtag5"],
+    "tips": ["posting tip 1", "posting tip 2"]
+}}"""
+
+        chat = LlmChat(
+            api_key=EMERGENT_LLM_KEY,
+            session_id=f"content_{uuid.uuid4()}",
+            system_message="You are a viral content expert. Respond only in valid JSON."
+        ).with_model("openai", "gpt-4o")
+        
+        response = await chat.send_message(UserMessage(text=prompt))
+        
+        import json
+        try:
+            cleaned = response.strip()
+            if cleaned.startswith("```"):
+                cleaned = cleaned.split("```")[1]
+                if cleaned.startswith("json"):
+                    cleaned = cleaned[4:]
+            return json.loads(cleaned)
+        except:
+            return {
+                "content": f"🔥 POV: You just discovered the sassiest AI on the internet\n\nI asked @JudgyGPT to roast my {request.topic} and I'm SCREAMING 😭\n\nTry it yourself 👉 judgygptonline.com",
+                "hashtags": ["#judgygpt", "#viral", "#fyp", "#relatable", "#aitools"],
+                "tips": ["Post during peak hours (7-9 PM)", "Engage with comments in first hour"]
+            }
+    except Exception as e:
+        logging.error(f"Content generation error: {str(e)}")
+        return {
+            "content": f"Ready to get roasted? 🔥\n\nJudgyGPT just told me the truth about my {request.topic} and honestly... they're not wrong 💀\n\nLink in bio to try it yourself!",
+            "hashtags": ["#judgygpt", "#viral", "#fyp"],
+            "tips": ["Be authentic", "Share your reaction"]
+        }
+
+@api_router.post("/growth/generate-calendar")
+async def generate_calendar(request: CalendarRequest):
+    """Generate a content calendar"""
+    try:
+        prompt = f"""Create a {request.weeks}-week social media content calendar for JudgyGPT - an AI app with 3 viral tools:
+1. Roast My Bio - roasts dating/LinkedIn bios
+2. Red Flag Detector - finds red flags in conversations
+3. Who's Right - settles arguments
+
+Generate a posting schedule with specific content ideas for each day.
+
+Respond in JSON:
+{{
+    "schedule": [
+        {{"day": "Monday", "content": "content idea", "platform": "TikTok", "time": "7 PM"}},
+        ...
+    ]
+}}"""
+
+        chat = LlmChat(
+            api_key=EMERGENT_LLM_KEY,
+            session_id=f"calendar_{uuid.uuid4()}",
+            system_message="You are a social media strategist. Respond only in valid JSON."
+        ).with_model("openai", "gpt-4o")
+        
+        response = await chat.send_message(UserMessage(text=prompt))
+        
+        import json
+        try:
+            cleaned = response.strip()
+            if cleaned.startswith("```"):
+                cleaned = cleaned.split("```")[1]
+                if cleaned.startswith("json"):
+                    cleaned = cleaned[4:]
+            return json.loads(cleaned)
+        except:
+            return {
+                "schedule": [
+                    {"day": "Monday", "content": "🔥 Roast My Bio showcase - share a funny roast result", "platform": "TikTok", "time": "7 PM"},
+                    {"day": "Tuesday", "content": "🚩 Red Flag Tuesday - analyze a viral text conversation", "platform": "Instagram Reels", "time": "12 PM"},
+                    {"day": "Wednesday", "content": "⚖️ Who's Right Wednesday - settle a debate", "platform": "Twitter", "time": "6 PM"},
+                    {"day": "Thursday", "content": "💀 Throwback cringe - roast your own old bio", "platform": "TikTok", "time": "8 PM"},
+                    {"day": "Friday", "content": "🎭 Dating horror stories - red flag compilation", "platform": "Instagram", "time": "7 PM"},
+                    {"day": "Saturday", "content": "📊 Week's best roasts from the Wall", "platform": "All platforms", "time": "2 PM"},
+                    {"day": "Sunday", "content": "💬 Q&A / Behind the scenes", "platform": "Stories", "time": "5 PM"}
+                ]
+            }
+    except Exception as e:
+        logging.error(f"Calendar generation error: {str(e)}")
+        return {"schedule": []}
+
+@api_router.post("/growth/viral-ideas")
+async def generate_viral_ideas(request: ViralIdeasRequest):
+    """Generate viral content ideas"""
+    try:
+        prompt = f"""Generate 6 viral content ideas for JudgyGPT {"focusing on " + request.category if request.category != "all" else ""}.
+
+JudgyGPT tools:
+- Roast My Bio: AI roasts dating/LinkedIn bios
+- Red Flag Detector: Finds red flags in text conversations  
+- Who's Right: AI settles arguments between people
+
+Each idea should have high viral potential and be easy to create.
+
+Respond in JSON:
+{{
+    "ideas": [
+        {{
+            "title": "catchy title in quotes",
+            "format": "TikTok/Reel/Carousel/Thread",
+            "potential": "Very High/High/Medium",
+            "description": "brief description of the content"
+        }}
+    ]
+}}"""
+
+        chat = LlmChat(
+            api_key=EMERGENT_LLM_KEY,
+            session_id=f"ideas_{uuid.uuid4()}",
+            system_message="You are a viral content strategist. Respond only in valid JSON."
+        ).with_model("openai", "gpt-4o")
+        
+        response = await chat.send_message(UserMessage(text=prompt))
+        
+        import json
+        try:
+            cleaned = response.strip()
+            if cleaned.startswith("```"):
+                cleaned = cleaned.split("```")[1]
+                if cleaned.startswith("json"):
+                    cleaned = cleaned[4:]
+            return json.loads(cleaned)
+        except:
+            return {
+                "ideas": [
+                    {"title": "\"I asked AI to roast my dating profile\"", "format": "TikTok/Reel", "potential": "High", "description": "Screen record getting your bio roasted with genuine reactions"},
+                    {"title": "\"Red flags I ignored for 6 months\"", "format": "Carousel/Thread", "potential": "Very High", "description": "Use red flag detector on old conversations"},
+                    {"title": "\"My mom vs my dad: Who's right?\"", "format": "TikTok", "potential": "Medium", "description": "Family argument settled by AI"},
+                    {"title": "\"LinkedIn bros are WILD\"", "format": "Compilation", "potential": "High", "description": "Roast collection of cringe LinkedIn bios"},
+                    {"title": "\"I let AI judge my situationship\"", "format": "Story time", "potential": "Very High", "description": "Use all 3 tools on one dating situation"},
+                    {"title": "\"Rating celebrity dating profiles\"", "format": "Series", "potential": "High", "description": "Fake celebrity bios getting roasted"}
+                ]
+            }
+    except Exception as e:
+        logging.error(f"Ideas generation error: {str(e)}")
+        return {"ideas": []}
+
+@api_router.post("/growth/coach")
+async def growth_coach(request: CoachRequest):
+    """AI Growth Coach chat"""
+    try:
+        prompt = f"""You are JudgyGPT's AI Growth Coach - a sassy but helpful marketing expert who helps users grow their audience using viral tools.
+
+The user is building JudgyGPT which has 3 viral tools:
+1. Roast My Bio - roasts dating/LinkedIn/Instagram bios
+2. Red Flag Detector - finds red flags in text conversations
+3. Who's Right? - AI settles arguments/disputes
+
+User's question: {request.message}
+
+Provide specific, actionable advice with your signature sass. Keep responses concise (2-3 paragraphs max). Include specific tactics they can use TODAY."""
+
+        chat = LlmChat(
+            api_key=EMERGENT_LLM_KEY,
+            session_id=f"coach_{uuid.uuid4()}",
+            system_message="You are a sassy but helpful growth coach. Be specific and actionable."
+        ).with_model("openai", "gpt-4o")
+        
+        response = await chat.send_message(UserMessage(text=prompt))
+        return {"response": response}
+        
+    except Exception as e:
+        logging.error(f"Coach error: {str(e)}")
+        return {"response": "Great question! Focus on creating content that showcases the tools in action - screen record yourself getting roasted, react to red flags in real-time, settle actual debates. The more authentic and reactive your content, the better it performs. What specific platform are you focusing on?"}
+
 # Include the router in the main app
 app.include_router(api_router)
 
