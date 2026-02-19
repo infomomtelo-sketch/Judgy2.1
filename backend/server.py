@@ -1518,36 +1518,41 @@ SITEMAP_XML = """<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://judgygptonline.com/</loc>
-    <lastmod>2025-01-01</lastmod>
+    <lastmod>2025-02-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://judgygptonline.com/chat</loc>
-    <lastmod>2025-01-01</lastmod>
+    <lastmod>2025-02-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://judgygptonline.com/diplomat</loc>
-    <lastmod>2025-01-01</lastmod>
+    <loc>https://judgygptonline.com/tools</loc>
+    <lastmod>2025-02-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://judgygptonline.com/wall</loc>
+    <lastmod>2025-02-16</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://judgygptonline.com/pricing</loc>
-    <lastmod>2025-01-01</lastmod>
+    <lastmod>2025-02-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://judgygptonline.com/growth</loc>
-    <lastmod>2025-01-01</lastmod>
-    <changefreq>monthly</changefreq>
+    <lastmod>2025-02-16</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
-  <url>
-    <loc>https://diplomat.judgygptonline.com/</loc>
+</urlset>"""
     <lastmod>2025-01-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
