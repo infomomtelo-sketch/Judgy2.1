@@ -1553,11 +1553,6 @@ SITEMAP_XML = """<?xml version="1.0" encoding="UTF-8"?>
     <priority>0.7</priority>
   </url>
 </urlset>"""
-    <lastmod>2025-01-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-</urlset>"""
 
 @app.get("/sitemap.xml")
 async def get_sitemap():
