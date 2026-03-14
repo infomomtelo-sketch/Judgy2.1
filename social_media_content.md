@@ -15,7 +15,7 @@ No sugarcoating. No fake positivity. Just brutal honesty.
 
 Think you can handle it? 
 
-Try JudgyGPT → judgygptonline.com
+Try JudgyGPT → thejudgy.com
 
 Warning: Your ego might not survive 💀
 ```
@@ -29,7 +29,7 @@ No "follow your heart"
 
 Just pure, unfiltered judgment.
 
-judgygptonline.com
+thejudgy.com
 
 (it's free to try, your pride isn't)
 ```
@@ -42,7 +42,7 @@ Normal AI: "Consider your feelings and communicate openly"
 
 JudgyGPT: "Absolutely not. Delete their number. Touch grass. Get a hobby."
 
-This is the AI we needed → judgygptonline.com
+This is the AI we needed → thejudgy.com
 ```
 
 **Post 4 - Viral Tool Promo**
@@ -51,7 +51,7 @@ New feature just dropped 🔥
 
 RED FLAG DETECTOR - Paste any text conversation and find out if you're being gaslit
 
-judgygptonline.com/tools
+thejudgy.com/tools
 
 Share your results. Expose the chaos. 🚩
 ```
@@ -62,7 +62,7 @@ Everyone's getting roasted by JudgyGPT and I'm just sitting here watching the ch
 
 "Roast My Bio" is breaking people 😭
 
-Try it free → judgygptonline.com/tools
+Try it free → thejudgy.com/tools
 ```
 
 ---
@@ -79,7 +79,7 @@ B) Tells you what you NEED to hear
 
 If you picked B, you're ready for JudgyGPT
 
-judgygptonline.com
+thejudgy.com
 ```
 
 **Post 7 - Relatable Content**
@@ -93,7 +93,7 @@ Things JudgyGPT has told me this week:
 
 I didn't ask to be personally attacked but here we are
 
-judgygptonline.com
+thejudgy.com
 ```
 
 **Post 8 - User Testimonial Style**
@@ -104,7 +104,7 @@ JudgyGPT: *proceeds to end my entire existence*
 
 Me: "...fair"
 
-Get your reality check → judgygptonline.com
+Get your reality check → thejudgy.com
 ```
 
 ---
@@ -124,7 +124,7 @@ JudgyGPT doesn't care about your fairytale 💀
 
 Get brutally honest AI advice that actually helps (even if it hurts a little)
 
-Link in bio → judgygptonline.com
+Link in bio → thejudgy.com
 
 #AI #ChatGPT #Funny #Roasted #Dating #Advice
 ```
@@ -139,7 +139,7 @@ ChatGPT: "Communication is key. Express your feelings openly and honestly."
 
 JudgyGPT: "He's not busy. He's not confused. He's just not that into you. Next."
 
-[END CARD]: "Get the truth at judgygptonline.com"
+[END CARD]: "Get the truth at thejudgy.com"
 ```
 
 ### Post 3 - Story Series (5 slides)
@@ -148,7 +148,7 @@ Story 1: "Should I get back with my ex?" 🤔
 Story 2: [Poll] Yes / No
 Story 3: "What JudgyGPT says:" 
 Story 4: "No. Delete their number. Block them. Go to therapy. Adopt a plant. The plant will treat you better."
-Story 5: "Get YOUR brutal advice → judgygptonline.com" [Link sticker]
+Story 5: "Get YOUR brutal advice → thejudgy.com" [Link sticker]
 ```
 
 ---
@@ -171,7 +171,7 @@ JudgyGPT is different. It tells you what you NEED to hear.
 
 Sometimes growth requires uncomfortable truths.
 
-Check it out: judgygptonline.com
+Check it out: thejudgy.com
 
 #AI #Startup #Entrepreneurship #ToughLove
 ```
@@ -190,7 +190,7 @@ Features:
 → "Red Flag Detector" - analyze any conversation
 → "Who's Right?" - settle arguments with AI judgment
 
-Try it free: judgygptonline.com
+Try it free: thejudgy.com
 
 What's the most honest feedback you've ever received?
 ```
@@ -264,7 +264,7 @@ Caption: "I've never felt so attacked and helped at the same time 😭"
 ```
 JudgyGPT - The AI that tells you what you NEED to hear 💀
 No sugarcoating. No fake positivity. Just brutal honesty.
-Try free → judgygptonline.com
+Try free → thejudgy.com
 ```
 
 **Instagram:**
@@ -279,7 +279,7 @@ Your brutally honest AI bestie 💀
 **TikTok:**
 ```
 The AI that roasts you for free 💀
-Link = judgygptonline.com
+Link = thejudgy.com
 ```
 
 ---
