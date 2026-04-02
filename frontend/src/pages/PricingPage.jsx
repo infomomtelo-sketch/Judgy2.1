@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import {
   Dialog,
   DialogContent,
@@ -12,14 +10,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Check, ArrowLeft, Loader2, Crown, Zap, Drama, Shield, Clock, Headphones, MessageSquare, History, Sparkles, CreditCard, AlertCircle } from 'lucide-react';
+import { Check, ArrowLeft, Loader2, ArrowRight, Shield, Zap, AlertCircle } from 'lucide-react';
 import axios from 'axios';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
-
-// JudgyGPT Logo Image
-const JUDGY_LOGO = "https://customer-assets.emergentagent.com/job_chat-assist-26/artifacts/ze789p6s_7DEC28F8-D66A-46B0-99EA-84F4FF846DBB.png";
 
 const PricingPage = () => {
   const [plans, setPlans] = useState([]);
@@ -33,7 +28,6 @@ const PricingPage = () => {
   const { isAuthenticated, user, subscribe, refreshSubscription } = useAuth();
   const navigate = useNavigate();
 
-  // Check for payment success on page load
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const sessionId = urlParams.get('session_id');
@@ -46,7 +40,6 @@ const PricingPage = () => {
     }
 
     if (sessionId && success) {
-      // Poll for payment status
       pollPaymentStatus(sessionId);
     }
   }, []);
@@ -75,7 +68,6 @@ const PricingPage = () => {
         return;
       }
 
-      // Continue polling
       setTimeout(() => pollPaymentStatus(sessionId, attempts + 1), pollInterval);
     } catch (error) {
       console.error('Error checking payment status:', error);
@@ -107,13 +99,11 @@ const PricingPage = () => {
 
     if (user?.subscription_plan === plan.id) return;
 
-    // For free plan, subscribe directly
     if (plan.id === 'free') {
       handleConfirmSubscribe(plan);
       return;
     }
 
-    // For paid plans, show confirmation modal
     setSelectedPlan(plan);
     setShowConfirmModal(true);
   };
@@ -131,17 +121,14 @@ const PricingPage = () => {
         return;
       }
 
-      // For paid plans, create Stripe checkout session
       const response = await axios.post(`${API}/checkout/create`, {
         plan_id: planToUse.id,
         origin_url: window.location.origin
       });
 
       if (response.data.url) {
-        // Redirect to Stripe Checkout
         window.location.href = response.data.url;
       } else if (response.data.success) {
-        // Free plan success
         navigate('/chat');
       }
     } catch (error) {
@@ -153,75 +140,44 @@ const PricingPage = () => {
     }
   };
 
-  const getPlanIcon = (planId) => {
-    switch (planId) {
-      case 'premium':
-        return <Drama className="w-7 h-7" />;
-      case 'standard':
-        return <Crown className="w-7 h-7" />;
-      default:
-        return <Zap className="w-7 h-7" />;
-    }
-  };
-
-  const getPlanColor = (planId) => {
-    switch (planId) {
-      case 'premium':
-        return 'bg-gradient-to-br from-pink-500 to-purple-600 text-white';
-      case 'standard':
-        return 'gradient-primary text-primary-foreground shadow-glow';
-      default:
-        return 'bg-muted text-muted-foreground';
-    }
-  };
-
-  const getFeatureIcon = (feature) => {
-    const lowerFeature = feature.toLowerCase();
-    if (lowerFeature.includes('unlimited') || lowerFeature.includes('messages') || lowerFeature.includes('roasts')) return <MessageSquare className="w-4 h-4" />;
-    if (lowerFeature.includes('priority') || lowerFeature.includes('vip')) return <Zap className="w-4 h-4" />;
-    if (lowerFeature.includes('history')) return <History className="w-4 h-4" />;
-    if (lowerFeature.includes('support')) return <Headphones className="w-4 h-4" />;
-    if (lowerFeature.includes('drama') || lowerFeature.includes('nice')) return <Sparkles className="w-4 h-4" />;
-    return <Check className="w-4 h-4" />;
-  };
-
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      <div className="min-h-screen flex items-center justify-center bg-[#0A0A0A]">
+        <Loader2 className="w-8 h-8 animate-spin text-[#FF2E4C]" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20">
+    <div className="min-h-screen bg-[#0A0A0A] text-white">
       {/* Header */}
-      <header className="border-b border-border bg-card/80 backdrop-blur-sm sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+      <header className="glass-header sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-primary shadow-glow">
-              <img 
-                src={JUDGY_LOGO} 
-                alt="JudgyGPT" 
-                className="w-full h-full object-cover"
-              />
+            <div className="w-10 h-10 bg-[#FF2E4C] flex items-center justify-center">
+              <span className="font-display font-black text-xl">J</span>
             </div>
-            <span className="font-display font-semibold text-foreground">JudgyGPT</span>
+            <span className="font-display font-bold text-xl tracking-tight">THE JUDGY</span>
           </Link>
           
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             {isAuthenticated ? (
-              <Button variant="ghost" onClick={() => navigate('/chat')}>
+              <Button 
+                variant="ghost" 
+                onClick={() => navigate('/chat')}
+                className="text-zinc-400 hover:text-white"
+                data-testid="back-to-chat-btn"
+              >
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back to Chat
               </Button>
             ) : (
               <>
                 <Link to="/login">
-                  <Button variant="ghost">Sign in</Button>
+                  <Button variant="ghost" className="text-zinc-400 hover:text-white" data-testid="pricing-signin-btn">Sign in</Button>
                 </Link>
                 <Link to="/register">
-                  <Button className="gradient-primary">Get Started Free</Button>
+                  <Button className="bg-[#FF2E4C] hover:bg-[#E01F3D] shadow-brutal" data-testid="pricing-start-btn">Get Started</Button>
                 </Link>
               </>
             )}
@@ -230,285 +186,235 @@ const PricingPage = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="py-16 px-4 text-center">
-        {/* Payment Success Message */}
+      <section className="py-20 px-6 text-center border-b border-zinc-900">
         {paymentSuccess && (
-          <div className="max-w-md mx-auto mb-8 p-4 bg-green-100 border border-green-300 rounded-xl">
-            <div className="flex items-center gap-3 text-green-800">
+          <div className="max-w-md mx-auto mb-8 p-4 bg-emerald-500/10 border border-emerald-500/30">
+            <div className="flex items-center gap-3 text-emerald-400">
               <Check className="w-6 h-6" />
-              <div>
-                <p className="font-semibold">Payment Successful! 🎉</p>
-                <p className="text-sm">Redirecting you to chat...</p>
+              <div className="text-left">
+                <p className="font-bold">Payment Successful!</p>
+                <p className="text-sm opacity-80">Redirecting you to chat...</p>
               </div>
             </div>
           </div>
         )}
 
-        {/* Payment Error Message */}
         {paymentError && (
-          <div className="max-w-md mx-auto mb-8 p-4 bg-red-100 border border-red-300 rounded-xl">
-            <div className="flex items-center gap-3 text-red-800">
+          <div className="max-w-md mx-auto mb-8 p-4 bg-red-500/10 border border-red-500/30">
+            <div className="flex items-center gap-3 text-red-400">
               <AlertCircle className="w-6 h-6" />
-              <div>
-                <p className="font-semibold">Payment Issue</p>
-                <p className="text-sm">{paymentError}</p>
+              <div className="text-left">
+                <p className="font-bold">Payment Issue</p>
+                <p className="text-sm opacity-80">{paymentError}</p>
               </div>
             </div>
           </div>
         )}
 
-        <Badge variant="secondary" className="mb-4 px-4 py-1">
-          <Sparkles className="w-3 h-3 mr-1" />
-          Choose Your Drama Level
-        </Badge>
-        <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-4">
-          Pick Your Sass Level 💅
+        <span className="tag-brutal inline-block mb-6">Choose Your Level</span>
+        <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight mb-6">
+          HOW MUCH TRUTH
+          <br />
+          <span className="text-[#FF2E4C]">CAN YOU HANDLE?</span>
         </h1>
-        <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
-          From gentle roasts to full-on drama. Choose how much truth you can handle.
+        <p className="text-lg text-zinc-400 max-w-xl mx-auto">
+          From light roasts to full destruction. Pick your poison.
         </p>
       </section>
 
       {/* Pricing Cards */}
-      <section className="max-w-6xl mx-auto px-4 pb-20">
-        <div className="grid md:grid-cols-3 gap-8">
-          {plans.map((plan) => {
+      <section className="py-20 px-6">
+        <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-8">
+          {plans.map((plan, index) => {
             const isCurrentPlan = user?.subscription_plan === plan.id;
             const isPopular = plan.popular;
+            const isPremium = plan.id === 'premium';
             
             return (
-              <Card 
-                key={plan.id} 
-                className={`relative flex flex-col transition-all duration-300 hover:shadow-xl ${
-                  isPopular 
-                    ? 'border-2 border-primary shadow-lg shadow-primary/10 md:scale-105' 
-                    : 'border-border hover:border-primary/30'
-                }`}
+              <div 
+                key={plan.id}
+                className={`relative flex flex-col bg-[#141414] border ${
+                  isPopular ? 'border-[#FF2E4C] shadow-brutal' : isPremium ? 'border-[#FFB800]' : 'border-zinc-800'
+                } p-8 transition-transform hover:-translate-y-1`}
+                data-testid={`plan-card-${plan.id}`}
               >
                 {isPopular && (
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                    <Badge className="gradient-primary text-primary-foreground px-6 py-1 text-sm shadow-lg">
-                      <Crown className="w-3 h-3 mr-1" />
+                    <span className="bg-[#FF2E4C] text-white text-xs font-bold uppercase tracking-wider px-4 py-1">
                       Most Popular
-                    </Badge>
+                    </span>
                   </div>
                 )}
 
-                <CardHeader className="text-center pb-2 pt-8">
-                  <div className={`w-16 h-16 mx-auto rounded-2xl flex items-center justify-center mb-4 ${getPlanColor(plan.id)}`}>
-                    {getPlanIcon(plan.id)}
-                  </div>
-                  <CardTitle className="text-2xl font-display">{plan.name}</CardTitle>
-                  <CardDescription className="text-sm mt-2">
+                {/* Plan Header */}
+                <div className="mb-8">
+                  <h3 className="font-display text-2xl font-bold mb-2 uppercase tracking-tight">
+                    {plan.name}
+                  </h3>
+                  <p className="text-zinc-500 text-sm">
                     {plan.description}
-                  </CardDescription>
-                </CardHeader>
+                  </p>
+                </div>
 
-                <CardContent className="flex-1 pt-4">
-                  {/* Price */}
-                  <div className="text-center mb-6">
-                    <div className="flex items-baseline justify-center gap-1">
-                      <span className="text-5xl font-bold text-foreground">{plan.price_display}</span>
-                      <span className="text-muted-foreground">/month</span>
-                    </div>
-                    {plan.id === 'free' && (
-                      <p className="text-sm text-muted-foreground mt-1">Free forever</p>
-                    )}
+                {/* Price */}
+                <div className="mb-8">
+                  <div className="flex items-baseline gap-1">
+                    <span className={`font-display text-5xl font-black ${
+                      isPopular ? 'text-[#FF2E4C]' : isPremium ? 'text-[#FFB800]' : 'text-white'
+                    }`}>
+                      {plan.price_display}
+                    </span>
+                    <span className="text-zinc-500 text-sm">/month</span>
                   </div>
+                  {plan.id === 'free' && (
+                    <p className="text-zinc-600 text-xs mt-1 uppercase tracking-wider">Free forever</p>
+                  )}
+                </div>
 
-                  {/* Features */}
-                  <div className="space-y-3">
-                    {plan.features.map((feature, i) => (
-                      <div key={i} className="flex items-start gap-3">
-                        <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${
-                          isPopular ? 'bg-primary/10 text-primary' : 'bg-secondary text-secondary-foreground'
-                        }`}>
-                          {getFeatureIcon(feature)}
-                        </div>
-                        <span className="text-sm text-foreground">{feature}</span>
+                {/* Features */}
+                <div className="flex-1 space-y-4 mb-8">
+                  {plan.features.map((feature, i) => (
+                    <div key={i} className="flex items-start gap-3">
+                      <div className={`w-5 h-5 flex items-center justify-center flex-shrink-0 ${
+                        isPopular ? 'text-[#FF2E4C]' : isPremium ? 'text-[#FFB800]' : 'text-zinc-500'
+                      }`}>
+                        <Check className="w-4 h-4" />
                       </div>
-                    ))}
-                  </div>
-                </CardContent>
+                      <span className="text-sm text-zinc-300">{feature}</span>
+                    </div>
+                  ))}
+                </div>
 
-                <CardFooter className="pt-6 pb-6">
-                  <Button
-                    className={`w-full h-12 text-base font-medium ${
-                      plan.id === 'premium'
-                        ? 'bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white shadow-lg'
-                        : isPopular 
-                          ? 'gradient-primary hover:opacity-90 shadow-lg' 
-                          : isCurrentPlan 
-                            ? 'bg-secondary text-secondary-foreground' 
-                            : ''
-                    }`}
-                    variant={isPopular || plan.id === 'premium' ? 'default' : 'outline'}
-                    disabled={isCurrentPlan || subscribing === plan.id}
-                    onClick={() => handleSubscribeClick(plan)}
-                  >
-                    {subscribing === plan.id ? (
-                      <>
-                        <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                        Processing...
-                      </>
-                    ) : isCurrentPlan ? (
-                      <>
-                        <Check className="w-4 h-4 mr-2" />
-                        Current Plan
-                      </>
-                    ) : plan.id === 'free' ? (
-                      'Get Started Free'
-                    ) : plan.id === 'premium' ? (
-                      <>
-                        <Drama className="w-4 h-4 mr-2" />
-                        Bring the Drama
-                      </>
-                    ) : (
-                      <>
-                        <Crown className="w-4 h-4 mr-2" />
-                        Subscribe Now
-                      </>
-                    )}
-                  </Button>
-                </CardFooter>
-              </Card>
+                {/* CTA Button */}
+                <Button
+                  className={`w-full h-14 text-base font-bold uppercase tracking-wider ${
+                    isCurrentPlan 
+                      ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed'
+                      : isPopular 
+                        ? 'bg-[#FF2E4C] hover:bg-[#E01F3D] text-white shadow-brutal'
+                        : isPremium
+                          ? 'bg-[#FFB800] hover:bg-[#E5A600] text-black shadow-brutal-yellow'
+                          : 'bg-transparent border border-zinc-700 hover:border-[#FF2E4C] text-white'
+                  }`}
+                  disabled={isCurrentPlan || subscribing === plan.id}
+                  onClick={() => handleSubscribeClick(plan)}
+                  data-testid={`subscribe-btn-${plan.id}`}
+                >
+                  {subscribing === plan.id ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                      Processing...
+                    </>
+                  ) : isCurrentPlan ? (
+                    'Current Plan'
+                  ) : plan.id === 'free' ? (
+                    'Start Free'
+                  ) : (
+                    <>
+                      Subscribe
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </>
+                  )}
+                </Button>
+              </div>
             );
           })}
         </div>
 
-        {/* One-time purchases */}
-        <div className="mt-16 max-w-2xl mx-auto">
-          <h3 className="font-display text-xl font-semibold text-center mb-6">One-Time Purchases</h3>
-          <div className="grid sm:grid-cols-2 gap-4">
-            <Card className="p-4 hover:shadow-md transition-shadow">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center">
-                  <Sparkles className="w-6 h-6 text-accent" />
-                </div>
-                <div className="flex-1">
-                  <h4 className="font-medium text-foreground">Witness Pass</h4>
-                  <p className="text-sm text-muted-foreground">Per session access</p>
-                </div>
-                <Badge variant="secondary" className="text-lg font-bold">$4.99</Badge>
-              </div>
-            </Card>
-            <Card className="p-4 hover:shadow-md transition-shadow">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                  <Crown className="w-6 h-6 text-primary" />
-                </div>
-                <div className="flex-1">
-                  <h4 className="font-medium text-foreground">Extra Invite</h4>
-                  <p className="text-sm text-muted-foreground">Invite a friend to witness</p>
-                </div>
-                <Badge variant="secondary" className="text-lg font-bold">$2.99</Badge>
-              </div>
-            </Card>
-          </div>
-        </div>
-
         {/* Trust Badges */}
-        <div className="mt-16 text-center">
-          <div className="flex flex-wrap items-center justify-center gap-8 text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <Shield className="w-5 h-5 text-success" />
-              <span className="text-sm">Secure payments</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Clock className="w-5 h-5 text-primary" />
-              <span className="text-sm">Cancel anytime</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Headphones className="w-5 h-5 text-accent" />
-              <span className="text-sm">Support available</span>
-            </div>
+        <div className="mt-16 flex flex-wrap items-center justify-center gap-8 text-zinc-500">
+          <div className="flex items-center gap-2">
+            <Shield className="w-5 h-5 text-emerald-500" />
+            <span className="text-sm uppercase tracking-wider">Secure payments</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Zap className="w-5 h-5 text-[#FFB800]" />
+            <span className="text-sm uppercase tracking-wider">Cancel anytime</span>
           </div>
         </div>
+      </section>
 
-        {/* FAQ Section */}
-        <div className="mt-20 max-w-3xl mx-auto">
-          <h2 className="font-display text-2xl font-bold text-center mb-8">Frequently Asked Questions</h2>
+      {/* FAQ Section */}
+      <section className="py-20 px-6 border-t border-zinc-900">
+        <div className="max-w-3xl mx-auto">
+          <h2 className="font-display text-3xl font-black text-center mb-12 uppercase tracking-tight">
+            Questions?
+          </h2>
           <div className="space-y-4">
             <FaqItem 
               question="What's the difference between the plans?"
-              answer="Judgement Lite gives you 5 roasts per day. Talk to Me Nice bumps you up to 50 with slightly nicer treatment. Bring the Whole Drama? Unlimited sass, no holding back."
+              answer="Free gives you 5 roasts per day - enough to test the waters. Standard bumps you to 50 with priority responses. Premium? Unlimited judgment, no mercy."
             />
             <FaqItem 
               question="Can I switch plans?"
-              answer="Absolutely! Upgrade or downgrade whenever you want. We won't judge... okay, we will, but that's the point. 😏"
-            />
-            <FaqItem 
-              question="What's a Witness Pass?"
-              answer="It's a one-time purchase that lets a friend watch your conversation in real-time. Perfect for when you need backup or just want someone to see the drama unfold."
+              answer="Upgrade or downgrade whenever. We're judgy about your decisions, not your subscription changes."
             />
             <FaqItem 
               question="Is my data safe?"
-              answer="Yes! We only judge your life choices, not your data security. All conversations are encrypted."
+              answer="We judge your life choices, not your data security. All conversations are encrypted and private."
+            />
+            <FaqItem 
+              question="What if I want a refund?"
+              answer="Cancel anytime. No questions asked. Though we might judge you for leaving."
             />
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="border-t border-border bg-muted/30 py-16 px-4">
+      <section className="py-20 px-6 border-t border-zinc-900 bg-[#0D0D0D]">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="font-display text-3xl font-bold text-foreground mb-4">
-            Ready to get roasted? 🔥
+          <h2 className="font-display text-3xl sm:text-4xl font-black tracking-tight mb-6">
+            STOP OVERTHINKING.
+            <br />
+            <span className="text-[#FF2E4C]">START GETTING JUDGED.</span>
           </h2>
-          <p className="text-muted-foreground mb-8">
-            Join thousands who trust JudgyGPT for brutally honest advice.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/register">
-              <Button size="lg" className="gradient-primary px-8">
-                Start Free
-              </Button>
-            </Link>
-            <Link to="/">
-              <Button size="lg" variant="outline" className="px-8">
-                Learn More
-              </Button>
-            </Link>
-          </div>
+          <Link to="/chat">
+            <Button 
+              size="lg" 
+              className="bg-[#FF2E4C] hover:bg-[#E01F3D] text-white shadow-brutal h-14 px-12 text-base uppercase tracking-wider font-bold"
+              data-testid="cta-bottom-btn"
+            >
+              Get Roasted Now
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
+          </Link>
         </div>
       </section>
 
       {/* Payment Confirmation Modal */}
       <Dialog open={showConfirmModal} onOpenChange={setShowConfirmModal}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="bg-[#141414] border-zinc-800 text-white sm:max-w-md">
           <DialogHeader>
-            <div className="mx-auto w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
-              <CreditCard className="w-8 h-8 text-primary" />
-            </div>
-            <DialogTitle className="text-center text-xl">
+            <DialogTitle className="text-center text-xl font-display font-bold uppercase">
               Confirm Subscription
             </DialogTitle>
-            <DialogDescription className="text-center">
-              You&apos;re about to subscribe to <strong>{selectedPlan?.name}</strong>
+            <DialogDescription className="text-center text-zinc-400">
+              You're about to subscribe to <strong className="text-white">{selectedPlan?.name}</strong>
             </DialogDescription>
           </DialogHeader>
 
           {selectedPlan && (
             <div className="py-4">
-              <div className="bg-muted/50 rounded-xl p-4 mb-4">
+              <div className="bg-[#0A0A0A] border border-zinc-800 p-4 mb-4">
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-muted-foreground">Plan</span>
-                  <span className="font-semibold text-foreground">{selectedPlan.name}</span>
+                  <span className="text-zinc-500 text-sm uppercase">Plan</span>
+                  <span className="font-bold">{selectedPlan.name}</span>
                 </div>
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-muted-foreground">Price</span>
-                  <span className="font-semibold text-foreground">{selectedPlan.price_display}/month</span>
+                  <span className="text-zinc-500 text-sm uppercase">Price</span>
+                  <span className="font-bold">{selectedPlan.price_display}/month</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">Billing</span>
-                  <span className="font-semibold text-foreground">Monthly</span>
+                  <span className="text-zinc-500 text-sm uppercase">Billing</span>
+                  <span className="font-bold">Monthly</span>
                 </div>
               </div>
 
-              <div className="flex items-start gap-2 p-3 bg-green-500/10 border border-green-500/20 rounded-lg">
-                <Check className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
-                <p className="text-sm text-green-700 dark:text-green-400">
-                  Secure payment powered by Stripe. Cancel anytime.
+              <div className="flex items-start gap-2 p-3 bg-emerald-500/10 border border-emerald-500/30">
+                <Check className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
+                <p className="text-sm text-emerald-400">
+                  Secure payment via Stripe. Cancel anytime.
                 </p>
               </div>
             </div>
@@ -516,9 +422,10 @@ const PricingPage = () => {
 
           <DialogFooter className="flex flex-col gap-2 sm:flex-col">
             <Button 
-              className="w-full gradient-primary"
+              className="w-full bg-[#FF2E4C] hover:bg-[#E01F3D] shadow-brutal font-bold uppercase"
               onClick={() => handleConfirmSubscribe(null)}
               disabled={subscribing}
+              data-testid="confirm-subscribe-btn"
             >
               {subscribing ? (
                 <>
@@ -526,15 +433,12 @@ const PricingPage = () => {
                   Processing...
                 </>
               ) : (
-                <>
-                  <Check className="w-4 h-4 mr-2" />
-                  Confirm Subscription
-                </>
+                'Confirm Subscription'
               )}
             </Button>
             <Button 
               variant="ghost" 
-              className="w-full"
+              className="w-full text-zinc-400 hover:text-white"
               onClick={() => setShowConfirmModal(false)}
             >
               Cancel
@@ -550,19 +454,20 @@ const FaqItem = ({ question, answer }) => {
   const [isOpen, setIsOpen] = useState(false);
   
   return (
-    <div className="border border-border rounded-lg overflow-hidden">
+    <div className="border border-zinc-800 bg-[#141414]">
       <button
-        className="w-full px-6 py-4 text-left flex items-center justify-between bg-card hover:bg-muted/50 transition-colors"
+        className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-zinc-800/50 transition-colors"
         onClick={() => setIsOpen(!isOpen)}
+        data-testid={`faq-${question.substring(0, 20).replace(/\s/g, '-').toLowerCase()}`}
       >
-        <span className="font-medium text-foreground">{question}</span>
+        <span className="font-bold text-white">{question}</span>
         <div className={`transform transition-transform ${isOpen ? 'rotate-45' : ''}`}>
-          <span className="text-2xl text-muted-foreground">+</span>
+          <span className="text-2xl text-[#FF2E4C]">+</span>
         </div>
       </button>
       {isOpen && (
-        <div className="px-6 py-4 bg-muted/30 border-t border-border">
-          <p className="text-muted-foreground">{answer}</p>
+        <div className="px-6 py-4 border-t border-zinc-800">
+          <p className="text-zinc-400">{answer}</p>
         </div>
       )}
     </div>

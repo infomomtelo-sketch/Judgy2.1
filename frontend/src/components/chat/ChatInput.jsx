@@ -2,8 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
-import { Send, Mic, ArrowRight, Loader2, Zap, Crown, Sparkles, Drama } from 'lucide-react';
+import { Send, ArrowRight, Loader2, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const ChatInput = ({ onSendMessage, onContinue, isLoading, hasMessages, remainingMessages, onUpgrade }) => {
@@ -11,7 +10,6 @@ const ChatInput = ({ onSendMessage, onContinue, isLoading, hasMessages, remainin
   const textareaRef = useRef(null);
   const navigate = useNavigate();
 
-  // Auto-resize textarea
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
@@ -41,38 +39,27 @@ const ChatInput = ({ onSendMessage, onContinue, isLoading, hasMessages, remainin
   const isLowOnMessages = remainingMessages > 0 && remainingMessages <= 2;
 
   return (
-    <div className="border-t border-border bg-card/80 backdrop-blur-sm p-4">
+    <div className="border-t border-zinc-800 bg-[#0D0D0D] p-4" data-testid="chat-input-container">
       <div className="max-w-3xl mx-auto">
         {/* Limit Reached Warning */}
         {isLimitReached && (
-          <div className="mb-4 p-4 rounded-xl bg-gradient-to-r from-primary/5 to-accent/5 border border-primary/20">
-            <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center shrink-0">
-                <Zap className="w-5 h-5 text-primary-foreground" />
+          <div className="mb-4 p-4 bg-[#141414] border border-[#FF2E4C]/30">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-[#FF2E4C] flex items-center justify-center flex-shrink-0">
+                <Zap className="w-6 h-6 text-white" />
               </div>
               <div className="flex-1">
-                <h4 className="font-medium text-foreground mb-1">Out of roasts! 🙈</h4>
-                <p className="text-sm text-muted-foreground mb-3">
-                  You&apos;ve used all your free roasts today. Upgrade to keep the sass coming!
+                <h4 className="font-display font-bold text-white mb-1 uppercase">Out of Roasts</h4>
+                <p className="text-sm text-zinc-400 mb-3 font-mono">
+                  You've used all your free roasts today. Upgrade to keep the judgment coming.
                 </p>
-                <div className="flex flex-wrap gap-2">
-                  <Button 
-                    size="sm"
-                    className="gradient-primary"
-                    onClick={() => navigate('/pricing')}
-                  >
-                    <Crown className="w-4 h-4 mr-1" />
-                    Talk to Me Nice - $6.99
-                  </Button>
-                  <Button 
-                    size="sm"
-                    className="bg-gradient-to-r from-pink-500 to-purple-600 text-white"
-                    onClick={() => navigate('/pricing')}
-                  >
-                    <Drama className="w-4 h-4 mr-1" />
-                    Full Drama - $14.99
-                  </Button>
-                </div>
+                <Button 
+                  className="bg-[#FF2E4C] hover:bg-[#E01F3D] text-white shadow-brutal font-bold uppercase text-sm"
+                  onClick={() => navigate('/pricing')}
+                  data-testid="upgrade-btn"
+                >
+                  Upgrade Now
+                </Button>
               </div>
             </div>
           </div>
@@ -80,19 +67,17 @@ const ChatInput = ({ onSendMessage, onContinue, isLoading, hasMessages, remainin
 
         {/* Low Messages Warning */}
         {isLowOnMessages && !isLimitReached && (
-          <div className="flex items-center justify-center gap-2 mb-3 p-2 rounded-lg bg-muted/50">
-            <Zap className="w-4 h-4 text-primary" />
-            <span className="text-sm text-muted-foreground">
-              Only {remainingMessages} roast{remainingMessages > 1 ? 's' : ''} left today.
+          <div className="flex items-center justify-center gap-3 mb-3 p-2 bg-zinc-900 border border-zinc-800">
+            <Zap className="w-4 h-4 text-[#FFB800]" />
+            <span className="text-sm text-zinc-400 font-mono">
+              {remainingMessages} roast{remainingMessages > 1 ? 's' : ''} left
             </span>
-            <Button 
-              variant="link" 
-              size="sm" 
-              className="text-primary p-0 h-auto text-sm"
+            <button 
               onClick={() => navigate('/pricing')}
+              className="text-sm text-[#FF2E4C] hover:text-white transition-colors font-bold uppercase"
             >
-              Upgrade for more
-            </Button>
+              Upgrade
+            </button>
           </div>
         )}
 
@@ -103,7 +88,8 @@ const ChatInput = ({ onSendMessage, onContinue, isLoading, hasMessages, remainin
               variant="outline"
               size="sm"
               onClick={onContinue}
-              className="gap-2 text-primary border-primary/30 hover:bg-primary/5 hover:border-primary/50"
+              className="gap-2 border-zinc-700 hover:border-[#FF2E4C] hover:bg-[#FF2E4C]/10 text-zinc-400 hover:text-white uppercase tracking-wider text-xs font-bold"
+              data-testid="continue-btn"
             >
               <ArrowRight className="w-4 h-4" />
               Continue
@@ -114,46 +100,35 @@ const ChatInput = ({ onSendMessage, onContinue, isLoading, hasMessages, remainin
         {/* Input form */}
         <form onSubmit={handleSubmit} className="relative">
           <div className={cn(
-            "flex items-end gap-2 p-2 rounded-2xl border bg-background shadow-sm transition-all duration-200",
+            "flex items-end gap-2 bg-[#141414] border transition-colors",
             isLimitReached 
-              ? "border-muted bg-muted/30 opacity-75" 
-              : "border-border focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary/50"
+              ? "border-zinc-800 opacity-50" 
+              : "border-zinc-800 focus-within:border-[#FF2E4C]"
           )}>
             <Textarea
               ref={textareaRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder={isLimitReached ? "Upgrade to continue the roasting..." : "Spill the tea... ☕"}
+              placeholder={isLimitReached ? "Upgrade to continue..." : "Type your confession..."}
               disabled={isLoading || isLimitReached}
-              className="flex-1 min-h-[44px] max-h-[200px] resize-none border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 text-foreground placeholder:text-muted-foreground py-3 px-2"
+              className="flex-1 min-h-[52px] max-h-[200px] resize-none border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 text-white placeholder:text-zinc-600 py-4 px-4 font-mono text-sm"
               rows={1}
+              data-testid="chat-input"
             />
 
-            <div className="flex items-center gap-1 pb-1">
-              {/* Mic button (inactive) */}
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                disabled
-                className="h-10 w-10 rounded-xl text-muted-foreground/50 cursor-not-allowed"
-                title="Voice input coming soon"
-              >
-                <Mic className="w-5 h-5" />
-              </Button>
-
-              {/* Send button */}
+            <div className="flex items-center gap-1 p-2">
               <Button
                 type="submit"
                 size="icon"
                 disabled={!input.trim() || isLoading || isLimitReached}
                 className={cn(
-                  "h-10 w-10 rounded-xl transition-all duration-200",
+                  "h-10 w-10 transition-colors",
                   input.trim() && !isLoading && !isLimitReached
-                    ? "gradient-primary shadow-glow hover:shadow-lg"
-                    : "bg-muted text-muted-foreground"
+                    ? "bg-[#FF2E4C] hover:bg-[#E01F3D] text-white shadow-brutal"
+                    : "bg-zinc-800 text-zinc-600"
                 )}
+                data-testid="send-btn"
               >
                 {isLoading ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
@@ -165,22 +140,17 @@ const ChatInput = ({ onSendMessage, onContinue, isLoading, hasMessages, remainin
           </div>
 
           <div className="flex items-center justify-between mt-2 px-1">
-            <p className="text-[10px] text-muted-foreground">
+            <p className="text-[10px] text-zinc-600 uppercase tracking-wider font-mono">
               Enter to send • Shift+Enter for new line
             </p>
             
-            {/* Mobile message counter */}
             {remainingMessages !== -1 && remainingMessages > 0 && (
-              <Badge 
-                variant="secondary" 
-                className={cn(
-                  "sm:hidden text-[10px] px-2 py-0",
-                  isLowOnMessages && "bg-primary/10 text-primary"
-                )}
-              >
-                <Sparkles className="w-2.5 h-2.5 mr-1" />
+              <span className={cn(
+                "text-[10px] uppercase tracking-wider font-bold font-mono sm:hidden",
+                isLowOnMessages ? "text-[#FFB800]" : "text-zinc-600"
+              )}>
                 {remainingMessages} left
-              </Badge>
+              </span>
             )}
           </div>
         </form>

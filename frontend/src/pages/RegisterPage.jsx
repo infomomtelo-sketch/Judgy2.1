@@ -4,11 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, Mail, Lock, User, AlertCircle, CheckCircle } from 'lucide-react';
-
-// JudgyGPT Logo Image
-const JUDGY_LOGO = "https://customer-assets.emergentagent.com/job_chat-assist-26/artifacts/ze789p6s_7DEC28F8-D66A-46B0-99EA-84F4FF846DBB.png";
+import { Loader2, Mail, Lock, User, AlertCircle, Check } from 'lucide-react';
 
 const RegisterPage = () => {
   const [name, setName] = useState('');
@@ -49,147 +45,142 @@ const RegisterPage = () => {
 
   const benefits = [
     '5 free roasts daily',
-    'Honest advice (with sass)',
-    'Upgrade anytime for unlimited'
+    'Brutally honest advice',
+    'Upgrade anytime'
   ];
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-background to-muted/30 px-4 py-12">
+    <div className="min-h-screen flex items-center justify-center bg-[#0A0A0A] px-4 py-12">
       <div className="w-full max-w-md">
         {/* Logo */}
-        <div className="flex flex-col items-center mb-8">
-          <div className="w-16 h-16 rounded-full overflow-hidden border-4 border-primary shadow-glow mb-4 bg-gradient-to-br from-primary/20 to-accent/20">
-            <img 
-              src={JUDGY_LOGO} 
-              alt="JudgyGPT" 
-              className="w-full h-full object-cover"
-            />
+        <div className="flex flex-col items-center mb-10">
+          <div className="w-16 h-16 bg-[#FF2E4C] flex items-center justify-center mb-4">
+            <span className="font-display font-black text-3xl text-white">J</span>
           </div>
-          <h1 className="font-display text-2xl font-bold text-foreground">JudgyGPT</h1>
-          <p className="text-muted-foreground text-sm">Sassy advice, real help 💅</p>
+          <h1 className="font-display text-2xl font-bold text-white tracking-tight">THE JUDGY</h1>
+          <p className="text-zinc-500 text-sm uppercase tracking-wider mt-1">Create Account</p>
         </div>
 
-        <Card className="border-border shadow-lg">
-          <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-semibold text-center">Create an account</CardTitle>
-            <CardDescription className="text-center">
-              Start with our free plan today
-            </CardDescription>
-          </CardHeader>
-          
-          <form onSubmit={handleSubmit}>
-            <CardContent className="space-y-4">
-              {/* Benefits */}
-              <div className="bg-secondary/50 rounded-lg p-3 space-y-2">
-                {benefits.map((benefit, i) => (
-                  <div key={i} className="flex items-center gap-2 text-sm text-secondary-foreground">
-                    <CheckCircle className="w-4 h-4 text-primary shrink-0" />
-                    <span>{benefit}</span>
-                  </div>
-                ))}
-              </div>
+        <div className="bg-[#141414] border border-zinc-800 p-8">
+          <h2 className="font-display text-xl font-bold text-white text-center mb-2">Join The Judgment</h2>
+          <p className="text-zinc-500 text-sm text-center mb-6">
+            Start with our free plan today
+          </p>
 
-              {error && (
-                <div className="flex items-center gap-2 p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm">
-                  <AlertCircle className="w-4 h-4 shrink-0" />
-                  <span>{error}</span>
-                </div>
-              )}
-              
-              <div className="space-y-2">
-                <Label htmlFor="name">Name</Label>
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Input
-                    id="name"
-                    type="text"
-                    placeholder="Your name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="pl-10"
-                    required
-                  />
-                </div>
+          {/* Benefits */}
+          <div className="bg-[#0A0A0A] border border-zinc-800 p-4 mb-6">
+            {benefits.map((benefit, i) => (
+              <div key={i} className="flex items-center gap-2 text-sm text-zinc-400 py-1">
+                <Check className="w-4 h-4 text-[#FF2E4C] shrink-0" />
+                <span>{benefit}</span>
               </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="name@example.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10"
-                    required
-                  />
-                </div>
+            ))}
+          </div>
+          
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {error && (
+              <div className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                <span>{error}</span>
               </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="Create a password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10"
-                    required
-                  />
-                </div>
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Input
-                    id="confirmPassword"
-                    type="password"
-                    placeholder="Confirm your password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="pl-10"
-                    required
-                  />
-                </div>
-              </div>
-            </CardContent>
+            )}
             
-            <CardFooter className="flex flex-col gap-4">
-              <Button 
-                type="submit" 
-                className="w-full gradient-primary hover:opacity-90"
-                disabled={loading}
-              >
-                {loading ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    Creating account...
-                  </>
-                ) : (
-                  'Create account'
-                )}
-              </Button>
-              
-              <p className="text-sm text-muted-foreground text-center">
-                Already have an account?{' '}
-                <Link to="/login" className="text-primary hover:underline font-medium">
-                  Sign in
-                </Link>
-              </p>
-              
-              <Link to="/pricing" className="text-sm text-muted-foreground hover:text-primary text-center">
-                View pricing plans
+            <div className="space-y-2">
+              <Label htmlFor="name" className="text-zinc-400 text-xs uppercase tracking-wider">Name</Label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600" />
+                <Input
+                  id="name"
+                  type="text"
+                  placeholder="Your name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="pl-10 bg-[#0A0A0A] border-zinc-800 text-white placeholder:text-zinc-600 focus:border-[#FF2E4C] h-12"
+                  required
+                  data-testid="register-name"
+                />
+              </div>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="email" className="text-zinc-400 text-xs uppercase tracking-wider">Email</Label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600" />
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="name@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="pl-10 bg-[#0A0A0A] border-zinc-800 text-white placeholder:text-zinc-600 focus:border-[#FF2E4C] h-12"
+                  required
+                  data-testid="register-email"
+                />
+              </div>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="password" className="text-zinc-400 text-xs uppercase tracking-wider">Password</Label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600" />
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="Create a password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="pl-10 bg-[#0A0A0A] border-zinc-800 text-white placeholder:text-zinc-600 focus:border-[#FF2E4C] h-12"
+                  required
+                  data-testid="register-password"
+                />
+              </div>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword" className="text-zinc-400 text-xs uppercase tracking-wider">Confirm Password</Label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600" />
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  placeholder="Confirm your password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="pl-10 bg-[#0A0A0A] border-zinc-800 text-white placeholder:text-zinc-600 focus:border-[#FF2E4C] h-12"
+                  required
+                  data-testid="register-confirm-password"
+                />
+              </div>
+            </div>
+
+            <Button 
+              type="submit" 
+              className="w-full bg-[#FF2E4C] hover:bg-[#E01F3D] text-white shadow-brutal h-12 font-bold uppercase tracking-wider"
+              disabled={loading}
+              data-testid="register-submit"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                  Creating account...
+                </>
+              ) : (
+                'Create Account'
+              )}
+            </Button>
+            
+            <p className="text-sm text-zinc-500 text-center">
+              Already have an account?{' '}
+              <Link to="/login" className="text-[#FF2E4C] hover:text-white font-bold transition-colors">
+                Sign in
               </Link>
-            </CardFooter>
+            </p>
+            
+            <Link to="/pricing" className="block text-sm text-zinc-600 hover:text-zinc-400 text-center transition-colors">
+              View pricing plans
+            </Link>
           </form>
-        </Card>
+        </div>
       </div>
     </div>
   );

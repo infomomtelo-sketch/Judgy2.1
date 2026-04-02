@@ -1,339 +1,319 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { 
-  Sparkles, 
-  ArrowRight,
-  MessageCircle,
-  Gavel,
-  Mail
-} from 'lucide-react';
+import { ArrowRight, Zap, Target, Brain, Shield } from 'lucide-react';
 
-// JudgyGPT Logo
-const JUDGY_LOGO = "https://customer-assets.emergentagent.com/job_chat-assist-26/artifacts/ze789p6s_7DEC28F8-D66A-46B0-99EA-84F4FF846DBB.png";
+const JUDGY_AVATAR = "https://images.unsplash.com/photo-1654086763373-090dff157f5c?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjY2NzZ8MHwxfHNlYXJjaHw0fHxzdGF0dWUlMjBzY3VscHR1cmUlMjBkYXJrJTIwZWRneXxlbnwwfHx8fDE3NzUxNTk2NTl8MA&ixlib=rb-4.1.0&q=85&w=400";
 
 const LandingPage = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#0A0A0A] text-white">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-primary shadow-glow">
-              <img src={JUDGY_LOGO} alt="JudgyGPT" className="w-full h-full object-cover" />
+      <nav className="fixed top-0 left-0 right-0 z-50 glass-header">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-3 group">
+            <div className="w-10 h-10 bg-[#FF2E4C] flex items-center justify-center">
+              <span className="font-display font-black text-xl">J</span>
             </div>
-            <span className="font-display font-bold text-xl text-foreground">JudgyGPT</span>
-          </div>
+            <span className="font-display font-bold text-xl tracking-tight">THE JUDGY</span>
+          </Link>
           
-          <div className="hidden md:flex items-center gap-6">
-            <a href="#about" className="text-muted-foreground hover:text-foreground transition-colors">About</a>
-            <Link to="/pricing" className="text-muted-foreground hover:text-foreground transition-colors">Pricing</Link>
-            <a href="#contact" className="text-muted-foreground hover:text-foreground transition-colors">Contact</a>
+          <div className="hidden md:flex items-center gap-8">
+            <Link to="/tools" className="text-zinc-400 hover:text-white transition-colors text-sm uppercase tracking-wider">Tools</Link>
+            <Link to="/pricing" className="text-zinc-400 hover:text-white transition-colors text-sm uppercase tracking-wider">Pricing</Link>
+            <Link to="/wall" className="text-zinc-400 hover:text-white transition-colors text-sm uppercase tracking-wider">Wall</Link>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             <Link to="/login">
-              <Button variant="ghost">Sign In</Button>
+              <Button variant="ghost" className="text-zinc-400 hover:text-white hover:bg-white/5 text-sm uppercase tracking-wider" data-testid="nav-signin-btn">
+                Sign In
+              </Button>
             </Link>
             <Link to="/chat">
-              <Button className="gradient-primary">Start Chatting</Button>
+              <Button className="bg-[#FF2E4C] hover:bg-[#E01F3D] text-white shadow-brutal text-sm uppercase tracking-wider font-bold" data-testid="nav-start-btn">
+                Get Judged
+              </Button>
             </Link>
           </div>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-4 relative overflow-hidden">
-        {/* Background decoration */}
-        <div className="absolute top-20 left-1/4 w-72 h-72 bg-primary/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+      <section className="pt-32 pb-24 px-6 relative overflow-hidden">
+        {/* Background elements */}
+        <div className="absolute top-1/4 left-0 w-96 h-96 bg-[#FF2E4C]/10 blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-[#FFB800]/5 blur-[150px] pointer-events-none" />
         
-        <div className="max-w-4xl mx-auto text-center relative">
-          <Badge variant="secondary" className="mb-6 px-4 py-2">
-            <Sparkles className="w-4 h-4 mr-2" />
-            Your Sassy AI Bestie
-          </Badge>
-          
-          <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight">
-            Go ahead...{' '}
-            <span className="text-gradient">Test Me</span> 💅
-          </h1>
-          
-          <p className="text-lg sm:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Think you can stump me? Ask me anything. I dare you. 
-            Brutally honest advice with zero filter - your ego might not survive.
-          </p>
+        <div className="max-w-6xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            {/* Left - Content */}
+            <div className="space-y-8">
+              <div className="inline-block">
+                <span className="tag-brutal" data-testid="hero-tag">
+                  AI That Doesn't Sugarcoat
+                </span>
+              </div>
+              
+              <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl font-black leading-[0.9] tracking-tight">
+                <span className="text-white">THE TRUTH</span>
+                <br />
+                <span className="text-gradient">HURTS.</span>
+                <br />
+                <span className="text-zinc-500">GOOD.</span>
+              </h1>
+              
+              <p className="text-lg text-zinc-400 max-w-md leading-relaxed">
+                Stop asking AI that agrees with everything. Get brutally honest advice from an AI that judges you, roasts you, and then actually helps you.
+              </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/chat">
-              <Button size="lg" className="gradient-primary text-lg px-8 h-14 shadow-glow">
-                Try Me, I Dare You
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
-            </Link>
-            <Link to="/pricing">
-              <Button size="lg" variant="outline" className="text-lg px-8 h-14">
-                See What I Can Do
-              </Button>
-            </Link>
-          </div>
-          
-          {/* Challenge Prompts */}
-          <div className="mt-12 max-w-2xl mx-auto">
-            <p className="text-sm text-muted-foreground mb-4">🔥 Popular challenges:</p>
-            <div className="flex flex-wrap gap-2 justify-center">
-              <Link to="/chat">
-                <Badge variant="secondary" className="px-4 py-2 cursor-pointer hover:bg-primary/10 transition-colors">
-                  "Roast my life choices"
-                </Badge>
-              </Link>
-              <Link to="/chat">
-                <Badge variant="secondary" className="px-4 py-2 cursor-pointer hover:bg-primary/10 transition-colors">
-                  "Should I text my ex?"
-                </Badge>
-              </Link>
-              <Link to="/chat">
-                <Badge variant="secondary" className="px-4 py-2 cursor-pointer hover:bg-primary/10 transition-colors">
-                  "Give me tough love"
-                </Badge>
-              </Link>
-              <Link to="/chat">
-                <Badge variant="secondary" className="px-4 py-2 cursor-pointer hover:bg-primary/10 transition-colors">
-                  "Judge my decisions"
-                </Badge>
-              </Link>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link to="/chat">
+                  <Button 
+                    size="lg" 
+                    className="bg-[#FF2E4C] hover:bg-[#E01F3D] text-white shadow-brutal h-14 px-8 text-base uppercase tracking-wider font-bold w-full sm:w-auto"
+                    data-testid="hero-cta-btn"
+                  >
+                    Get Roasted
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
+                </Link>
+                <Link to="/tools">
+                  <Button 
+                    size="lg" 
+                    variant="outline" 
+                    className="border-zinc-700 hover:border-[#FF2E4C] hover:bg-[#FF2E4C]/10 text-white h-14 px-8 text-base uppercase tracking-wider font-bold w-full sm:w-auto"
+                    data-testid="hero-tools-btn"
+                  >
+                    Try Free Tools
+                  </Button>
+                </Link>
+              </div>
+
+              {/* Stats */}
+              <div className="flex gap-12 pt-8 border-t border-zinc-800">
+                <div>
+                  <div className="stat-brutal" data-testid="stat-roasts">10K+</div>
+                  <div className="text-xs text-zinc-500 uppercase tracking-wider mt-1">Roasts Delivered</div>
+                </div>
+                <div>
+                  <div className="stat-brutal" data-testid="stat-truths">100%</div>
+                  <div className="text-xs text-zinc-500 uppercase tracking-wider mt-1">Brutal Honesty</div>
+                </div>
+                <div>
+                  <div className="stat-brutal" data-testid="stat-filter">0</div>
+                  <div className="text-xs text-zinc-500 uppercase tracking-wider mt-1">Filter Applied</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right - Visual */}
+            <div className="relative hidden lg:block">
+              <div className="relative">
+                {/* Terminal-style preview */}
+                <div className="bg-[#141414] border border-zinc-800 p-6 space-y-4">
+                  <div className="flex gap-2 mb-4">
+                    <div className="w-3 h-3 rounded-full bg-[#FF2E4C]"></div>
+                    <div className="w-3 h-3 rounded-full bg-[#FFB800]"></div>
+                    <div className="w-3 h-3 rounded-full bg-zinc-600"></div>
+                  </div>
+                  
+                  <div className="space-y-4 font-mono text-sm">
+                    <div className="flex gap-3">
+                      <span className="text-[#FFB800]">you:</span>
+                      <span className="text-zinc-300">Should I text my ex?</span>
+                    </div>
+                    <div className="flex gap-3">
+                      <span className="text-[#FF2E4C]">judgy:</span>
+                      <span className="text-zinc-300">No. Delete their number. Touch grass. Get a hobby. The audacity of even asking this...</span>
+                    </div>
+                    <div className="flex gap-3">
+                      <span className="text-[#FFB800]">you:</span>
+                      <span className="text-zinc-300">But what if they've changed?</span>
+                    </div>
+                    <div className="flex gap-3">
+                      <span className="text-[#FF2E4C]">judgy:</span>
+                      <span className="text-zinc-300">They haven't. You know this. I know this. The universe knows this. Move on.</span>
+                    </div>
+                    <div className="h-4 w-2 bg-[#FF2E4C] animate-pulse"></div>
+                  </div>
+                </div>
+
+                {/* Decorative elements */}
+                <div className="absolute -top-4 -right-4 w-24 h-24 border border-[#FF2E4C]/30"></div>
+                <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-[#FFB800]/20"></div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Viral Tools Section */}
-      <section className="py-16 px-4 bg-gradient-to-r from-primary/5 via-accent/5 to-primary/5">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-10">
-            <Badge variant="default" className="mb-4 gradient-primary">
-              <Sparkles className="w-3 h-3 mr-1" />
-              NEW: Viral Tools
-            </Badge>
-            <h2 className="font-display text-3xl sm:text-4xl font-bold text-foreground mb-4">
-              Get Roasted. Get Real. Share the Chaos. 🔥
+      {/* Tools Section */}
+      <section className="py-24 px-6 border-t border-zinc-900">
+        <div className="max-w-6xl mx-auto">
+          <div className="mb-16">
+            <span className="tag-brutal mb-4 inline-block">Free Tools</span>
+            <h2 className="font-display text-4xl sm:text-5xl font-black tracking-tight">
+              VIRAL JUDGMENT TOOLS
             </h2>
-            <p className="text-muted-foreground max-w-xl mx-auto">
-              Three viral tools to expose the truth - and share the results with the world.
-            </p>
           </div>
 
-          <div className="grid sm:grid-cols-3 gap-6">
-            <Link to="/tools" className="group">
-              <Card className="p-6 text-center hover:shadow-xl transition-all hover:-translate-y-1 border-2 border-transparent hover:border-orange-500/30 cursor-pointer h-full">
-                <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-orange-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <span className="text-2xl">🔥</span>
+          <div className="grid md:grid-cols-3 gap-6">
+            {/* Roast My Bio */}
+            <Link to="/tools" className="group" data-testid="tool-roast-card">
+              <div className="card-brutal p-8 h-full">
+                <div className="w-16 h-16 bg-orange-500/10 border border-orange-500/30 flex items-center justify-center mb-6 group-hover:bg-orange-500/20 transition-colors">
+                  <Zap className="w-8 h-8 text-orange-500" />
                 </div>
-                <h3 className="font-semibold text-foreground mb-2">Roast My Bio</h3>
-                <p className="text-sm text-muted-foreground">
-                  Paste your dating/LinkedIn bio. Get roasted AND fixed.
+                <h3 className="font-display text-2xl font-bold mb-3">ROAST MY BIO</h3>
+                <p className="text-zinc-400 text-sm leading-relaxed mb-6">
+                  Paste your dating or LinkedIn bio. Get absolutely destroyed. Then get it fixed.
                 </p>
-              </Card>
+                <div className="flex items-center text-orange-500 text-sm font-bold uppercase tracking-wider">
+                  Get Roasted <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </div>
             </Link>
 
-            <Link to="/tools" className="group">
-              <Card className="p-6 text-center hover:shadow-xl transition-all hover:-translate-y-1 border-2 border-transparent hover:border-red-500/30 cursor-pointer h-full">
-                <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-red-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <span className="text-2xl">🚩</span>
+            {/* Red Flag Detector */}
+            <Link to="/tools" className="group" data-testid="tool-redflag-card">
+              <div className="card-brutal p-8 h-full">
+                <div className="w-16 h-16 bg-red-500/10 border border-red-500/30 flex items-center justify-center mb-6 group-hover:bg-red-500/20 transition-colors">
+                  <Target className="w-8 h-8 text-red-500" />
                 </div>
-                <h3 className="font-semibold text-foreground mb-2">Red Flag Detector</h3>
-                <p className="text-sm text-muted-foreground">
-                  Paste that conversation. Find the flags you're ignoring.
+                <h3 className="font-display text-2xl font-bold mb-3">RED FLAG DETECTOR</h3>
+                <p className="text-zinc-400 text-sm leading-relaxed mb-6">
+                  Paste that text conversation. Find every red flag you're pretending not to see.
                 </p>
-              </Card>
+                <div className="flex items-center text-red-500 text-sm font-bold uppercase tracking-wider">
+                  Expose Flags <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </div>
             </Link>
 
-            <Link to="/tools" className="group">
-              <Card className="p-6 text-center hover:shadow-xl transition-all hover:-translate-y-1 border-2 border-transparent hover:border-purple-500/30 cursor-pointer h-full">
-                <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-purple-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <span className="text-2xl">⚖️</span>
+            {/* Who's Right */}
+            <Link to="/tools" className="group" data-testid="tool-whos-right-card">
+              <div className="card-brutal p-8 h-full">
+                <div className="w-16 h-16 bg-purple-500/10 border border-purple-500/30 flex items-center justify-center mb-6 group-hover:bg-purple-500/20 transition-colors">
+                  <Brain className="w-8 h-8 text-purple-500" />
                 </div>
-                <h3 className="font-semibold text-foreground mb-2">Who's Right?</h3>
-                <p className="text-sm text-muted-foreground">
+                <h3 className="font-display text-2xl font-bold mb-3">WHO'S RIGHT?</h3>
+                <p className="text-zinc-400 text-sm leading-relaxed mb-6">
                   Submit your argument. Get the verdict. Settle it once and for all.
                 </p>
-              </Card>
-            </Link>
-          </div>
-
-          <div className="text-center mt-8">
-            <Link to="/tools">
-              <Button size="lg" className="gradient-primary">
-                Try the Viral Tools
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
+                <div className="flex items-center text-purple-500 text-sm font-bold uppercase tracking-wider">
+                  Get Verdict <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </div>
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-20 px-4 bg-muted/30">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
-            <Badge variant="secondary" className="mb-4">Why JudgyGPT?</Badge>
-            <h2 className="font-display text-3xl sm:text-4xl font-bold text-foreground mb-4">
-              Not Your Average AI
-            </h2>
-            <p className="text-muted-foreground max-w-xl mx-auto">
-              Finally, an AI that gives you real talk instead of generic advice.
-            </p>
-          </div>
-
-          <div className="grid sm:grid-cols-3 gap-8">
-            <Card className="p-6 text-center hover:shadow-lg transition-shadow">
-              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-primary/10 flex items-center justify-center">
-                <Gavel className="w-8 h-8 text-primary" />
+      {/* Why Section */}
+      <section className="py-24 px-6 bg-[#0D0D0D] border-t border-zinc-900">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <div>
+              <span className="tag-brutal mb-4 inline-block">Why The Judgy?</span>
+              <h2 className="font-display text-4xl sm:text-5xl font-black tracking-tight mb-8">
+                NOT YOUR AVERAGE
+                <br />
+                <span className="text-[#FF2E4C]">AI ASSISTANT</span>
+              </h2>
+              
+              <div className="space-y-6">
+                <div className="flex gap-4">
+                  <div className="w-12 h-12 bg-[#FF2E4C]/10 border border-[#FF2E4C]/30 flex items-center justify-center flex-shrink-0">
+                    <Shield className="w-6 h-6 text-[#FF2E4C]" />
+                  </div>
+                  <div>
+                    <h3 className="font-display font-bold text-lg mb-1">BRUTALLY HONEST</h3>
+                    <p className="text-zinc-400 text-sm">No sugarcoating. No fake positivity. Just the truth you need to hear.</p>
+                  </div>
+                </div>
+                
+                <div className="flex gap-4">
+                  <div className="w-12 h-12 bg-[#FFB800]/10 border border-[#FFB800]/30 flex items-center justify-center flex-shrink-0">
+                    <Brain className="w-6 h-6 text-[#FFB800]" />
+                  </div>
+                  <div>
+                    <h3 className="font-display font-bold text-lg mb-1">ACTUALLY HELPFUL</h3>
+                    <p className="text-zinc-400 text-sm">Behind the roasts is real wisdom. We judge, then we guide.</p>
+                  </div>
+                </div>
+                
+                <div className="flex gap-4">
+                  <div className="w-12 h-12 bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
+                    <Target className="w-6 h-6 text-emerald-500" />
+                  </div>
+                  <div>
+                    <h3 className="font-display font-bold text-lg mb-1">REAL RESULTS</h3>
+                    <p className="text-zinc-400 text-sm">Users make better decisions when they stop lying to themselves.</p>
+                  </div>
+                </div>
               </div>
-              <h3 className="font-semibold text-foreground mb-2">Brutally Honest</h3>
-              <p className="text-sm text-muted-foreground">
-                No sugar-coating. Just real advice that actually helps.
-              </p>
-            </Card>
-
-            <Card className="p-6 text-center hover:shadow-lg transition-shadow">
-              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-primary/10 flex items-center justify-center">
-                <MessageCircle className="w-8 h-8 text-primary" />
-              </div>
-              <h3 className="font-semibold text-foreground mb-2">Sassy But Supportive</h3>
-              <p className="text-sm text-muted-foreground">
-                Tough love from someone who's got your back.
-              </p>
-            </Card>
-
-            <Card className="p-6 text-center hover:shadow-lg transition-shadow">
-              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-primary/10 flex items-center justify-center">
-                <Sparkles className="w-8 h-8 text-primary" />
-              </div>
-              <h3 className="font-semibold text-foreground mb-2">Actually Helpful</h3>
-              <p className="text-sm text-muted-foreground">
-                Under all that sass is real wisdom you can use.
-              </p>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* About Section */}
-      <section id="about" className="py-20 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <Badge variant="secondary" className="mb-4">About</Badge>
-          <h2 className="font-display text-3xl sm:text-4xl font-bold text-foreground mb-6">
-            Why I Built This
-          </h2>
-          <p className="text-lg text-muted-foreground mb-8">
-            I was tired of boring, generic AI advice. So I created an AI personality that 
-            feels like talking to a real friend - one who's not afraid to call you out, but 
-            always has your back.
-          </p>
-          
-          <div className="grid sm:grid-cols-3 gap-6 mt-12">
-            <div className="p-6 rounded-xl bg-muted/50">
-              <div className="text-4xl mb-3">🎭</div>
-              <h3 className="font-semibold text-foreground mb-2">Real Personality</h3>
-              <p className="text-sm text-muted-foreground">Not another boring chatbot</p>
             </div>
-            <div className="p-6 rounded-xl bg-muted/50">
-              <div className="text-4xl mb-3">💡</div>
-              <h3 className="font-semibold text-foreground mb-2">Actual Wisdom</h3>
-              <p className="text-sm text-muted-foreground">Humor on surface, depth underneath</p>
-            </div>
-            <div className="p-6 rounded-xl bg-muted/50">
-              <div className="text-4xl mb-3">❤️</div>
-              <h3 className="font-semibold text-foreground mb-2">I Care</h3>
-              <p className="text-sm text-muted-foreground">Sass comes from a place of love</p>
+
+            <div className="relative">
+              <img 
+                src={JUDGY_AVATAR} 
+                alt="The Judgy" 
+                className="w-full max-w-md mx-auto grayscale contrast-125 opacity-80"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0D0D0D] via-transparent to-transparent"></div>
             </div>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 bg-gradient-to-br from-primary/5 via-background to-primary/5">
+      <section className="py-24 px-6 border-t border-zinc-900">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="font-display text-3xl sm:text-4xl font-bold text-foreground mb-4">
-            Still Scared? 😏
+          <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight mb-6">
+            READY TO FACE
+            <br />
+            <span className="text-[#FF2E4C]">THE TRUTH?</span>
           </h2>
-          <p className="text-xl text-muted-foreground mb-8">
-            Most people can't handle the truth. Can you?
+          <p className="text-xl text-zinc-400 mb-10 max-w-xl mx-auto">
+            Most people can't handle honesty. That's why they keep making the same mistakes. Don't be most people.
           </p>
           <Link to="/chat">
-            <Button size="lg" className="gradient-primary px-8 h-14 text-lg">
-              <Gavel className="w-5 h-5 mr-2" />
-              Test Me Now
+            <Button 
+              size="lg" 
+              className="bg-[#FF2E4C] hover:bg-[#E01F3D] text-white shadow-brutal h-16 px-12 text-lg uppercase tracking-wider font-bold"
+              data-testid="cta-judge-btn"
+            >
+              Judge Me Now
+              <ArrowRight className="w-6 h-6 ml-3" />
             </Button>
           </Link>
-          <p className="mt-4 text-sm text-muted-foreground">
+          <p className="mt-6 text-sm text-zinc-600 uppercase tracking-wider">
             Free to try • No filter • Real advice
           </p>
         </div>
       </section>
 
       {/* Footer */}
-      <footer id="contact" className="border-t border-border py-12 px-4 bg-card">
+      <footer className="py-12 px-6 border-t border-zinc-900 bg-[#080808]">
         <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-3 gap-8">
-            {/* Brand */}
-            <div>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-primary">
-                  <img src={JUDGY_LOGO} alt="JudgyGPT" className="w-full h-full object-cover" />
-                </div>
-                <span className="font-display font-bold text-xl text-foreground">JudgyGPT</span>
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-[#FF2E4C] flex items-center justify-center">
+                <span className="font-display font-black text-sm">J</span>
               </div>
-              <p className="text-muted-foreground mb-4">
-                AI with real personality. 💅
-              </p>
-              <p className="text-sm text-muted-foreground">
-                © 2025 JudgyGPT. All rights reserved.
-              </p>
+              <span className="font-display font-bold tracking-tight">THE JUDGY</span>
             </div>
-
-            {/* Links */}
-            <div>
-              <h4 className="font-semibold text-foreground mb-4">Quick Links</h4>
-              <ul className="space-y-2 text-muted-foreground">
-                <li>
-                  <Link to="/chat" className="hover:text-foreground transition-colors">
-                    Start Chatting
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/pricing" className="hover:text-foreground transition-colors">
-                    Pricing
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/register" className="hover:text-foreground transition-colors">
-                    Create Account
-                  </Link>
-                </li>
-              </ul>
+            
+            <div className="flex items-center gap-8 text-sm text-zinc-500">
+              <Link to="/tools" className="hover:text-white transition-colors uppercase tracking-wider">Tools</Link>
+              <Link to="/pricing" className="hover:text-white transition-colors uppercase tracking-wider">Pricing</Link>
+              <Link to="/wall" className="hover:text-white transition-colors uppercase tracking-wider">Wall</Link>
+              <a href="mailto:hello@thejudgy.com" className="hover:text-white transition-colors uppercase tracking-wider">Contact</a>
             </div>
-
-            {/* Contact */}
-            <div>
-              <h4 className="font-semibold text-foreground mb-4">Contact</h4>
-              <ul className="space-y-2 text-muted-foreground">
-                <li>
-                  <a href="mailto:hello@judgygptonline.com" className="hover:text-foreground transition-colors flex items-center gap-2">
-                    <Mail className="w-4 h-4" />
-                    hello@judgygptonline.com
-                  </a>
-                </li>
-                <li>
-                  <a href="mailto:support@judgygptonline.com" className="hover:text-foreground transition-colors flex items-center gap-2">
-                    <Mail className="w-4 h-4" />
-                    support@judgygptonline.com
-                  </a>
-                </li>
-              </ul>
+            
+            <div className="text-sm text-zinc-600">
+              © 2025 The Judgy. No feelings were spared.
             </div>
           </div>
         </div>

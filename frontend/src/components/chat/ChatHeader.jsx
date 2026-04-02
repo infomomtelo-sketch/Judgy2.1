@@ -2,7 +2,6 @@ import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,7 +10,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { 
   MessageSquarePlus, 
   PanelLeftOpen,
@@ -19,20 +17,13 @@ import {
   PanelRightOpen, 
   PanelRightClose, 
   LogOut, 
-  Crown, 
-  CreditCard, 
   Zap,
-  Drama,
   Users,
   Home,
   Share2,
-  Download,
-  Sparkles,
+  CreditCard,
   TrendingUp
 } from 'lucide-react';
-
-// JudgyGPT Logo Image
-const JUDGY_LOGO = "https://customer-assets.emergentagent.com/job_chat-assist-26/artifacts/ze789p6s_7DEC28F8-D66A-46B0-99EA-84F4FF846DBB.png";
 
 const ChatHeader = ({ onNewChat, onToggleLeft, onToggleRight, leftPanelOpen, rightPanelOpen, remainingMessages, isPremium }) => {
   const { user, logout, isFullDrama } = useAuth();
@@ -46,13 +37,13 @@ const ChatHeader = ({ onNewChat, onToggleLeft, onToggleRight, leftPanelOpen, rig
   const handleShare = () => {
     if (navigator.share) {
       navigator.share({
-        title: 'JudgyGPT - Sassy AI Advice',
-        text: 'Get brutally honest advice from JudgyGPT! 💅',
-        url: 'https://judgygptonline.com'
+        title: 'The Judgy - Brutally Honest AI',
+        text: 'Get roasted and guided by The Judgy!',
+        url: 'https://thejudgy.com'
       });
     } else {
-      navigator.clipboard.writeText('https://judgygptonline.com');
-      alert('Link copied to clipboard! 📋');
+      navigator.clipboard.writeText('https://thejudgy.com');
+      alert('Link copied!');
     }
   };
 
@@ -65,35 +56,16 @@ const ChatHeader = ({ onNewChat, onToggleLeft, onToggleRight, leftPanelOpen, rig
       .slice(0, 2) || 'U';
   };
 
-  const getPlanBadge = () => {
-    if (isFullDrama) {
-      return (
-        <Badge className="hidden sm:flex gap-1 bg-gradient-to-r from-pink-500 to-purple-500 text-white px-3 py-1">
-          <Drama className="w-3 h-3" />
-          Full Drama
-        </Badge>
-      );
-    }
-    if (isPremium) {
-      return (
-        <Badge className="hidden sm:flex gap-1 gradient-primary text-primary-foreground px-3 py-1">
-          <Crown className="w-3 h-3" />
-          Talk to Me Nice
-        </Badge>
-      );
-    }
-    return null;
-  };
-
   return (
-    <header className="flex items-center justify-between px-4 py-3 border-b border-border bg-card/80 backdrop-blur-sm">
+    <header className="flex items-center justify-between px-4 py-3 border-b border-zinc-800 bg-[#0D0D0D]" data-testid="chat-header">
       {/* Left Controls */}
       <div className="flex items-center gap-2">
         <Button 
           variant="ghost" 
           size="icon"
           onClick={onToggleLeft}
-          className="text-muted-foreground hover:text-foreground"
+          className="text-zinc-500 hover:text-white hover:bg-zinc-800"
+          data-testid="toggle-left-panel"
         >
           {leftPanelOpen ? (
             <PanelLeftClose className="w-5 h-5" />
@@ -102,80 +74,83 @@ const ChatHeader = ({ onNewChat, onToggleLeft, onToggleRight, leftPanelOpen, rig
           )}
         </Button>
         
-        {/* Home Button */}
         <Link to="/">
           <Button 
             variant="ghost" 
             size="icon"
-            className="text-muted-foreground hover:text-foreground"
+            className="text-zinc-500 hover:text-white hover:bg-zinc-800"
             title="Home"
+            data-testid="home-btn"
           >
             <Home className="w-5 h-5" />
           </Button>
         </Link>
       </div>
 
-      {/* Center - Logo with Image */}
+      {/* Center - Logo */}
       <div className="flex items-center gap-3">
-        <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-primary shadow-glow bg-gradient-to-br from-primary/20 to-accent/20">
-          <img 
-            src={JUDGY_LOGO} 
-            alt="JudgyGPT" 
-            className="w-full h-full object-cover"
-          />
+        <div className="w-10 h-10 bg-[#FF2E4C] flex items-center justify-center">
+          <span className="font-display font-black text-xl text-white">J</span>
         </div>
-        <div className="text-center">
-          <h1 className="font-display text-lg font-semibold text-foreground">JudgyGPT</h1>
-          <p className="text-xs text-muted-foreground">Sassy advice, real help 💅</p>
+        <div className="text-center hidden sm:block">
+          <h1 className="font-display text-lg font-bold text-white tracking-tight">THE JUDGY</h1>
+          <p className="text-xs text-zinc-500 uppercase tracking-wider">Brutal Honesty</p>
         </div>
       </div>
 
       {/* Right Controls */}
       <div className="flex items-center gap-2">
-        {/* Message Counter for Free Users */}
+        {/* Message Counter */}
         {!isPremium && remainingMessages !== -1 && (
-          <Badge 
-            variant="secondary" 
-            className="hidden sm:flex gap-1 px-3 py-1 cursor-pointer hover:bg-secondary/80 transition-colors"
+          <button 
             onClick={() => navigate('/pricing')}
+            className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-zinc-800 border border-zinc-700 hover:border-[#FF2E4C] transition-colors"
+            data-testid="message-counter"
           >
-            <Zap className="w-3 h-3 text-primary" />
-            <span className="font-medium">{remainingMessages}</span>
-            <span className="text-muted-foreground">left</span>
-          </Badge>
+            <Zap className="w-3 h-3 text-[#FF2E4C]" />
+            <span className="text-sm font-bold text-white">{remainingMessages}</span>
+            <span className="text-xs text-zinc-500 uppercase">left</span>
+          </button>
         )}
 
         {/* Plan Badge */}
-        {getPlanBadge()}
+        {isPremium && (
+          <div className="hidden sm:flex items-center gap-1 px-3 py-1.5 bg-[#FF2E4C]/10 border border-[#FF2E4C]/30">
+            <span className="text-xs font-bold text-[#FF2E4C] uppercase tracking-wider">
+              {isFullDrama ? 'Full Drama' : 'Premium'}
+            </span>
+          </div>
+        )}
 
         <Button 
           variant="ghost" 
           size="icon"
           onClick={onNewChat}
-          className="text-muted-foreground hover:text-foreground"
+          className="text-zinc-500 hover:text-white hover:bg-zinc-800"
           title="New Chat"
+          data-testid="new-chat-btn"
         >
           <MessageSquarePlus className="w-5 h-5" />
         </Button>
 
-        {/* Share Button */}
         <Button 
           variant="ghost" 
           size="icon"
           onClick={handleShare}
-          className="text-muted-foreground hover:text-foreground hidden sm:flex"
-          title="Share JudgyGPT"
+          className="text-zinc-500 hover:text-white hover:bg-zinc-800 hidden sm:flex"
+          title="Share"
+          data-testid="share-btn"
         >
           <Share2 className="w-5 h-5" />
         </Button>
 
-        {/* Right Panel Toggle */}
         <Button 
           variant="ghost" 
           size="icon"
           onClick={onToggleRight}
-          className="text-muted-foreground hover:text-foreground"
+          className="text-zinc-500 hover:text-white hover:bg-zinc-800"
           title="Toggle Witnesses"
+          data-testid="toggle-right-panel"
         >
           {rightPanelOpen ? (
             <PanelRightClose className="w-5 h-5" />
@@ -187,77 +162,67 @@ const ChatHeader = ({ onNewChat, onToggleLeft, onToggleRight, leftPanelOpen, rig
         {/* User Menu */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="rounded-full">
-              <Avatar className="w-8 h-8 border-2 border-primary/20">
-                <AvatarFallback className="bg-secondary text-secondary-foreground text-xs font-medium">
-                  {getInitials(user?.name)}
-                </AvatarFallback>
-              </Avatar>
+            <Button variant="ghost" size="icon" className="text-zinc-500 hover:text-white hover:bg-zinc-800" data-testid="user-menu-trigger">
+              <div className="w-8 h-8 bg-zinc-800 border border-zinc-700 flex items-center justify-center">
+                <span className="text-xs font-bold text-white">{getInitials(user?.name)}</span>
+              </div>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-64">
+          <DropdownMenuContent align="end" className="w-64 bg-[#141414] border-zinc-800 text-white">
             <DropdownMenuLabel className="pb-2">
               <div className="flex items-center gap-3">
-                <Avatar className="w-10 h-10">
-                  <AvatarFallback className="bg-primary/10 text-primary text-sm font-medium">
-                    {getInitials(user?.name)}
-                  </AvatarFallback>
-                </Avatar>
+                <div className="w-10 h-10 bg-[#FF2E4C] flex items-center justify-center">
+                  <span className="text-sm font-bold">{getInitials(user?.name)}</span>
+                </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium text-foreground truncate">{user?.name}</p>
-                  <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+                  <p className="font-bold text-white truncate">{user?.name}</p>
+                  <p className="text-xs text-zinc-500 truncate">{user?.email}</p>
                 </div>
               </div>
             </DropdownMenuLabel>
             
             {/* Current Plan Info */}
-            <div className="px-2 py-2 mx-2 mb-2 rounded-lg bg-muted/50">
+            <div className="px-2 py-2 mx-2 mb-2 bg-zinc-900 border border-zinc-800">
               <div className="flex items-center justify-between">
-                <span className="text-xs text-muted-foreground">Current Plan</span>
-                <Badge variant="secondary" className="text-xs">
+                <span className="text-xs text-zinc-500 uppercase">Plan</span>
+                <span className="text-xs font-bold text-[#FF2E4C]">
                   {user?.subscription_plan === 'premium' ? 'Full Drama' : 
-                   user?.subscription_plan === 'standard' ? 'Talk to Me Nice' : 'Judgement Lite'}
-                </Badge>
+                   user?.subscription_plan === 'standard' ? 'Standard' : 'Free'}
+                </span>
               </div>
               {!isPremium && remainingMessages !== -1 && (
                 <div className="flex items-center justify-between mt-1">
-                  <span className="text-xs text-muted-foreground">Roasts today</span>
-                  <span className="text-xs font-medium">{remainingMessages} left</span>
+                  <span className="text-xs text-zinc-500 uppercase">Roasts</span>
+                  <span className="text-xs font-bold text-white">{remainingMessages} left</span>
                 </div>
               )}
             </div>
             
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator className="bg-zinc-800" />
             
-            {/* Quick Navigation */}
-            <DropdownMenuItem onClick={() => navigate('/')} className="cursor-pointer">
+            <DropdownMenuItem onClick={() => navigate('/')} className="cursor-pointer text-zinc-300 hover:text-white hover:bg-zinc-800 focus:bg-zinc-800">
               <Home className="w-4 h-4 mr-2" />
               Home
             </DropdownMenuItem>
             
-            <DropdownMenuItem onClick={() => navigate('/pricing')} className="cursor-pointer">
+            <DropdownMenuItem onClick={() => navigate('/pricing')} className="cursor-pointer text-zinc-300 hover:text-white hover:bg-zinc-800 focus:bg-zinc-800">
               <CreditCard className="w-4 h-4 mr-2" />
               {isPremium ? 'Manage Plan' : 'Upgrade'}
-              {!isPremium && (
-                <Badge variant="secondary" className="ml-auto text-xs bg-primary/10 text-primary">
-                  More sass
-                </Badge>
-              )}
             </DropdownMenuItem>
             
-            <DropdownMenuItem onClick={() => navigate('/growth')} className="cursor-pointer">
+            <DropdownMenuItem onClick={() => navigate('/tools')} className="cursor-pointer text-zinc-300 hover:text-white hover:bg-zinc-800 focus:bg-zinc-800">
+              <Zap className="w-4 h-4 mr-2" />
+              Viral Tools
+            </DropdownMenuItem>
+            
+            <DropdownMenuItem onClick={() => navigate('/growth')} className="cursor-pointer text-zinc-300 hover:text-white hover:bg-zinc-800 focus:bg-zinc-800">
               <TrendingUp className="w-4 h-4 mr-2" />
-              Growth Plan
+              Growth Hub
             </DropdownMenuItem>
             
-            <DropdownMenuItem onClick={handleShare} className="cursor-pointer">
-              <Share2 className="w-4 h-4 mr-2" />
-              Share JudgyGPT
-            </DropdownMenuItem>
+            <DropdownMenuSeparator className="bg-zinc-800" />
             
-            <DropdownMenuSeparator />
-            
-            <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-destructive focus:text-destructive">
+            <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-[#FF2E4C] hover:text-white hover:bg-[#FF2E4C] focus:bg-[#FF2E4C] focus:text-white">
               <LogOut className="w-4 h-4 mr-2" />
               Sign out
             </DropdownMenuItem>
