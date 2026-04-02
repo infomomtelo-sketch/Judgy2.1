@@ -1,0 +1,122 @@
+{
+  "theme": "dark",
+  "typography": {
+    "headings": {
+      "fontFamily": "'Unbounded', sans-serif",
+      "weights": ["400", "700", "900"],
+      "usage": "Use for all primary page titles, section headers, and impactful statistics. Adds an aggressive, bold, and modern edge.",
+      "letterSpacing": "tracking-tight"
+    },
+    "body": {
+      "fontFamily": "'JetBrains Mono', monospace",
+      "weights": ["400", "500"],
+      "usage": "Use for chat messages, AI responses, code blocks, and standard data. Gives a cold, calculating, 'terminal' feel for the brutally honest AI.",
+      "letterSpacing": "tracking-normal"
+    },
+    "labels": {
+      "fontFamily": "'JetBrains Mono', monospace",
+      "weights": ["700"],
+      "usage": "Overlines, tags, badges, and small caps. Use uppercase + tracking-[0.2em] for a technical, unfeeling UI aesthetic."
+    }
+  },
+  "colors": {
+    "background": "#0A0A0A",
+    "surface": "#141414",
+    "surfaceHover": "#1E1E1E",
+    "border": "#2E2E2E",
+    "primary": "#FF2E4C",
+    "primaryHover": "#E01F3D",
+    "secondary": "#FFB800",
+    "text": {
+      "primary": "#FFFFFF",
+      "secondary": "#A1A1AA",
+      "muted": "#71717A"
+    },
+    "danger": "#FF2E4C",
+    "success": "#10B981"
+  },
+  "visual_enhancers": {
+    "borders": "Use strict 1px solid borders (border-white/10). No soft shadows for standard layout elements to maintain a 'Brutalist Tech' feel.",
+    "radius": "Use rounded-none or max rounded-sm to maintain sharpness, danger, and edge. Avoid 'friendly' pill shapes.",
+    "textures": "Use subtle CSS noise/grain overlay on the background to remove 'digital flatness' and make it feel like raw material.",
+    "glassmorphism": "Only for sticky headers (bg-black/60, backdrop-blur-xl, border-b border-white/10).",
+    "shadows": "Hard shadows (e.g., drop-shadow-[4px_4px_0_#FF2E4C]) on primary CTAs to emphasize the unapologetic nature of the app."
+  },
+  "grids": {
+    "marketing": "Asymmetric Bento Grids for landing page and viral tools (gap-8 to gap-12). Leave empty cells for breathing room.",
+    "dashboard": "High Density Grid (gap-6) for Growth Hub and Judgment Wall.",
+    "rules": "Grid items MUST be direct children of grid containers. Use subgrid if nested wrappers are unavoidable. Override default stretch behavior with align-items: start where necessary."
+  },
+  "layouts": {
+    "spacing": "Generous spacing (p-8, p-12, p-16) for marketing pages. Containers with borders must have internal padding (p-6 or p-8) to avoid text collision.",
+    "alignment": "Left-align paragraphs, dense content, and dense stats. Center align ONLY for massive hero text or single strong CTAs. Optical alignment over geometrical."
+  },
+  "motion": {
+    "interactions": "Hover states must increase contrast. Use sharp transitions on borders (border-primary).",
+    "page_load": "Staggered fade-in (framer-motion) with slight upward translation.",
+    "rules": "Do NOT use transition: all. Use specific transition properties (e.g., transition-colors duration-200, transition-transform). Respect prefers-reduced-motion."
+  },
+  "accessibility": {
+    "contrast": "Ensure 4.5:1 minimum contrast for normal text, 3:1 for large text. ALWAYS verify text readability over images or noise textures.",
+    "hover_states": "ALWAYS explicitly set text color on hover. Focus states must have higher contrast (focus:ring-2 focus:ring-primary).",
+    "testing": "All interactive elements MUST include a data-testid attribute in kebab-case (e.g., data-testid='roast-submit-button')."
+  },
+  "media": {
+    "images": "Use high-contrast, moody, edgy images. Emphasize the 'Judgy' archetype.",
+    "icons": "Use iconoir-react or @phosphor-icons/react (sharp, geometric)."
+  },
+  "3d_libraries": {
+    "recommendation": "Framer Motion for raw, sudden UI shifts (no bouncy spring effects). No heavy 3D required, keep it flat, brutal, and fast."
+  },
+  "image_urls": [
+    {
+      "url": "https://images.unsplash.com/photo-1665554306521-86afb5cb008a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjY2NjV8MHwxfHNlYXJjaHwyfHxhYnN0cmFjdCUyMHNoYXJwJTIwZGFyayUyMHJlZHxlbnwwfHx8fDE3NzUxNTk2NTl8MA&ixlib=rb-4.1.0&q=85",
+      "description": "Abstract sharp dark red geometric background",
+      "category": "hero_background"
+    },
+    {
+      "url": "https://images.unsplash.com/photo-1742197143486-d6c7d146fbc3?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjY2NjV8MHwxfHNlYXJjaHwxfHxhYnN0cmFjdCUyMHNoYXJwJTIwZGFyayUyMHJlZHxlbnwwfHx8fDE3NzUxNTk2NTl8MA&ixlib=rb-4.1.0&q=85",
+      "description": "Cuboid figure with glowing red lines",
+      "category": "feature_accent"
+    },
+    {
+      "url": "https://images.unsplash.com/photo-1654086763373-090dff157f5c?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjY2NzZ8MHwxfHNlYXJjaHw0fHxzdGF0dWUlMjBzY3VscHR1cmUlMjBkYXJrJTIwZWRneXxlbnwwfHx8fDE3NzUxNTk2NTl8MA&ixlib=rb-4.1.0&q=85",
+      "description": "Statue holding a book in a dark aesthetic, representing 'The Judgy'",
+      "category": "ai_persona_avatar"
+    },
+    {
+      "url": "https://images.pexels.com/photos/9966703/pexels-photo-9966703.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "description": "Cracked glass pieces on black, sharp edges",
+      "category": "roast_feature_bg"
+    }
+  ],
+  "component_path": "/app/frontend/src/components/ui/",
+  "instructions_to_main_agent": [
+    "Transform the teal/friendly branding into a stark, high-contrast 'Brutalist Tech' theme using deep blacks, sharp off-whites, and unapologetic neon red/yellow accents.",
+    "Use 'Unbounded' font for headings to give an aggressive yet modern look, and 'JetBrains Mono' for body to emphasize the 'calculating AI' persona. Import these via Google Fonts in index.css or index.html.",
+    "Replace soft rounded components with sharp edges (rounded-none or rounded-sm). Use strict 1px borders (border-white/10).",
+    "For the 'Roast My Bio', 'Red Flag', and 'Who's Right?' tools, use aggressive typography (massive numbers/labels) and hard neo-brutalist shadows (e.g., shadow-[4px_4px_0_#FF2E4C]) on CTAs.",
+    "Implement a subtle grain/noise background pattern to make the dark theme feel premium, not just pure CSS black.",
+    "Do not use generic layout columns. Employ Tetris/Bento grids for the Viral Tools and Growth Hub sections. Use dense, sharp data-presentation for the Judgment Wall.",
+    "The AI chat should look less like a 'friendly iMessage bubble' and more like a 'terminal output' or 'court transcript' (monospace fonts, stark borders, high contrast).",
+    "Maintain all functional links, auth, and state, just aggressively reskin the UI to fit the 'real roaster but credible advisor' identity.",
+    "Replace standard form inputs with sharp, border-bottom only or fully bordered dark inputs with glowing red/yellow focus states."
+  ],
+  "UNIVERSAL_GUIDELINES_FOR_MAIN_AGENT": [
+    "You tend to converge toward generic, 'on distribution' outputs. Avoid 'AI slop'—make this brutally distinct and high-end.",
+    "Dark colors look good when used independently without gradients. DO NOT use dark colors as gradients.",
+    "Don't make generic centered layouts, simplistic gradients, and uniform styling.",
+    "Create depth through layered design elements with z-index hierarchy.",
+    "Use glass-morphism effects with backdrop filters for sticky elements.",
+    "You MUST NOT apply universal transition. Eg: transition: all.",
+    "You MUST NOT center align the app container, ie do not add .App { text-align: center; } in the css file.",
+    "Always use modern button styles like pill-shaped, or sharp buttons with interaction animations & color relevant to the app style. For this app, sharp neo-brutalist buttons are preferred.",
+    "NEVER use AI assistant Emoji characters like 🤖🧠💭💡🔮🎯📚🎭🎬🎪🎉🎊🎁🎀🎂🍰🎈🎨🎰💰💵💳🏦💎🪙💸🤑📊📈📉💹🔢🏆🥇 etc for icons.",
+    "Every interaction needs micro-animations - hover states, transitions, parallax effects. Static = dead.",
+    "Use 2-3x more spacing than feels comfortable. Cramped designs look cheap.",
+    "Prioritize using pre-existing components from src/components/ui when applicable.",
+    "Components MUST use named exports, Pages MUST use default exports.",
+    "Use sonner for toasts, located in /app/frontend/src/components/ui/sonner.js or equivalent.",
+    "All interactive elements MUST include data-testid."
+  ]
+}
