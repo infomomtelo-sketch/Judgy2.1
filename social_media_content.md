@@ -1,5 +1,5 @@
-# JudgyGPT Social Media Content Calendar
-## Ready-to-Post Content for Maximum Engagement
+# The Judgy - Social Media Content Calendar
+## Ready-to-Post Content with New Branding
 
 ---
 
@@ -9,29 +9,29 @@
 
 **Post 1 - The Challenge**
 ```
-I built an AI that roasts you for free.
+I built an AI that tells you the truth.
 
 No sugarcoating. No fake positivity. Just brutal honesty.
 
 Think you can handle it? 
 
-Try JudgyGPT → thejudgy.com
+→ thejudgy.com
 
-Warning: Your ego might not survive 💀
+Warning: The truth hurts. Good.
 ```
 
 **Post 2 - The Curiosity Hook**
 ```
 POV: You ask an AI for advice and it actually tells you the truth
 
-No "you're doing great sweetie" 
-No "follow your heart"
+Not "you're doing great"
+Not "follow your heart"
 
 Just pure, unfiltered judgment.
 
 thejudgy.com
 
-(it's free to try, your pride isn't)
+(it's free to try. your ego isn't)
 ```
 
 **Post 3 - Social Proof Angle**
@@ -40,29 +40,32 @@ thejudgy.com
 
 Normal AI: "Consider your feelings and communicate openly"
 
-JudgyGPT: "Absolutely not. Delete their number. Touch grass. Get a hobby."
+The Judgy: "No. Delete their number. Touch grass. Get a hobby. The audacity."
 
-This is the AI we needed → thejudgy.com
+→ thejudgy.com
 ```
 
 **Post 4 - Viral Tool Promo**
 ```
-New feature just dropped 🔥
+NEW: RED FLAG DETECTOR
 
-RED FLAG DETECTOR - Paste any text conversation and find out if you're being gaslit
+Paste any text conversation.
+Find out if you're being gaslit.
 
 thejudgy.com/tools
 
-Share your results. Expose the chaos. 🚩
+The truth hurts. Good. 🚩
 ```
 
 **Post 5 - FOMO Post**
 ```
-Everyone's getting roasted by JudgyGPT and I'm just sitting here watching the chaos unfold
+Everyone's getting roasted by The Judgy
 
-"Roast My Bio" is breaking people 😭
+"ROAST MY BIO" is breaking people
 
 Try it free → thejudgy.com/tools
+
+(we judge, then we guide)
 ```
 
 ---
@@ -77,19 +80,17 @@ Would you rather have an AI that:
 A) Tells you what you want to hear
 B) Tells you what you NEED to hear
 
-If you picked B, you're ready for JudgyGPT
-
-thejudgy.com
+If you picked B → thejudgy.com
 ```
 
 **Post 7 - Relatable Content**
 ```
-Things JudgyGPT has told me this week:
+What The Judgy told me this week:
 
-• "That business idea is not it"
-• "Your ex moved on. You should too"  
-• "That outfit is a choice"
-• "No, you don't need another subscription"
+▸ "That business idea is not it"
+▸ "Your ex moved on. You should too"
+▸ "That outfit is a choice"
+▸ "No, you don't need another subscription"
 
 I didn't ask to be personally attacked but here we are
 
@@ -98,13 +99,13 @@ thejudgy.com
 
 **Post 8 - User Testimonial Style**
 ```
-Me: "Give me honest feedback on my life choices"
+Me: "Give me honest feedback"
 
-JudgyGPT: *proceeds to end my entire existence*
+The Judgy: *proceeds to end my entire existence*
 
 Me: "...fair"
 
-Get your reality check → thejudgy.com
+→ thejudgy.com
 ```
 
 ---
@@ -112,7 +113,7 @@ Get your reality check → thejudgy.com
 ## 📸 INSTAGRAM POSTS
 
 ### Post 1 - Carousel Idea
-**Slide 1:** "Things JudgyGPT would say to Disney Princesses"
+**Slide 1:** "What The Judgy would say to Disney Princesses"
 **Slide 2:** "Cinderella - Girl, get a job. Stop waiting for a man with a shoe fetish"
 **Slide 3:** "Ariel - You gave up your VOICE for a man you saw ONCE??"
 **Slide 4:** "Snow White - Living with 7 strangers? That's a true crime episode waiting to happen"
@@ -120,13 +121,13 @@ Get your reality check → thejudgy.com
 
 **Caption:**
 ```
-JudgyGPT doesn't care about your fairytale 💀
+The Judgy doesn't care about your fairytale
 
-Get brutally honest AI advice that actually helps (even if it hurts a little)
+Brutally honest AI advice that actually helps (even if it hurts)
 
 Link in bio → thejudgy.com
 
-#AI #ChatGPT #Funny #Roasted #Dating #Advice
+#AI #BrutalHonesty #Dating #Advice #TheJudgy
 ```
 
 ### Post 2 - Reel Script
@@ -135,20 +136,20 @@ Link in bio → thejudgy.com
 
 [SPLIT SCREEN]
 
-ChatGPT: "Communication is key. Express your feelings openly and honestly."
+ChatGPT: "Communication is key. Express your feelings openly."
 
-JudgyGPT: "He's not busy. He's not confused. He's just not that into you. Next."
+The Judgy: "He's not busy. He's not confused. He's just not that into you. Next."
 
-[END CARD]: "Get the truth at thejudgy.com"
+[END CARD]: "THE TRUTH HURTS. GOOD. → thejudgy.com"
 ```
 
-### Post 3 - Story Series (5 slides)
+### Post 3 - Story Series
 ```
 Story 1: "Should I get back with my ex?" 🤔
 Story 2: [Poll] Yes / No
-Story 3: "What JudgyGPT says:" 
-Story 4: "No. Delete their number. Block them. Go to therapy. Adopt a plant. The plant will treat you better."
-Story 5: "Get YOUR brutal advice → thejudgy.com" [Link sticker]
+Story 3: "What The Judgy says:" 
+Story 4: "No. Delete. Block. Therapy. Plant. The plant will treat you better."
+Story 5: "Get judged → thejudgy.com" [Link sticker]
 ```
 
 ---
@@ -161,26 +162,26 @@ I built an AI that gives brutally honest feedback.
 
 Not because the world needs more negativity.
 
-But because we're drowning in fake positivity.
+Because we're drowning in fake positivity.
 
 Every "You're doing amazing!" when you're clearly not.
 Every "Great idea!" when it needs work.
 Every "Looks good!" when it doesn't.
 
-JudgyGPT is different. It tells you what you NEED to hear.
+The Judgy is different. It tells you what you NEED to hear.
 
 Sometimes growth requires uncomfortable truths.
 
-Check it out: thejudgy.com
+Try it: thejudgy.com
 
-#AI #Startup #Entrepreneurship #ToughLove
+#AI #Startup #Entrepreneurship #HonestFeedback
 ```
 
 ### Post 2 - Founder Story
 ```
 I was tired of AI that just agrees with everything.
 
-So I built JudgyGPT - an AI that actually challenges you.
+So I built The Judgy - an AI that actually challenges you.
 
 The response? People LOVE being roasted (apparently).
 
@@ -201,33 +202,25 @@ What's the most honest feedback you've ever received?
 
 ### Video 1 - Trend Format
 ```
-[HOOK - First 1 sec]: "This AI doesn't care about your feelings"
+[HOOK - First 1 sec]: "This AI doesn't sugarcoat anything"
 
-[SHOW SCREEN RECORDING of JudgyGPT]
+[SHOW SCREEN RECORDING of The Judgy]
 
 "Watch what happens when I ask for advice about texting my ex"
 
 [Show brutal response]
 
-[END]: "Link in bio if you're brave enough"
+[END]: "thejudgy.com - The truth hurts. Good."
 ```
 
 ### Video 2 - POV Format
 ```
 POV: You finally found an AI that tells you the truth
 
-[Screen recording of asking JudgyGPT increasingly personal questions]
+[Screen recording of asking increasingly personal questions]
 [Show the savage but helpful responses]
 
-Caption: "I've never felt so attacked and helped at the same time 😭"
-```
-
-### Video 3 - Duet/React Format
-```
-[React to people's bad decisions]
-"Let's see what JudgyGPT thinks about this..."
-[Show response]
-"See? Even AI agrees you shouldn't do that"
+Caption: "I've never felt so attacked and helped at the same time"
 ```
 
 ---
@@ -248,46 +241,48 @@ Caption: "I've never felt so attacked and helped at the same time 😭"
 
 ## 🏷️ HASHTAGS TO USE
 
-**Twitter:** #AI #ChatGPT #JudgyGPT #TechTwitter #Startup #Roasted
+**Twitter:** #AI #TheJudgy #TechTwitter #BrutalHonesty #Roasted
 
-**Instagram:** #AI #ArtificialIntelligence #ChatGPT #Funny #Relatable #DatingAdvice #Roasted #ToughLove #BrutallyHonest
+**Instagram:** #AI #BrutallyHonest #DatingAdvice #TheJudgy #ToughLove #RealTalk
 
-**TikTok:** #ai #chatgpt #fyp #viral #funny #roasted #advice #dating #tech
+**TikTok:** #ai #thejudgy #fyp #viral #funny #roasted #advice #honesty
 
-**LinkedIn:** #AI #Startup #Entrepreneurship #Innovation #TechStartup
+**LinkedIn:** #AI #Startup #Entrepreneurship #Innovation #HonestFeedback
 
 ---
 
-## 📝 QUICK COPY-PASTE BIOS
+## 📝 UPDATED BIOS
 
 **Twitter:**
 ```
-JudgyGPT - The AI that tells you what you NEED to hear 💀
+The Judgy - The AI that tells you what you NEED to hear
 No sugarcoating. No fake positivity. Just brutal honesty.
-Try free → thejudgy.com
+→ thejudgy.com
 ```
 
 **Instagram:**
 ```
-Your brutally honest AI bestie 💀
+THE JUDGY
+Brutally honest AI advisor
 ✓ Roast My Bio
 ✓ Red Flag Detector  
-✓ Real advice (not fake positivity)
-👇 Get judged (for free)
+✓ Real advice
+👇 Get judged (free)
 ```
 
 **TikTok:**
 ```
-The AI that roasts you for free 💀
-Link = thejudgy.com
+The AI that roasts you for free
+The truth hurts. Good.
+thejudgy.com
 ```
 
 ---
 
-## 🎯 CONTENT TIPS
+## 🎯 NEW TAGLINES
 
-1. **Post viral tool results** - Screenshot funny responses and share them
-2. **Engage with replies** - Respond to people who comment
-3. **Use trending sounds** on TikTok/Reels
-4. **Post consistently** - Same time each day works best
-5. **Cross-post** - Same content can work on multiple platforms
+- "THE TRUTH HURTS. GOOD."
+- "No sugarcoating. No fake positivity."
+- "We judge, then we guide."
+- "Brutally honest. Actually helpful."
+- "The AI that doesn't agree with everything."

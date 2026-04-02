@@ -38,25 +38,25 @@ const ViralToolsPage = () => {
   const [activeTab, setActiveTab] = useState('roast');
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20">
+    <div className="min-h-screen bg-[#0A0A0A] text-white">
       {/* Header */}
-      <header className="border-b border-border bg-card/80 backdrop-blur-sm sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+      <header className="border-b border-zinc-800 bg-[#0D0D0D]/80 backdrop-blur-sm sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-primary shadow-glow">
-              <img src={JUDGY_LOGO} alt="JudgyGPT" className="w-full h-full object-cover" />
+            <div className="w-10 h-10 bg-[#FF2E4C] flex items-center justify-center">
+              <span className="font-display font-black text-xl">J</span>
             </div>
-            <span className="font-display font-semibold text-foreground">JudgyGPT</span>
+            <span className="font-display font-bold text-xl tracking-tight">THE JUDGY</span>
           </Link>
           
           <div className="flex items-center gap-3">
-            <Button variant="ghost" onClick={() => navigate(-1)}>
+            <Button variant="ghost" onClick={() => navigate(-1)} className="text-zinc-400 hover:text-white hover:bg-zinc-800">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back
             </Button>
             {!isAuthenticated && (
               <Link to="/register">
-                <Button className="gradient-primary">Get Started Free</Button>
+                <Button className="bg-[#FF2E4C] hover:bg-[#E01F3D] shadow-brutal">Get Started</Button>
               </Link>
             )}
           </div>
@@ -64,36 +64,33 @@ const ViralToolsPage = () => {
       </header>
 
       {/* Hero */}
-      <section className="py-12 px-4 text-center">
-        <Badge variant="secondary" className="mb-4 px-4 py-1">
-          <Sparkles className="w-3 h-3 mr-1" />
-          Viral Tools
-        </Badge>
-        <h1 className="font-display text-4xl sm:text-5xl font-bold text-foreground mb-4">
-          Get Roasted. Get Real. 🔥
+      <section className="py-16 px-6 text-center border-b border-zinc-900">
+        <span className="tag-brutal inline-block mb-6">Viral Tools</span>
+        <h1 className="font-display text-4xl sm:text-5xl font-black text-white mb-4 tracking-tight">
+          GET <span className="text-[#FF2E4C]">ROASTED.</span> GET REAL.
         </h1>
-        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+        <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
           Three ways to get brutally honest feedback. Share the results and watch the chaos unfold.
         </p>
       </section>
 
       {/* Tools Tabs */}
-      <section className="max-w-4xl mx-auto px-4 pb-20">
+      <section className="max-w-4xl mx-auto px-6 py-12">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-8">
-            <TabsTrigger value="roast" className="flex items-center gap-2" data-testid="tab-roast">
+          <TabsList className="grid w-full grid-cols-3 mb-8 bg-[#141414] border border-zinc-800 p-1 h-auto">
+            <TabsTrigger value="roast" className="flex items-center gap-2 data-[state=active]:bg-[#FF2E4C] data-[state=active]:text-white text-zinc-400 py-3" data-testid="tab-roast">
               <Flame className="w-4 h-4" />
-              <span className="hidden sm:inline">Roast My Bio</span>
+              <span className="hidden sm:inline font-bold uppercase text-xs tracking-wider">Roast Bio</span>
               <span className="sm:hidden">Roast</span>
             </TabsTrigger>
-            <TabsTrigger value="redflag" className="flex items-center gap-2" data-testid="tab-redflag">
+            <TabsTrigger value="redflag" className="flex items-center gap-2 data-[state=active]:bg-[#FF2E4C] data-[state=active]:text-white text-zinc-400 py-3" data-testid="tab-redflag">
               <AlertTriangle className="w-4 h-4" />
-              <span className="hidden sm:inline">Red Flag Detector</span>
-              <span className="sm:hidden">Red Flags</span>
+              <span className="hidden sm:inline font-bold uppercase text-xs tracking-wider">Red Flags</span>
+              <span className="sm:hidden">Flags</span>
             </TabsTrigger>
-            <TabsTrigger value="verdict" className="flex items-center gap-2" data-testid="tab-verdict">
+            <TabsTrigger value="verdict" className="flex items-center gap-2 data-[state=active]:bg-[#FF2E4C] data-[state=active]:text-white text-zinc-400 py-3" data-testid="tab-verdict">
               <Scale className="w-4 h-4" />
-              <span className="hidden sm:inline">Who's Right?</span>
+              <span className="hidden sm:inline font-bold uppercase text-xs tracking-wider">Who's Right</span>
               <span className="sm:hidden">Verdict</span>
             </TabsTrigger>
           </TabsList>
