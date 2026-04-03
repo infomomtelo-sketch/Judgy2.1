@@ -44,9 +44,9 @@ const RegisterPage = () => {
   };
 
   const benefits = [
-    '5 free roasts daily',
+    '50 free tokens to start',
     'Brutally honest advice',
-    'Upgrade anytime'
+    '1 token per message'
   ];
 
   return (

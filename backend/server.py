@@ -158,6 +158,7 @@ class User(BaseModel):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     messages_today: int = 0
     last_message_date: Optional[str] = None
+    tokens: int = 50  # New users get 50 free tokens
 
 class UserResponse(BaseModel):
     id: str
@@ -166,6 +167,7 @@ class UserResponse(BaseModel):
     subscription_plan: str
     subscription_status: str
     subscription_end: Optional[datetime] = None
+    tokens: int = 0  # Include tokens in response
 
 class TokenResponse(BaseModel):
     access_token: str
@@ -195,6 +197,7 @@ class ChatResponse(BaseModel):
     response: str
     message_id: str
     remaining_messages: int
+    tokens: int = 0  # Include token balance in response
 
 # New models for additional features
 class CheckoutRequest(BaseModel):
@@ -448,13 +451,14 @@ async def register(user_data: UserCreate):
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
     
-    # Create user
+    # Create user with 50 free tokens
     user = User(
         email=user_data.email,
         name=user_data.name,
         password_hash=hash_password(user_data.password),
         subscription_plan="free",
-        subscription_status="active"
+        subscription_status="active",
+        tokens=50  # Free starting tokens
     )
     
     user_doc = user.model_dump()
@@ -476,7 +480,8 @@ async def register(user_data: UserCreate):
             email=user.email,
             name=user.name,
             subscription_plan=user.subscription_plan,
-            subscription_status=user.subscription_status
+            subscription_status=user.subscription_status,
+            tokens=user.tokens
         )
     )
 
@@ -507,7 +512,8 @@ async def login(credentials: UserLogin):
             name=user.name,
             subscription_plan=user.subscription_plan,
             subscription_status=user.subscription_status,
-            subscription_end=user.subscription_end
+            subscription_end=user.subscription_end,
+            tokens=user_doc.get('tokens', 50)  # Default to 50 for existing users
         )
     )
 
@@ -621,13 +627,18 @@ async def verify_reset_token(token: str):
 
 @api_router.get("/auth/me", response_model=UserResponse)
 async def get_me(user: User = Depends(require_auth)):
+    # Get fresh user data from database to include tokens
+    user_doc = await db.users.find_one({"id": user.id})
+    tokens = user_doc.get('tokens', 50) if user_doc else 50
+    
     return UserResponse(
         id=user.id,
         email=user.email,
         name=user.name,
         subscription_plan=user.subscription_plan,
         subscription_status=user.subscription_status,
-        subscription_end=user.subscription_end
+        subscription_end=user.subscription_end,
+        tokens=tokens
     )
 
 # ============== SUBSCRIPTION ROUTES ==============
@@ -889,13 +900,16 @@ async def root():
 @api_router.post("/chat", response_model=ChatResponse)
 async def send_chat_message(request: ChatRequest, user: User = Depends(require_auth)):
     """Send a message to the AI assistant"""
-    # Check subscription access
-    access = await check_subscription_access(user)
     
-    if not access["allowed"]:
+    # Get user's current token balance
+    user_doc = await db.users.find_one({"id": user.id})
+    current_tokens = user_doc.get('tokens', 0)
+    
+    # Check if user has tokens
+    if current_tokens <= 0:
         raise HTTPException(
             status_code=403, 
-            detail="Daily message limit reached. Upgrade to Pro for unlimited messages."
+            detail="You're out of tokens! Get more tokens to continue chatting."
         )
     
     try:
@@ -923,30 +937,27 @@ async def send_chat_message(request: ChatRequest, user: User = Depends(require_a
         )
         
         # Save to MongoDB
-        user_doc = user_msg.model_dump()
-        user_doc['timestamp'] = user_doc['timestamp'].isoformat()
-        await db.chat_messages.insert_one(user_doc)
+        user_msg_doc = user_msg.model_dump()
+        user_msg_doc['timestamp'] = user_msg_doc['timestamp'].isoformat()
+        await db.chat_messages.insert_one(user_msg_doc)
         
         ai_doc = ai_msg.model_dump()
         ai_doc['timestamp'] = ai_doc['timestamp'].isoformat()
         await db.chat_messages.insert_one(ai_doc)
         
-        # Update message count for free users
-        if user.subscription_plan == "free":
-            today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-            await db.users.update_one(
-                {"id": user.id},
-                {"$inc": {"messages_today": 1}, "$set": {"last_message_date": today}}
-            )
-        
-        # Calculate remaining messages
-        new_remaining = access["remaining"] - 1 if access["remaining"] != -1 else -1
+        # Deduct 1 token for this message
+        new_tokens = current_tokens - 1
+        await db.users.update_one(
+            {"id": user.id},
+            {"$set": {"tokens": new_tokens}}
+        )
         
         return ChatResponse(
             session_id=request.session_id,
             response=response,
             message_id=ai_msg.id,
-            remaining_messages=new_remaining
+            remaining_messages=new_tokens,
+            tokens=new_tokens
         )
         
     except Exception as e:
@@ -982,6 +993,49 @@ async def create_new_session(user: User = Depends(require_auth)):
     """Create a new chat session"""
     session_id = str(uuid.uuid4())
     return {"session_id": session_id}
+
+
+# ============== TOKEN SYSTEM ==============
+
+class TokenPackage(BaseModel):
+    id: str
+    name: str
+    tokens: int
+    price: float
+    price_display: str
+    bonus: str = ""
+
+TOKEN_PACKAGES = [
+    TokenPackage(id="small", name="Starter Pack", tokens=100, price=4.99, price_display="$4.99", bonus=""),
+    TokenPackage(id="medium", name="Value Pack", tokens=250, price=9.99, price_display="$9.99", bonus="+50 bonus"),
+    TokenPackage(id="large", name="Pro Pack", tokens=600, price=19.99, price_display="$19.99", bonus="+100 bonus"),
+]
+
+@api_router.get("/tokens/balance")
+async def get_token_balance(user: User = Depends(require_auth)):
+    """Get user's current token balance"""
+    user_doc = await db.users.find_one({"id": user.id})
+    tokens = user_doc.get('tokens', 0) if user_doc else 0
+    return {"tokens": tokens, "user_id": user.id}
+
+@api_router.get("/tokens/packages")
+async def get_token_packages():
+    """Get available token packages for purchase"""
+    return [pkg.model_dump() for pkg in TOKEN_PACKAGES]
+
+@api_router.post("/tokens/add-free")
+async def add_free_tokens(user: User = Depends(require_auth)):
+    """Add free tokens (for testing/promo - will be removed in production)"""
+    # Add 10 free tokens
+    await db.users.update_one(
+        {"id": user.id},
+        {"$inc": {"tokens": 10}}
+    )
+    user_doc = await db.users.find_one({"id": user.id})
+    new_balance = user_doc.get('tokens', 0)
+    return {"message": "Added 10 free tokens!", "tokens": new_balance}
+
+
 
 # ============== VIRAL TOOLS ROUTES ==============
 

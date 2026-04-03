@@ -110,13 +110,36 @@ export const AuthProvider = ({ children }) => {
       const response = await axios.get(`${API}/subscriptions/current`);
       setSubscription(response.data);
       
-      // Also refresh user data
+      // Also refresh user data (includes tokens)
       const userResponse = await axios.get(`${API}/auth/me`);
       setUser(userResponse.data);
     } catch (error) {
       console.error('Failed to refresh subscription:', error);
     }
   }, [token]);
+
+  const refreshTokens = useCallback(async () => {
+    if (!token) return;
+    
+    try {
+      const response = await axios.get(`${API}/tokens/balance`);
+      setUser(prev => prev ? { ...prev, tokens: response.data.tokens } : null);
+      return response.data.tokens;
+    } catch (error) {
+      console.error('Failed to refresh tokens:', error);
+    }
+  }, [token]);
+
+  const addFreeTokens = useCallback(async () => {
+    try {
+      const response = await axios.post(`${API}/tokens/add-free`);
+      setUser(prev => prev ? { ...prev, tokens: response.data.tokens } : null);
+      return response.data;
+    } catch (error) {
+      console.error('Failed to add free tokens:', error);
+      throw error;
+    }
+  }, []);
 
   const subscribe = useCallback(async (planId) => {
     const response = await axios.post(`${API}/subscriptions/subscribe`, { plan_id: planId });
@@ -141,9 +164,12 @@ export const AuthProvider = ({ children }) => {
     subscribe,
     cancelSubscription,
     refreshSubscription,
+    refreshTokens,
+    addFreeTokens,
     isAuthenticated: !!user,
     isPremium: user?.subscription_plan === 'standard' || user?.subscription_plan === 'premium',
-    isFullDrama: user?.subscription_plan === 'premium'
+    isFullDrama: user?.subscription_plan === 'premium',
+    tokens: user?.tokens ?? 50  // Default to 50 for new users
   };
 
   return (

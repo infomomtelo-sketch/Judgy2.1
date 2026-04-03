@@ -25,8 +25,10 @@ import {
   TrendingUp
 } from 'lucide-react';
 
+import { Coins } from 'lucide-react';
+
 const ChatHeader = ({ onNewChat, onToggleLeft, onToggleRight, leftPanelOpen, rightPanelOpen, remainingMessages, isPremium }) => {
-  const { user, logout, isFullDrama } = useAuth();
+  const { user, logout, isFullDrama, tokens, addFreeTokens } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -100,27 +102,26 @@ const ChatHeader = ({ onNewChat, onToggleLeft, onToggleRight, leftPanelOpen, rig
 
       {/* Right Controls */}
       <div className="flex items-center gap-2">
-        {/* Message Counter */}
-        {!isPremium && remainingMessages !== -1 && (
-          <button 
-            onClick={() => navigate('/pricing')}
-            className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-zinc-800 border border-zinc-700 hover:border-[#FF2E4C] transition-colors"
-            data-testid="message-counter"
-          >
-            <Zap className="w-3 h-3 text-[#FF2E4C]" />
-            <span className="text-sm font-bold text-white">{remainingMessages}</span>
-            <span className="text-xs text-zinc-500 uppercase">left</span>
-          </button>
-        )}
-
-        {/* Plan Badge */}
-        {isPremium && (
-          <div className="hidden sm:flex items-center gap-1 px-3 py-1.5 bg-[#FF2E4C]/10 border border-[#FF2E4C]/30">
-            <span className="text-xs font-bold text-[#FF2E4C] uppercase tracking-wider">
-              {isFullDrama ? 'Full Drama' : 'Premium'}
-            </span>
-          </div>
-        )}
+        {/* Token Counter */}
+        <button 
+          onClick={async () => {
+            if (tokens <= 5) {
+              // Add free tokens for now (will be replaced with purchase flow)
+              try {
+                await addFreeTokens();
+              } catch (e) {
+                console.error(e);
+              }
+            }
+          }}
+          className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-zinc-800 border border-zinc-700 hover:border-[#FFB800] transition-colors"
+          data-testid="token-counter"
+          title={tokens <= 5 ? "Click to get free tokens" : "Your token balance"}
+        >
+          <Coins className="w-3 h-3 text-[#FFB800]" />
+          <span className="text-sm font-bold text-white">{tokens}</span>
+          <span className="text-xs text-zinc-500 uppercase">tokens</span>
+        </button>
 
         <Button 
           variant="ghost" 

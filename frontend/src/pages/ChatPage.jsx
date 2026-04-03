@@ -20,26 +20,17 @@ const ChatPage = () => {
     const stored = localStorage.getItem('chat_session_id');
     return stored || uuidv4();
   });
-  const [remainingMessages, setRemainingMessages] = useState(-1);
-  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [leftPanelOpen, setLeftPanelOpen] = useState(false);
   const [rightPanelOpen, setRightPanelOpen] = useState(false);
   const messagesEndRef = useRef(null);
   
-  const { user, subscription, refreshSubscription, isPremium } = useAuth();
+  const { user, subscription, refreshSubscription, refreshTokens, isPremium, tokens } = useAuth();
   const navigate = useNavigate();
 
   // Save session ID to localStorage
   useEffect(() => {
     localStorage.setItem('chat_session_id', sessionId);
   }, [sessionId]);
-
-  // Update remaining messages from subscription
-  useEffect(() => {
-    if (subscription) {
-      setRemainingMessages(subscription.remaining_messages);
-    }
-  }, [subscription]);
 
   // Load chat history on mount
   useEffect(() => {
@@ -69,9 +60,8 @@ const ChatPage = () => {
   const sendMessage = useCallback(async (content) => {
     if (!content.trim() || isLoading) return;
 
-    // Check if user has remaining messages (for free plan)
-    if (remainingMessages === 0) {
-      setShowUpgradeModal(true);
+    // Check if user has tokens
+    if (tokens <= 0) {
       return;
     }
 
@@ -99,20 +89,23 @@ const ChatPage = () => {
       };
 
       setMessages(prev => [...prev, aiMessage]);
-      setRemainingMessages(response.data.remaining_messages);
+      
+      // Refresh tokens after sending message
+      refreshTokens();
     } catch (error) {
       console.error('Error sending message:', error);
       
-      // Check if it's a limit exceeded error
+      // Check if it's a token limit error
       if (error.response?.status === 403) {
-        setShowUpgradeModal(true);
         // Remove the user message we just added
         setMessages(prev => prev.slice(0, -1));
+        // Refresh tokens to update UI
+        refreshTokens();
       } else {
         const errorMessage = {
           id: uuidv4(),
           role: 'assistant',
-          content: 'Ugh, something went wrong on my end. Try again, I guess. 🙄',
+          content: 'Ugh, something went wrong on my end. Try again, I guess.',
           timestamp: new Date(),
           isError: true
         };
@@ -121,7 +114,7 @@ const ChatPage = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [sessionId, isLoading, remainingMessages]);
+  }, [sessionId, isLoading, tokens, refreshTokens]);
 
   const handleContinue = useCallback(() => {
     sendMessage('Please continue');
@@ -161,7 +154,6 @@ const ChatPage = () => {
           onToggleRight={() => setRightPanelOpen(!rightPanelOpen)}
           leftPanelOpen={leftPanelOpen}
           rightPanelOpen={rightPanelOpen}
-          remainingMessages={remainingMessages}
           isPremium={isPremium}
         />
         
@@ -177,8 +169,6 @@ const ChatPage = () => {
             onContinue={handleContinue}
             isLoading={isLoading}
             hasMessages={messages.length > 0}
-            remainingMessages={remainingMessages}
-            onUpgrade={() => setShowUpgradeModal(true)}
           />
         </div>
       </div>
@@ -187,13 +177,6 @@ const ChatPage = () => {
       <RightPanel 
         isOpen={rightPanelOpen}
         onClose={() => setRightPanelOpen(false)}
-      />
-
-      {/* Upgrade Modal */}
-      <UpgradeModal 
-        isOpen={showUpgradeModal}
-        onClose={() => setShowUpgradeModal(false)}
-        onUpgrade={() => navigate('/pricing')}
       />
     </div>
   );

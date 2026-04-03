@@ -1,29 +1,15 @@
 import React from 'react';
-import { Zap, Target, Brain, ArrowRight } from 'lucide-react';
+import { Zap, Target, Brain, ArrowRight, Coins } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 const WelcomeMessage = () => {
   const { user, isPremium, isFullDrama } = useAuth();
 
   const getPlanBadge = () => {
-    if (isFullDrama) {
-      return (
-        <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#FFB800]/10 border border-[#FFB800]/30 mb-8">
-          <span className="text-xs font-bold text-[#FFB800] uppercase tracking-wider">Full Drama Mode</span>
-        </div>
-      );
-    }
-    if (isPremium) {
-      return (
-        <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#FF2E4C]/10 border border-[#FF2E4C]/30 mb-8">
-          <span className="text-xs font-bold text-[#FF2E4C] uppercase tracking-wider">Premium Access</span>
-        </div>
-      );
-    }
     return (
-      <div className="inline-flex items-center gap-2 px-4 py-2 bg-zinc-800 border border-zinc-700 mb-8">
-        <Zap className="w-3 h-3 text-[#FF2E4C]" />
-        <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider">5 Roasts/Day</span>
+      <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#FFB800]/10 border border-[#FFB800]/30 mb-8">
+        <Coins className="w-3 h-3 text-[#FFB800]" />
+        <span className="text-xs font-bold text-[#FFB800] uppercase tracking-wider">{user?.tokens || 50} Tokens</span>
       </div>
     );
   };

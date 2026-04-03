@@ -1,14 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Send, ArrowRight, Loader2, Zap } from 'lucide-react';
+import { Send, ArrowRight, Loader2, Coins } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useAuth } from '../../context/AuthContext';
 
-const ChatInput = ({ onSendMessage, onContinue, isLoading, hasMessages, remainingMessages, onUpgrade }) => {
+const ChatInput = ({ onSendMessage, onContinue, isLoading, hasMessages }) => {
   const [input, setInput] = useState('');
   const textareaRef = useRef(null);
-  const navigate = useNavigate();
+  const { tokens, addFreeTokens } = useAuth();
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -19,7 +19,7 @@ const ChatInput = ({ onSendMessage, onContinue, isLoading, hasMessages, remainin
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (input.trim() && !isLoading) {
+    if (input.trim() && !isLoading && tokens > 0) {
       onSendMessage(input);
       setInput('');
       if (textareaRef.current) {
@@ -35,54 +35,62 @@ const ChatInput = ({ onSendMessage, onContinue, isLoading, hasMessages, remainin
     }
   };
 
-  const isLimitReached = remainingMessages === 0;
-  const isLowOnMessages = remainingMessages > 0 && remainingMessages <= 2;
+  const handleGetTokens = async () => {
+    try {
+      await addFreeTokens();
+    } catch (e) {
+      console.error('Failed to add tokens:', e);
+    }
+  };
+
+  const isOutOfTokens = tokens <= 0;
+  const isLowOnTokens = tokens > 0 && tokens <= 5;
 
   return (
     <div className="border-t border-zinc-800 bg-[#0D0D0D] p-4" data-testid="chat-input-container">
       <div className="max-w-3xl mx-auto">
-        {/* Limit Reached Warning */}
-        {isLimitReached && (
-          <div className="mb-4 p-4 bg-[#141414] border border-[#FF2E4C]/30">
+        {/* Out of Tokens Warning */}
+        {isOutOfTokens && (
+          <div className="mb-4 p-4 bg-[#141414] border border-[#FFB800]/30">
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-[#FF2E4C] flex items-center justify-center flex-shrink-0">
-                <Zap className="w-6 h-6 text-white" />
+              <div className="w-12 h-12 bg-[#FFB800] flex items-center justify-center flex-shrink-0">
+                <Coins className="w-6 h-6 text-black" />
               </div>
               <div className="flex-1">
-                <h4 className="font-display font-bold text-white mb-1 uppercase">Out of Roasts</h4>
+                <h4 className="font-display font-bold text-white mb-1 uppercase">Out of Tokens</h4>
                 <p className="text-sm text-zinc-400 mb-3 font-mono">
-                  You've used all your free roasts today. Upgrade to keep the judgment coming.
+                  You need tokens to keep chatting. Get more to continue!
                 </p>
                 <Button 
-                  className="bg-[#FF2E4C] hover:bg-[#E01F3D] text-white shadow-brutal font-bold uppercase text-sm"
-                  onClick={() => navigate('/pricing')}
-                  data-testid="upgrade-btn"
+                  className="bg-[#FFB800] hover:bg-[#E5A600] text-black shadow-brutal-yellow font-bold uppercase text-sm"
+                  onClick={handleGetTokens}
+                  data-testid="get-tokens-btn"
                 >
-                  Upgrade Now
+                  Get Free Tokens
                 </Button>
               </div>
             </div>
           </div>
         )}
 
-        {/* Low Messages Warning */}
-        {isLowOnMessages && !isLimitReached && (
+        {/* Low Tokens Warning */}
+        {isLowOnTokens && !isOutOfTokens && (
           <div className="flex items-center justify-center gap-3 mb-3 p-2 bg-zinc-900 border border-zinc-800">
-            <Zap className="w-4 h-4 text-[#FFB800]" />
+            <Coins className="w-4 h-4 text-[#FFB800]" />
             <span className="text-sm text-zinc-400 font-mono">
-              {remainingMessages} roast{remainingMessages > 1 ? 's' : ''} left
+              {tokens} token{tokens > 1 ? 's' : ''} left
             </span>
             <button 
-              onClick={() => navigate('/pricing')}
-              className="text-sm text-[#FF2E4C] hover:text-white transition-colors font-bold uppercase"
+              onClick={handleGetTokens}
+              className="text-sm text-[#FFB800] hover:text-white transition-colors font-bold uppercase"
             >
-              Upgrade
+              Get More
             </button>
           </div>
         )}
 
         {/* Continue button */}
-        {hasMessages && !isLoading && !isLimitReached && (
+        {hasMessages && !isLoading && !isOutOfTokens && (
           <div className="flex justify-center mb-3">
             <Button
               variant="outline"
@@ -101,7 +109,7 @@ const ChatInput = ({ onSendMessage, onContinue, isLoading, hasMessages, remainin
         <form onSubmit={handleSubmit} className="relative">
           <div className={cn(
             "flex items-end gap-2 bg-[#141414] border transition-colors",
-            isLimitReached 
+            isOutOfTokens 
               ? "border-zinc-800 opacity-50" 
               : "border-zinc-800 focus-within:border-[#FF2E4C]"
           )}>
@@ -110,8 +118,8 @@ const ChatInput = ({ onSendMessage, onContinue, isLoading, hasMessages, remainin
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder={isLimitReached ? "Upgrade to continue..." : "Type your confession..."}
-              disabled={isLoading || isLimitReached}
+              placeholder={isOutOfTokens ? "Get tokens to continue..." : "Type your confession..."}
+              disabled={isLoading || isOutOfTokens}
               className="flex-1 min-h-[52px] max-h-[200px] resize-none border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 text-white placeholder:text-zinc-600 py-4 px-4 font-mono text-sm"
               rows={1}
               data-testid="chat-input"
@@ -121,10 +129,10 @@ const ChatInput = ({ onSendMessage, onContinue, isLoading, hasMessages, remainin
               <Button
                 type="submit"
                 size="icon"
-                disabled={!input.trim() || isLoading || isLimitReached}
+                disabled={!input.trim() || isLoading || isOutOfTokens}
                 className={cn(
                   "h-10 w-10 transition-colors",
-                  input.trim() && !isLoading && !isLimitReached
+                  input.trim() && !isLoading && !isOutOfTokens
                     ? "bg-[#FF2E4C] hover:bg-[#E01F3D] text-white shadow-brutal"
                     : "bg-zinc-800 text-zinc-600"
                 )}
@@ -141,15 +149,15 @@ const ChatInput = ({ onSendMessage, onContinue, isLoading, hasMessages, remainin
 
           <div className="flex items-center justify-between mt-2 px-1">
             <p className="text-[10px] text-zinc-600 uppercase tracking-wider font-mono">
-              Enter to send • Shift+Enter for new line
+              Enter to send • 1 token per message
             </p>
             
-            {remainingMessages !== -1 && remainingMessages > 0 && (
+            {tokens > 0 && (
               <span className={cn(
                 "text-[10px] uppercase tracking-wider font-bold font-mono sm:hidden",
-                isLowOnMessages ? "text-[#FFB800]" : "text-zinc-600"
+                isLowOnTokens ? "text-[#FFB800]" : "text-zinc-600"
               )}>
-                {remainingMessages} left
+                {tokens} tokens
               </span>
             )}
           </div>
