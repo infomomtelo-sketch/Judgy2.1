@@ -150,60 +150,60 @@ const LandingPage = () => {
       </section>
 
       {/* Tools Section */}
-      <section className="py-24 px-6 border-t border-zinc-900">
+      <section className="py-16 sm:py-24 px-4 sm:px-6 border-t border-zinc-900">
         <div className="max-w-6xl mx-auto">
-          <div className="mb-16">
-            <span className="tag-brutal mb-4 inline-block">Free Tools</span>
-            <h2 className="font-display text-4xl sm:text-5xl font-black tracking-tight">
+          <div className="mb-10 sm:mb-16">
+            <span className="tag-brutal mb-4 inline-block text-[10px] sm:text-xs">Free Tools</span>
+            <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight">
               VIRAL JUDGMENT TOOLS
             </h2>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {/* Roast My Bio */}
             <Link to="/tools" className="group" data-testid="tool-roast-card">
-              <div className="card-brutal p-8 h-full">
-                <div className="w-16 h-16 bg-orange-500/10 border border-orange-500/30 flex items-center justify-center mb-6 group-hover:bg-orange-500/20 transition-colors">
-                  <Zap className="w-8 h-8 text-orange-500" />
+              <div className="card-brutal p-6 sm:p-8 h-full">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-orange-500/10 border border-orange-500/30 flex items-center justify-center mb-4 sm:mb-6 group-hover:bg-orange-500/20 transition-colors">
+                  <Zap className="w-6 h-6 sm:w-8 sm:h-8 text-orange-500" />
                 </div>
-                <h3 className="font-display text-2xl font-bold mb-3">ROAST MY BIO</h3>
-                <p className="text-zinc-400 text-sm leading-relaxed mb-6">
+                <h3 className="font-display text-xl sm:text-2xl font-bold mb-2 sm:mb-3">ROAST MY BIO</h3>
+                <p className="text-zinc-400 text-xs sm:text-sm leading-relaxed mb-4 sm:mb-6">
                   Paste your dating or LinkedIn bio. Get absolutely destroyed. Then get it fixed.
                 </p>
-                <div className="flex items-center text-orange-500 text-sm font-bold uppercase tracking-wider">
-                  Get Roasted <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                <div className="flex items-center text-orange-500 text-xs sm:text-sm font-bold uppercase tracking-wider">
+                  Get Roasted <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                 </div>
               </div>
             </Link>
 
             {/* Red Flag Detector */}
             <Link to="/tools" className="group" data-testid="tool-redflag-card">
-              <div className="card-brutal p-8 h-full">
-                <div className="w-16 h-16 bg-red-500/10 border border-red-500/30 flex items-center justify-center mb-6 group-hover:bg-red-500/20 transition-colors">
-                  <Target className="w-8 h-8 text-red-500" />
+              <div className="card-brutal p-6 sm:p-8 h-full">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-red-500/10 border border-red-500/30 flex items-center justify-center mb-4 sm:mb-6 group-hover:bg-red-500/20 transition-colors">
+                  <Target className="w-6 h-6 sm:w-8 sm:h-8 text-red-500" />
                 </div>
-                <h3 className="font-display text-2xl font-bold mb-3">RED FLAG DETECTOR</h3>
-                <p className="text-zinc-400 text-sm leading-relaxed mb-6">
+                <h3 className="font-display text-xl sm:text-2xl font-bold mb-2 sm:mb-3">RED FLAG DETECTOR</h3>
+                <p className="text-zinc-400 text-xs sm:text-sm leading-relaxed mb-4 sm:mb-6">
                   Paste that text conversation. Find every red flag you're pretending not to see.
                 </p>
-                <div className="flex items-center text-red-500 text-sm font-bold uppercase tracking-wider">
-                  Expose Flags <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                <div className="flex items-center text-red-500 text-xs sm:text-sm font-bold uppercase tracking-wider">
+                  Expose Flags <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                 </div>
               </div>
             </Link>
 
             {/* Who's Right */}
-            <Link to="/tools" className="group" data-testid="tool-whos-right-card">
-              <div className="card-brutal p-8 h-full">
-                <div className="w-16 h-16 bg-purple-500/10 border border-purple-500/30 flex items-center justify-center mb-6 group-hover:bg-purple-500/20 transition-colors">
-                  <Brain className="w-8 h-8 text-purple-500" />
+            <Link to="/tools" className="group sm:col-span-2 lg:col-span-1" data-testid="tool-whos-right-card">
+              <div className="card-brutal p-6 sm:p-8 h-full">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-purple-500/10 border border-purple-500/30 flex items-center justify-center mb-4 sm:mb-6 group-hover:bg-purple-500/20 transition-colors">
+                  <Brain className="w-6 h-6 sm:w-8 sm:h-8 text-purple-500" />
                 </div>
-                <h3 className="font-display text-2xl font-bold mb-3">WHO'S RIGHT?</h3>
-                <p className="text-zinc-400 text-sm leading-relaxed mb-6">
+                <h3 className="font-display text-xl sm:text-2xl font-bold mb-2 sm:mb-3">WHO'S RIGHT?</h3>
+                <p className="text-zinc-400 text-xs sm:text-sm leading-relaxed mb-4 sm:mb-6">
                   Submit your argument. Get the verdict. Settle it once and for all.
                 </p>
-                <div className="flex items-center text-purple-500 text-sm font-bold uppercase tracking-wider">
-                  Get Verdict <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                <div className="flex items-center text-purple-500 text-xs sm:text-sm font-bold uppercase tracking-wider">
+                  Get Verdict <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                 </div>
               </div>
             </Link>
@@ -212,51 +212,51 @@ const LandingPage = () => {
       </section>
 
       {/* Why Section */}
-      <section className="py-24 px-6 bg-[#0D0D0D] border-t border-zinc-900">
+      <section className="py-16 sm:py-24 px-4 sm:px-6 bg-[#0D0D0D] border-t border-zinc-900">
         <div className="max-w-6xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
             <div>
-              <span className="tag-brutal mb-4 inline-block">Why The Judgy?</span>
-              <h2 className="font-display text-4xl sm:text-5xl font-black tracking-tight mb-8">
+              <span className="tag-brutal mb-4 inline-block text-[10px] sm:text-xs">Why The Judgy?</span>
+              <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight mb-6 sm:mb-8">
                 NOT YOUR AVERAGE
                 <br />
                 <span className="text-[#FF2E4C]">AI ASSISTANT</span>
               </h2>
               
-              <div className="space-y-6">
-                <div className="flex gap-4">
-                  <div className="w-12 h-12 bg-[#FF2E4C]/10 border border-[#FF2E4C]/30 flex items-center justify-center flex-shrink-0">
-                    <Shield className="w-6 h-6 text-[#FF2E4C]" />
+              <div className="space-y-4 sm:space-y-6">
+                <div className="flex gap-3 sm:gap-4">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#FF2E4C]/10 border border-[#FF2E4C]/30 flex items-center justify-center flex-shrink-0">
+                    <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-[#FF2E4C]" />
                   </div>
                   <div>
-                    <h3 className="font-display font-bold text-lg mb-1">BRUTALLY HONEST</h3>
-                    <p className="text-zinc-400 text-sm">No sugarcoating. No fake positivity. Just the truth you need to hear.</p>
+                    <h3 className="font-display font-bold text-base sm:text-lg mb-1">BRUTALLY HONEST</h3>
+                    <p className="text-zinc-400 text-xs sm:text-sm">No sugarcoating. No fake positivity. Just the truth you need to hear.</p>
                   </div>
                 </div>
                 
-                <div className="flex gap-4">
-                  <div className="w-12 h-12 bg-[#FFB800]/10 border border-[#FFB800]/30 flex items-center justify-center flex-shrink-0">
-                    <Brain className="w-6 h-6 text-[#FFB800]" />
+                <div className="flex gap-3 sm:gap-4">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#FFB800]/10 border border-[#FFB800]/30 flex items-center justify-center flex-shrink-0">
+                    <Brain className="w-5 h-5 sm:w-6 sm:h-6 text-[#FFB800]" />
                   </div>
                   <div>
-                    <h3 className="font-display font-bold text-lg mb-1">ACTUALLY HELPFUL</h3>
-                    <p className="text-zinc-400 text-sm">Behind the roasts is real wisdom. We judge, then we guide.</p>
+                    <h3 className="font-display font-bold text-base sm:text-lg mb-1">ACTUALLY HELPFUL</h3>
+                    <p className="text-zinc-400 text-xs sm:text-sm">Behind the roasts is real wisdom. We judge, then we guide.</p>
                   </div>
                 </div>
                 
-                <div className="flex gap-4">
-                  <div className="w-12 h-12 bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
-                    <Target className="w-6 h-6 text-emerald-500" />
+                <div className="flex gap-3 sm:gap-4">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
+                    <Target className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-500" />
                   </div>
                   <div>
-                    <h3 className="font-display font-bold text-lg mb-1">REAL RESULTS</h3>
-                    <p className="text-zinc-400 text-sm">Users make better decisions when they stop lying to themselves.</p>
+                    <h3 className="font-display font-bold text-base sm:text-lg mb-1">REAL RESULTS</h3>
+                    <p className="text-zinc-400 text-xs sm:text-sm">Users make better decisions when they stop lying to themselves.</p>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="relative">
+            <div className="relative hidden lg:block">
               <img 
                 src={JUDGY_AVATAR} 
                 alt="The Judgy" 
@@ -269,52 +269,51 @@ const LandingPage = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 px-6 border-t border-zinc-900">
+      <section className="py-16 sm:py-24 px-4 sm:px-6 border-t border-zinc-900">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight mb-6">
+          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight mb-4 sm:mb-6">
             READY TO FACE
             <br />
             <span className="text-[#FF2E4C]">THE TRUTH?</span>
           </h2>
-          <p className="text-xl text-zinc-400 mb-10 max-w-xl mx-auto">
+          <p className="text-base sm:text-xl text-zinc-400 mb-8 sm:mb-10 max-w-xl mx-auto">
             Most people can't handle honesty. That's why they keep making the same mistakes. Don't be most people.
           </p>
           <Link to="/chat">
             <Button 
               size="lg" 
-              className="bg-[#FF2E4C] hover:bg-[#E01F3D] text-white shadow-brutal h-16 px-12 text-lg uppercase tracking-wider font-bold"
+              className="bg-[#FF2E4C] hover:bg-[#E01F3D] text-white shadow-brutal h-12 sm:h-16 px-8 sm:px-12 text-sm sm:text-lg uppercase tracking-wider font-bold"
               data-testid="cta-judge-btn"
             >
               Judge Me Now
-              <ArrowRight className="w-6 h-6 ml-3" />
+              <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 ml-2 sm:ml-3" />
             </Button>
           </Link>
-          <p className="mt-6 text-sm text-zinc-600 uppercase tracking-wider">
+          <p className="mt-4 sm:mt-6 text-xs sm:text-sm text-zinc-600 uppercase tracking-wider">
             Free to try • No filter • Real advice
           </p>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-12 px-6 border-t border-zinc-900 bg-[#080808]">
+      <footer className="py-8 sm:py-12 px-4 sm:px-6 border-t border-zinc-900 bg-[#080808]">
         <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-[#FF2E4C] flex items-center justify-center">
-                <span className="font-display font-black text-sm">J</span>
+          <div className="flex flex-col gap-6 sm:gap-0 sm:flex-row justify-between items-center">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="w-6 h-6 sm:w-8 sm:h-8 bg-[#FF2E4C] flex items-center justify-center">
+                <span className="font-display font-black text-xs sm:text-sm">J</span>
               </div>
-              <span className="font-display font-bold tracking-tight">THE JUDGY</span>
+              <span className="font-display font-bold tracking-tight text-sm sm:text-base">THE JUDGY</span>
             </div>
             
-            <div className="flex items-center gap-8 text-sm text-zinc-500">
+            <div className="flex items-center gap-4 sm:gap-8 text-xs sm:text-sm text-zinc-500">
               <Link to="/tools" className="hover:text-white transition-colors uppercase tracking-wider">Tools</Link>
-              <Link to="/pricing" className="hover:text-white transition-colors uppercase tracking-wider">Pricing</Link>
+              <Link to="/pricing" className="hover:text-white transition-colors uppercase tracking-wider">Tokens</Link>
               <Link to="/wall" className="hover:text-white transition-colors uppercase tracking-wider">Wall</Link>
-              <a href="mailto:hello@thejudgy.com" className="hover:text-white transition-colors uppercase tracking-wider">Contact</a>
             </div>
             
-            <div className="text-sm text-zinc-600">
-              © 2025 The Judgy. No feelings were spared.
+            <div className="text-xs sm:text-sm text-zinc-600">
+              © 2025 The Judgy
             </div>
           </div>
         </div>
