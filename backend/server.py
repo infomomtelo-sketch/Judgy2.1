@@ -67,7 +67,8 @@ SUBSCRIPTION_PLANS = {
             "messages_per_day": 5,
             "history_days": 1
         },
-        "popular": False
+        "popular": False,
+        "stripe_price_id": None
     },
     "standard": {
         "id": "standard",
@@ -87,7 +88,8 @@ SUBSCRIPTION_PLANS = {
             "messages_per_day": 50,
             "history_days": 7
         },
-        "popular": True
+        "popular": True,
+        "stripe_price_id": "price_1THyz6PO1GxEBHffz0grE3PG"
     },
     "premium": {
         "id": "premium",
@@ -108,7 +110,8 @@ SUBSCRIPTION_PLANS = {
             "messages_per_day": -1,
             "history_days": 30
         },
-        "popular": False
+        "popular": False,
+        "stripe_price_id": "price_1THyz7PO1GxEBHffhZiEI12q"
     }
 }
 
@@ -682,8 +685,10 @@ async def create_checkout_session(request: CreateCheckoutRequest, http_request: 
         success_url = f"{host_url}/pricing?session_id={{CHECKOUT_SESSION_ID}}&success=true"
         cancel_url = f"{host_url}/pricing?cancelled=true"
         
+        # Use stripe_price_id for subscription pricing
         checkout_request = CheckoutSessionRequest(
-            amount=plan["price"],
+            stripe_price_id=plan.get("stripe_price_id"),
+            amount=plan["price"] if not plan.get("stripe_price_id") else None,
             currency="usd",
             success_url=success_url,
             cancel_url=cancel_url,
