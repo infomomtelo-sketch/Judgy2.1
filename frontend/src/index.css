@@ -313,7 +313,6 @@ button:focus-visible, a:focus-visible {
 .stat-brutal {
     font-family: 'Unbounded', sans-serif;
     font-weight: 900;
-    font-size: 3rem;
     line-height: 1;
     color: #FF2E4C;
 }

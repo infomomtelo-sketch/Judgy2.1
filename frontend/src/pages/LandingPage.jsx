@@ -10,12 +10,12 @@ const LandingPage = () => {
     <div className="min-h-screen bg-[#0A0A0A] text-white">
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 glass-header">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 bg-[#FF2E4C] flex items-center justify-center">
-              <span className="font-display font-black text-xl">J</span>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-2 sm:gap-3 group">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[#FF2E4C] flex items-center justify-center">
+              <span className="font-display font-black text-lg sm:text-xl">J</span>
             </div>
-            <span className="font-display font-bold text-xl tracking-tight">THE JUDGY</span>
+            <span className="font-display font-bold text-base sm:text-xl tracking-tight hidden xs:block">THE JUDGY</span>
           </Link>
           
           <div className="hidden md:flex items-center gap-8">
@@ -24,15 +24,16 @@ const LandingPage = () => {
             <Link to="/wall" className="text-zinc-400 hover:text-white transition-colors text-sm uppercase tracking-wider">Wall</Link>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <Link to="/login">
-              <Button variant="ghost" className="text-zinc-400 hover:text-white hover:bg-white/5 text-sm uppercase tracking-wider" data-testid="nav-signin-btn">
+              <Button variant="ghost" className="text-zinc-400 hover:text-white hover:bg-white/5 text-xs sm:text-sm uppercase tracking-wider px-2 sm:px-4" data-testid="nav-signin-btn">
                 Sign In
               </Button>
             </Link>
             <Link to="/chat">
-              <Button className="bg-[#FF2E4C] hover:bg-[#E01F3D] text-white shadow-brutal text-sm uppercase tracking-wider font-bold" data-testid="nav-start-btn">
-                Get Judged
+              <Button className="bg-[#FF2E4C] hover:bg-[#E01F3D] text-white shadow-brutal text-xs sm:text-sm uppercase tracking-wider font-bold px-3 sm:px-4" data-testid="nav-start-btn">
+                <span className="hidden sm:inline">Get Judged</span>
+                <span className="sm:hidden">Start</span>
               </Button>
             </Link>
           </div>
@@ -40,22 +41,22 @@ const LandingPage = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-24 px-6 relative overflow-hidden">
+      <section className="pt-24 sm:pt-32 pb-16 sm:pb-24 px-4 sm:px-6 relative overflow-hidden">
         {/* Background elements */}
-        <div className="absolute top-1/4 left-0 w-96 h-96 bg-[#FF2E4C]/10 blur-[120px] pointer-events-none" />
-        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-[#FFB800]/5 blur-[150px] pointer-events-none" />
+        <div className="absolute top-1/4 left-0 w-64 sm:w-96 h-64 sm:h-96 bg-[#FF2E4C]/10 blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-64 sm:w-[500px] h-64 sm:h-[500px] bg-[#FFB800]/5 blur-[150px] pointer-events-none" />
         
         <div className="max-w-6xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
             {/* Left - Content */}
-            <div className="space-y-8">
+            <div className="space-y-6 sm:space-y-8">
               <div className="inline-block">
-                <span className="tag-brutal" data-testid="hero-tag">
+                <span className="tag-brutal text-[10px] sm:text-xs" data-testid="hero-tag">
                   AI That Doesn't Sugarcoat
                 </span>
               </div>
               
-              <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl font-black leading-[0.9] tracking-tight">
+              <h1 className="font-display text-4xl sm:text-5xl lg:text-7xl font-black leading-[0.9] tracking-tight">
                 <span className="text-white">THE TRUTH</span>
                 <br />
                 <span className="text-gradient">HURTS.</span>
@@ -63,26 +64,26 @@ const LandingPage = () => {
                 <span className="text-zinc-500">GOOD.</span>
               </h1>
               
-              <p className="text-lg text-zinc-400 max-w-md leading-relaxed">
+              <p className="text-base sm:text-lg text-zinc-400 max-w-md leading-relaxed">
                 Stop asking AI that agrees with everything. Get brutally honest advice from an AI that judges you, roasts you, and then actually helps you.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link to="/chat">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                <Link to="/chat" className="w-full sm:w-auto">
                   <Button 
                     size="lg" 
-                    className="bg-[#FF2E4C] hover:bg-[#E01F3D] text-white shadow-brutal h-14 px-8 text-base uppercase tracking-wider font-bold w-full sm:w-auto"
+                    className="bg-[#FF2E4C] hover:bg-[#E01F3D] text-white shadow-brutal h-12 sm:h-14 px-6 sm:px-8 text-sm sm:text-base uppercase tracking-wider font-bold w-full"
                     data-testid="hero-cta-btn"
                   >
                     Get Roasted
-                    <ArrowRight className="w-5 h-5 ml-2" />
+                    <ArrowRight className="w-4 sm:w-5 h-4 sm:h-5 ml-2" />
                   </Button>
                 </Link>
-                <Link to="/tools">
+                <Link to="/tools" className="w-full sm:w-auto">
                   <Button 
                     size="lg" 
                     variant="outline" 
-                    className="border-zinc-700 hover:border-[#FF2E4C] hover:bg-[#FF2E4C]/10 text-white h-14 px-8 text-base uppercase tracking-wider font-bold w-full sm:w-auto"
+                    className="border-zinc-700 hover:border-[#FF2E4C] hover:bg-[#FF2E4C]/10 text-white h-12 sm:h-14 px-6 sm:px-8 text-sm sm:text-base uppercase tracking-wider font-bold w-full"
                     data-testid="hero-tools-btn"
                   >
                     Try Free Tools
@@ -91,18 +92,18 @@ const LandingPage = () => {
               </div>
 
               {/* Stats */}
-              <div className="flex gap-12 pt-8 border-t border-zinc-800">
+              <div className="flex gap-6 sm:gap-12 pt-6 sm:pt-8 border-t border-zinc-800">
                 <div>
-                  <div className="stat-brutal" data-testid="stat-roasts">10K+</div>
-                  <div className="text-xs text-zinc-500 uppercase tracking-wider mt-1">Roasts Delivered</div>
+                  <div className="stat-brutal text-2xl sm:text-5xl" data-testid="stat-roasts">10K+</div>
+                  <div className="text-[10px] sm:text-xs text-zinc-500 uppercase tracking-wider mt-1">Roasts</div>
                 </div>
                 <div>
-                  <div className="stat-brutal" data-testid="stat-truths">100%</div>
-                  <div className="text-xs text-zinc-500 uppercase tracking-wider mt-1">Brutal Honesty</div>
+                  <div className="stat-brutal text-2xl sm:text-5xl" data-testid="stat-truths">100%</div>
+                  <div className="text-[10px] sm:text-xs text-zinc-500 uppercase tracking-wider mt-1">Honest</div>
                 </div>
                 <div>
-                  <div className="stat-brutal" data-testid="stat-filter">0</div>
-                  <div className="text-xs text-zinc-500 uppercase tracking-wider mt-1">Filter Applied</div>
+                  <div className="stat-brutal text-2xl sm:text-5xl" data-testid="stat-filter">0</div>
+                  <div className="text-[10px] sm:text-xs text-zinc-500 uppercase tracking-wider mt-1">Filter</div>
                 </div>
               </div>
             </div>

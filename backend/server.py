@@ -31,7 +31,8 @@ EMERGENT_LLM_KEY = os.environ.get('EMERGENT_LLM_KEY')
 STRIPE_API_KEY = os.environ.get('STRIPE_API_KEY')
 RESEND_API_KEY = os.environ.get('RESEND_API_KEY')
 SENDER_EMAIL = os.environ.get('SENDER_EMAIL', 'onboarding@resend.dev')
-ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', 'admin@judgygptonline.com')
+ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', 'hello@thejudgy.com')
+FRONTEND_URL = os.environ.get('FRONTEND_URL', 'https://thejudgy.com')
 
 # Initialize Resend
 if RESEND_API_KEY:
@@ -539,30 +540,35 @@ async def forgot_password(data: PasswordResetRequest):
     # Send email with reset link
     try:
         if RESEND_API_KEY and RESEND_API_KEY != "re_test_key":
-            reset_link = f"https://judgygptonline.com/reset-password?token={reset_token}"
+            reset_link = f"{FRONTEND_URL}/reset-password?token={reset_token}"
             
             resend.Emails.send({
                 "from": SENDER_EMAIL,
                 "to": data.email,
-                "subject": "Reset Your JudgyGPT Password 💅",
+                "subject": "Reset Your Password - The Judgy",
                 "html": f"""
-                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-                    <h1 style="color: #0891b2;">Reset Your Password</h1>
-                    <p>Hey there! Someone (hopefully you) requested a password reset for your JudgyGPT account.</p>
-                    <p>Click the button below to reset your password:</p>
-                    <a href="{reset_link}" style="display: inline-block; background: linear-gradient(to right, #0891b2, #06b6d4); color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; margin: 20px 0;">
+                <div style="font-family: 'JetBrains Mono', monospace, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #0A0A0A; color: #FFFFFF;">
+                    <div style="text-align: center; margin-bottom: 30px;">
+                        <div style="display: inline-block; width: 60px; height: 60px; background: #FF2E4C; line-height: 60px; font-size: 30px; font-weight: bold;">J</div>
+                        <h1 style="color: #FFFFFF; margin: 20px 0 0 0; font-size: 24px;">THE JUDGY</h1>
+                    </div>
+                    <h2 style="color: #FF2E4C; margin-bottom: 20px;">Reset Your Password</h2>
+                    <p style="color: #A1A1AA;">Someone (hopefully you) requested a password reset for your account.</p>
+                    <p style="color: #A1A1AA;">Click the button below to reset your password:</p>
+                    <a href="{reset_link}" style="display: inline-block; background: #FF2E4C; color: white; padding: 14px 28px; text-decoration: none; font-weight: bold; text-transform: uppercase; letter-spacing: 0.05em; margin: 20px 0; box-shadow: 4px 4px 0 #000;">
                         Reset Password
                     </a>
-                    <p style="color: #666; font-size: 14px;">This link expires in 1 hour.</p>
-                    <p style="color: #666; font-size: 14px;">If you didn't request this, just ignore this email. Your password won't change.</p>
-                    <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
-                    <p style="color: #999; font-size: 12px;">— JudgyGPT (yes, even password reset emails have attitude 💅)</p>
+                    <p style="color: #71717A; font-size: 14px;">This link expires in 1 hour.</p>
+                    <p style="color: #71717A; font-size: 14px;">If you didn't request this, just ignore this email.</p>
+                    <hr style="border: none; border-top: 1px solid #27272A; margin: 30px 0;">
+                    <p style="color: #52525B; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em;">The truth hurts. Good.</p>
                 </div>
                 """
             })
         else:
             # Log for testing when no email service
-            logging.info(f"Password reset token for {data.email}: {reset_token}")
+            reset_link = f"{FRONTEND_URL}/reset-password?token={reset_token}"
+            logging.info(f"Password reset link for {data.email}: {reset_link}")
     except Exception as e:
         logging.error(f"Failed to send password reset email: {e}")
     
