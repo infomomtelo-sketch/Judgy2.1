@@ -141,6 +141,21 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
+  const setUserAndToken = useCallback(async (userData, accessToken) => {
+    localStorage.setItem('auth_token', accessToken);
+    setToken(accessToken);
+    setUser(userData);
+    
+    // Set axios header and get subscription info
+    axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+    try {
+      const subResponse = await axios.get(`${API}/subscriptions/current`);
+      setSubscription(subResponse.data);
+    } catch (error) {
+      console.error('Failed to get subscription:', error);
+    }
+  }, []);
+
   const subscribe = useCallback(async (planId) => {
     const response = await axios.post(`${API}/subscriptions/subscribe`, { plan_id: planId });
     await refreshSubscription();
@@ -166,6 +181,7 @@ export const AuthProvider = ({ children }) => {
     refreshSubscription,
     refreshTokens,
     addFreeTokens,
+    setUserAndToken,
     isAuthenticated: !!user,
     isPremium: user?.subscription_plan === 'standard' || user?.subscription_plan === 'premium',
     isFullDrama: user?.subscription_plan === 'premium',

@@ -1,12 +1,13 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Depends, Request
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, Request, Cookie
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from fastapi.responses import Response
+from fastapi.responses import Response, JSONResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
 import asyncio
+import httpx
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict, EmailStr
 from typing import List, Optional, Dict
@@ -524,9 +525,6 @@ async def logout(credentials: HTTPAuthorizationCredentials = Depends(security)):
         await db.auth_tokens.delete_one({"token": credentials.credentials})
     return {"message": "Logged out successfully"}
 
-# Password reset tokens storage (in production, use Redis or DB)
-password_reset_tokens = {}
-
 @api_router.post("/auth/forgot-password")
 async def forgot_password(data: PasswordResetRequest):
     """Request password reset - sends email with reset link"""
@@ -540,11 +538,15 @@ async def forgot_password(data: PasswordResetRequest):
     reset_token = secrets.token_urlsafe(32)
     expiry = datetime.now(timezone.utc) + timedelta(hours=1)
     
-    password_reset_tokens[reset_token] = {
+    # Store token in MongoDB (not memory)
+    await db.password_reset_tokens.delete_many({"email": data.email})  # Remove old tokens
+    await db.password_reset_tokens.insert_one({
+        "token": reset_token,
         "user_id": user_doc["id"],
         "email": data.email,
-        "expiry": expiry
-    }
+        "expiry": expiry.isoformat(),
+        "created_at": datetime.now(timezone.utc).isoformat()
+    })
     
     # Send email with reset link
     try:
@@ -574,8 +576,8 @@ async def forgot_password(data: PasswordResetRequest):
                 </div>
                 """
             })
+            logging.info(f"Password reset email sent to {data.email}")
         else:
-            # Log for testing when no email service
             reset_link = f"{FRONTEND_URL}/reset-password?token={reset_token}"
             logging.info(f"Password reset link for {data.email}: {reset_link}")
     except Exception as e:
@@ -586,13 +588,15 @@ async def forgot_password(data: PasswordResetRequest):
 @api_router.post("/auth/reset-password")
 async def reset_password(data: PasswordResetConfirm):
     """Reset password using token"""
-    token_data = password_reset_tokens.get(data.token)
+    # Get token from MongoDB
+    token_doc = await db.password_reset_tokens.find_one({"token": data.token})
     
-    if not token_data:
+    if not token_doc:
         raise HTTPException(status_code=400, detail="Invalid or expired reset token")
     
-    if datetime.now(timezone.utc) > token_data["expiry"]:
-        del password_reset_tokens[data.token]
+    expiry = datetime.fromisoformat(token_doc["expiry"])
+    if datetime.now(timezone.utc) > expiry:
+        await db.password_reset_tokens.delete_one({"token": data.token})
         raise HTTPException(status_code=400, detail="Reset token has expired. Please request a new one.")
     
     if len(data.new_password) < 6:
@@ -602,12 +606,12 @@ async def reset_password(data: PasswordResetConfirm):
     new_password_hash = hash_password(data.new_password)
     
     await db.users.update_one(
-        {"id": token_data["user_id"]},
+        {"id": token_doc["user_id"]},
         {"$set": {"password_hash": new_password_hash}}
     )
     
     # Remove used token
-    del password_reset_tokens[data.token]
+    await db.password_reset_tokens.delete_one({"token": data.token})
     
     return {"message": "Password reset successfully! You can now log in with your new password."}
 
@@ -640,6 +644,111 @@ async def get_me(user: User = Depends(require_auth)):
         subscription_end=user.subscription_end,
         tokens=tokens
     )
+
+# ============== GOOGLE OAUTH ==============
+
+EMERGENT_AUTH_URL = "https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data"
+
+class GoogleAuthRequest(BaseModel):
+    session_id: str
+
+@api_router.post("/auth/google/callback")
+async def google_auth_callback(request: GoogleAuthRequest, response: Response):
+    """Exchange Emergent session_id for user data and create session"""
+    try:
+        # Call Emergent Auth to get user data
+        async with httpx.AsyncClient() as client:
+            auth_response = await client.get(
+                EMERGENT_AUTH_URL,
+                headers={"X-Session-ID": request.session_id}
+            )
+            
+            if auth_response.status_code != 200:
+                raise HTTPException(status_code=401, detail="Invalid session")
+            
+            user_data = auth_response.json()
+        
+        email = user_data.get("email")
+        name = user_data.get("name", email.split("@")[0])
+        picture = user_data.get("picture", "")
+        
+        # Check if user exists
+        existing_user = await db.users.find_one({"email": email}, {"_id": 0})
+        
+        if existing_user:
+            user_id = existing_user.get("id")
+            # Update user info if needed
+            await db.users.update_one(
+                {"email": email},
+                {"$set": {"name": name, "picture": picture}}
+            )
+        else:
+            # Create new user with 50 free tokens
+            user_id = str(uuid.uuid4())
+            new_user = {
+                "id": user_id,
+                "email": email,
+                "name": name,
+                "picture": picture,
+                "password_hash": "",  # No password for OAuth users
+                "subscription_plan": "free",
+                "subscription_status": "active",
+                "tokens": 50,
+                "created_at": datetime.now(timezone.utc).isoformat(),
+                "auth_provider": "google"
+            }
+            await db.users.insert_one(new_user)
+        
+        # Create session token
+        session_token = secrets.token_urlsafe(32)
+        expires_at = datetime.now(timezone.utc) + timedelta(days=7)
+        
+        await db.user_sessions.insert_one({
+            "user_id": user_id,
+            "session_token": session_token,
+            "expires_at": expires_at.isoformat(),
+            "created_at": datetime.now(timezone.utc).isoformat()
+        })
+        
+        # Also store in auth_tokens for compatibility
+        await db.auth_tokens.insert_one({
+            "token": session_token,
+            "user_id": user_id,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        })
+        
+        # Get full user data
+        user_doc = await db.users.find_one({"id": user_id}, {"_id": 0})
+        
+        # Set cookie
+        response.set_cookie(
+            key="session_token",
+            value=session_token,
+            httponly=True,
+            secure=True,
+            samesite="none",
+            max_age=7*24*60*60,
+            path="/"
+        )
+        
+        return {
+            "access_token": session_token,
+            "user": {
+                "id": user_id,
+                "email": email,
+                "name": name,
+                "subscription_plan": user_doc.get("subscription_plan", "free"),
+                "subscription_status": user_doc.get("subscription_status", "active"),
+                "tokens": user_doc.get("tokens", 50)
+            }
+        }
+        
+    except httpx.RequestError as e:
+        logging.error(f"Google auth error: {e}")
+        raise HTTPException(status_code=500, detail="Authentication service unavailable")
+    except Exception as e:
+        logging.error(f"Google auth error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 # ============== SUBSCRIPTION ROUTES ==============
 
