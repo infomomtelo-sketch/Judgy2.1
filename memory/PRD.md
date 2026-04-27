@@ -1,209 +1,53 @@
-# JudgyGPT Online - Product Requirements Document
+# JudgyGPT (The Judgy) - Product Requirements Document
 
 ## Product Overview
-**Name:** JudgyGPT  
-**Domain:** judgygptonline.com  
-**Tagline:** "Go ahead... Test Me 💅"
+A full-stack AI chat application with a sarcastic, "judgy" but helpful personality. Built for thejudgy.com. Users get brutally honest advice with a sophisticated courtroom-themed UI.
 
-An AI chatbot with personality that gives brutally honest advice with sass.
+## Core Requirements
+1. **Landing = Chat**: Landing page serves directly as the chat interface. 5 free anonymous messages before requiring signup.
+2. **Token Economy**: 50 free tokens on signup. 1 token per message. No subscriptions.
+3. **Stripe Payments**: One-time token purchases via Stripe Checkout (Starter $5/50 tokens, Growth $15/200 tokens, Power $50/500 tokens).
+4. **Light/Dark Mode**: Warm courtroom light theme (default) with dark mode toggle.
+5. **Auth**: Email/password + Google OAuth. Resend-based password recovery.
 
----
+## Architecture
+- **Frontend**: React + Tailwind CSS + Shadcn/UI
+- **Backend**: Python FastAPI (monolithic server.py)
+- **Database**: MongoDB
+- **Integrations**: OpenAI (Emergent LLM Key), Resend (emails), Google OAuth (Emergent Auth), Stripe (payments)
 
-## ✅ COMPLETED FEATURES
+## What's Implemented
+- [x] Anonymous chat (5 free messages) on landing page
+- [x] Light/Dark mode toggle with courtroom aesthetic
+- [x] Token-based economy (50 free on signup, 1 per message)
+- [x] Stripe one-time token purchases (3 packages)
+- [x] Google OAuth sign-in/sign-up
+- [x] Email/password authentication
+- [x] Password reset via Resend
+- [x] Pricing page with live Buy buttons
+- [x] Chat page with token tracking
+- [x] Theme persists across sessions (localStorage)
 
-### Core Features:
-- [x] User authentication (register/login)
-- [x] Password reset via email
-- [x] JudgyGPT AI chat with sassy personality
-- [x] "Test Me" interactive landing page
-- [x] Challenge-based chat prompts
-- [x] 3-tier subscription system
-- [x] Real Stripe payment integration
-- [x] Chat history & sessions
-- [x] Mobile responsive design
+## Backlog
+- [ ] (P1) Apple Sign-In (requires Apple Developer account)
+- [ ] (P2) Refactor server.py into modular routes (auth, chat, payments, viral_tools)
+- [ ] (P2) Admin Dashboard (track signups, tokens, messages)
+- [ ] (P2) Viral marketing tools (Roast My Bio, Red Flag Detector)
+- [ ] (P3) Community/Wall of Shame feature
 
-### UI/UX:
-- [x] Modern "Test Me" landing page
-- [x] Challenge cards in chat
-- [x] Navigation in chat header (Home, Share, etc.)
-- [x] User dropdown menu with quick actions
-- [x] Forgot password flow
-- [x] Payment success/error handling
+## Key API Endpoints
+- `POST /api/chat/anonymous` - Anonymous chat (5 free)
+- `POST /api/chat` - Authenticated chat (1 token/msg)
+- `GET /api/tokens/packages` - List token packages
+- `POST /api/tokens/checkout` - Create Stripe checkout session
+- `GET /api/tokens/checkout/status/{session_id}` - Poll payment status
+- `POST /api/webhook/stripe` - Stripe webhook handler
+- `POST /api/auth/register` / `POST /api/auth/login`
+- `GET /api/auth/me` - Current user + token balance
+- `POST /api/auth/forgot-password` / `POST /api/auth/reset-password`
 
-### Technical:
-- [x] Health check endpoints for deployment
-- [x] SEO meta tags & Open Graph
-- [x] Sitemap & robots.txt
-- [x] Stripe checkout sessions
-- [x] Resend email integration
-
----
-
-## 📋 SUBSCRIPTION PLANS
-
-| Plan | Price | Messages/Day |
-|------|-------|--------------|
-| Judgement Lite | $0 | 5 |
-| Talk to Me Nice | $6.99/mo | 50 |
-| Bring the Whole Drama | $14.99/mo | Unlimited |
-
----
-
-## 🗂️ FILE STRUCTURE
-
-```
-/app
-├── backend/
-│   ├── server.py          # FastAPI backend
-│   ├── requirements.txt   # Python dependencies
-│   └── .env               # Environment variables
-├── frontend/
-│   ├── src/
-│   │   ├── pages/         # React pages
-│   │   ├── components/    # React components
-│   │   └── context/       # Auth context
-│   └── public/            # Static files
-└── memory/
-    ├── PRD.md             # This file
-    ├── MARKETING_STRATEGY.md
-    ├── WEEKLY_CALENDAR.md
-    ├── MARKETING_RESOURCES.md
-    ├── SOCIAL_MEDIA_KIT.md
-    └── GROWTH_PLAN.md
-```
-
----
-
-## 🔧 ENVIRONMENT VARIABLES
-
-### Backend (.env):
-```
-MONGO_URL=mongodb://...
-DB_NAME=test_database
-EMERGENT_LLM_KEY=sk-emergent-...
-STRIPE_API_KEY=sk_test_...
-RESEND_API_KEY=re_...
-SENDER_EMAIL=onboarding@resend.dev
-```
-
-### Frontend (.env):
-```
-REACT_APP_BACKEND_URL=https://...
-```
-
----
-
-## 📊 API ENDPOINTS
-
-### Auth:
-- POST `/api/auth/register`
-- POST `/api/auth/login`
-- POST `/api/auth/logout`
-- POST `/api/auth/forgot-password`
-- POST `/api/auth/reset-password`
-- GET `/api/auth/me`
-
-### Chat:
-- POST `/api/chat`
-- GET `/api/chat/{session_id}/history`
-- DELETE `/api/chat/{session_id}`
-
-### Subscriptions:
-- GET `/api/subscriptions/plans`
-- GET `/api/subscriptions/status`
-- POST `/api/subscriptions/subscribe`
-
-### Payments:
-- POST `/api/checkout/create`
-- GET `/api/checkout/status/{session_id}`
-- POST `/api/webhook/stripe`
-
-### Utility:
-- GET `/api/health`
-- GET `/health`
-- GET `/sitemap.xml`
-- GET `/robots.txt`
-
----
-
-## 📈 MARKETING ASSETS
-
-Created marketing materials at:
-- `/app/memory/MARKETING_STRATEGY.md` - Complete 90-day strategy
-- `/app/memory/WEEKLY_CALENDAR.md` - Daily posting schedule
-- `/app/memory/MARKETING_RESOURCES.md` - Tools & templates
-- `/app/memory/SOCIAL_MEDIA_KIT.md` - Ready-to-post content
-- `/app/memory/GROWTH_PLAN.md` - Growth tracker
-
----
-
-## 🎯 UPCOMING TASKS
-
-### P0 (Critical):
-- [x] **FIXED: Payment Security Bug** (Feb 16, 2025) - Users could upgrade to paid plans without payment. Fixed by:
-  - `/api/subscriptions/subscribe` now rejects paid plans with 403 error
-  - Only `/api/checkout/create` -> Stripe -> webhook flow can upgrade to paid plans
-  - Added transaction ownership verification to checkout status endpoint
-- [x] **FIXED: Token Persistence** (Feb 16, 2025) - Tokens now stored in MongoDB, survive server restarts
-- [x] **NEW: Viral Tools** (Feb 16, 2025) - Three shareable tools for viral growth:
-  - Roast My Bio (dating, LinkedIn, Instagram, Twitter)
-  - Red Flag Detector (conversation analysis)
-  - Who's Right? (argument verdict)
-  - All include shareable image cards + social sharing buttons
-- [x] **NEW: Judgment Wall** (Feb 16, 2025) - Infinite scroll community feed at `/wall`:
-  - Users can "Post to Wall" anonymously from viral tools
-  - Hot/New/Top sorting + filter by type (roasts, flags, verdicts)
-  - Reaction system (🔥 💀 😂 🚩)
-  - View counts and engagement tracking
-  - Moderation/report system
-- [ ] Deploy to production
-- [ ] Configure production email (Resend)
-
-### Monetization Opportunities (Built-in hooks):
-| Free | Paid Potential |
-|------|----------------|
-| View feed | Priority posting / Boost |
-| 3 submissions/day | Unlimited submissions |
-| Basic reactions | See who reacted |
-| Ads between posts | Ad-free experience |
-| Anonymous only | Custom display name |
-
-### P1 (Important):
-- [ ] Google Analytics integration
-- [ ] Email verification on signup
-- [ ] User profile/account page
-- [ ] Cancel subscription UI
-
-### P2 (Nice to Have):
-- [ ] Animated chat bubbles
-- [ ] Multiple chat sessions
-- [ ] Admin dashboard
-
----
-
-## 📱 SOCIAL MEDIA ACCOUNTS TO CREATE
-
-- [ ] TikTok: @judgygpt
-- [ ] Instagram: @judgygptonline
-- [ ] Twitter/X: @judgygpt
-- [ ] YouTube: JudgyGPT
-
----
-
-## 🔒 SECURITY NOTES
-
-### Payment Flow (SECURE):
-1. User clicks "Subscribe" on paid plan
-2. Frontend calls `/api/checkout/create` → Returns Stripe checkout URL
-3. User completes payment on Stripe
-4. Stripe webhook calls `/api/webhook/stripe` OR user polls `/api/checkout/status`
-5. Backend verifies payment with Stripe API before updating subscription
-
-### Blocked Attack Vectors:
-- Direct calls to `/api/subscriptions/subscribe` with paid plan → 403 Forbidden
-- Checking another user's checkout status → 403 Forbidden
-
----
-
-## Last Updated
-February 16, 2025
+## DB Schema
+- `users`: {id, email, name, password_hash, tokens, auth_provider, subscription_plan, created_at}
+- `payment_transactions`: {session_id, user_id, user_email, plan_id, amount, currency, status, payment_status, metadata}
+- `password_reset_tokens`: {token, email, expires_at}
+- `chat_messages`: {session_id, role, content, timestamp}
