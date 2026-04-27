@@ -926,20 +926,35 @@ async def stripe_webhook(request: Request):
             transaction = await db.payment_transactions.find_one({"session_id": session_id})
             if transaction and transaction.get("payment_status") != "paid":
                 user_id = metadata.get("user_id") or transaction.get("user_id")
-                plan_id = metadata.get("plan_id") or transaction.get("plan_id")
                 
                 now = datetime.now(timezone.utc)
-                end_date = now + timedelta(days=30)
                 
-                await db.users.update_one(
-                    {"id": user_id},
-                    {"$set": {
-                        "subscription_plan": plan_id,
-                        "subscription_status": "active",
-                        "subscription_start": now.isoformat(),
-                        "subscription_end": end_date.isoformat()
-                    }}
-                )
+                # Check if this is a token purchase or subscription
+                purchase_type = metadata.get("type") or transaction.get("metadata", {}).get("type", "")
+                
+                if purchase_type == "token_purchase":
+                    # Token purchase - add tokens to user
+                    tokens_to_add = int(metadata.get("tokens_to_add") or transaction.get("metadata", {}).get("tokens_to_add", 0))
+                    if tokens_to_add > 0:
+                        await db.users.update_one(
+                            {"id": user_id},
+                            {"$inc": {"tokens": tokens_to_add}}
+                        )
+                        logging.info(f"Webhook: Tokens added for user {user_id}: +{tokens_to_add}")
+                else:
+                    # Subscription purchase
+                    plan_id = metadata.get("plan_id") or transaction.get("plan_id")
+                    end_date = now + timedelta(days=30)
+                    
+                    await db.users.update_one(
+                        {"id": user_id},
+                        {"$set": {
+                            "subscription_plan": plan_id,
+                            "subscription_status": "active",
+                            "subscription_start": now.isoformat(),
+                            "subscription_end": end_date.isoformat()
+                        }}
+                    )
                 
                 await db.payment_transactions.update_one(
                     {"session_id": session_id},
@@ -1005,6 +1020,71 @@ async def cancel_subscription(user: User = Depends(require_auth)):
 @api_router.get("/")
 async def root():
     return {"message": "AI Assistant API"}
+
+class AnonymousChatRequest(BaseModel):
+    session_id: str
+    message: str
+    personality: str = "standard"
+
+class AnonymousChatResponse(BaseModel):
+    session_id: str
+    response: str
+    message_id: str
+    remaining_messages: int
+    requires_signup: bool = False
+
+@api_router.post("/chat/anonymous", response_model=AnonymousChatResponse)
+async def send_anonymous_chat(request: AnonymousChatRequest):
+    """Send a message without authentication - limited to 5 free messages per session"""
+    
+    # Check how many messages this session has used
+    session_messages = await db.anonymous_sessions.find_one({"session_id": request.session_id})
+    
+    if session_messages:
+        message_count = session_messages.get("message_count", 0)
+    else:
+        message_count = 0
+        await db.anonymous_sessions.insert_one({
+            "session_id": request.session_id,
+            "message_count": 0,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        })
+    
+    # Check if limit reached
+    FREE_ANONYMOUS_LIMIT = 5
+    if message_count >= FREE_ANONYMOUS_LIMIT:
+        return AnonymousChatResponse(
+            session_id=request.session_id,
+            response="You've used all your free messages! Sign up to get 50 more tokens and continue chatting.",
+            message_id=str(uuid.uuid4()),
+            remaining_messages=0,
+            requires_signup=True
+        )
+    
+    try:
+        chat = get_chat_instance(request.session_id, "free", request.personality)
+        user_message = UserMessage(text=request.message)
+        response = await chat.send_message(user_message)
+        
+        # Increment message count
+        await db.anonymous_sessions.update_one(
+            {"session_id": request.session_id},
+            {"$inc": {"message_count": 1}}
+        )
+        
+        remaining = FREE_ANONYMOUS_LIMIT - message_count - 1
+        
+        return AnonymousChatResponse(
+            session_id=request.session_id,
+            response=response,
+            message_id=str(uuid.uuid4()),
+            remaining_messages=remaining,
+            requires_signup=remaining <= 0
+        )
+        
+    except Exception as e:
+        logging.error(f"Anonymous chat error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to get AI response: {str(e)}")
 
 @api_router.post("/chat", response_model=ChatResponse)
 async def send_chat_message(request: ChatRequest, user: User = Depends(require_auth)):
@@ -1113,12 +1193,17 @@ class TokenPackage(BaseModel):
     price: float
     price_display: str
     bonus: str = ""
+    stripe_price_id: str = ""
 
 TOKEN_PACKAGES = [
-    TokenPackage(id="small", name="Starter Pack", tokens=100, price=4.99, price_display="$4.99", bonus=""),
-    TokenPackage(id="medium", name="Value Pack", tokens=250, price=9.99, price_display="$9.99", bonus="+50 bonus"),
-    TokenPackage(id="large", name="Pro Pack", tokens=600, price=19.99, price_display="$19.99", bonus="+100 bonus"),
+    TokenPackage(id="starter", name="Starter Pack", tokens=50, price=5.00, price_display="$5.00", bonus="", stripe_price_id="price_1TKBz9PO1GxEBHffdpLgliZQ"),
+    TokenPackage(id="growth", name="Growth Pack", tokens=200, price=15.00, price_display="$15.00", bonus="+50 bonus", stripe_price_id="price_1TKC15PO1GxEBHffXZkjSnKe"),
+    TokenPackage(id="power", name="Power Pack", tokens=500, price=50.00, price_display="$50.00", bonus="+100 bonus", stripe_price_id="price_1TKC3lPO1GxEBHff3K5HoRvX"),
 ]
+
+class TokenCheckoutRequest(BaseModel):
+    package_id: str
+    origin_url: str
 
 @api_router.get("/tokens/balance")
 async def get_token_balance(user: User = Depends(require_auth)):
@@ -1130,12 +1215,120 @@ async def get_token_balance(user: User = Depends(require_auth)):
 @api_router.get("/tokens/packages")
 async def get_token_packages():
     """Get available token packages for purchase"""
-    return [pkg.model_dump() for pkg in TOKEN_PACKAGES]
+    return [pkg.model_dump(exclude={"stripe_price_id"}) for pkg in TOKEN_PACKAGES]
+
+@api_router.post("/tokens/checkout")
+async def create_token_checkout(request: TokenCheckoutRequest, http_request: Request, user: User = Depends(require_auth)):
+    """Create a Stripe checkout session for token purchase"""
+    # Find the package (amount is defined server-side, NEVER from frontend)
+    package = next((p for p in TOKEN_PACKAGES if p.id == request.package_id), None)
+    if not package:
+        raise HTTPException(status_code=400, detail="Invalid package")
+    
+    try:
+        host_url = request.origin_url.rstrip('/')
+        webhook_url = f"{str(http_request.base_url).rstrip('/')}/api/webhook/stripe"
+        
+        stripe_checkout = StripeCheckout(api_key=STRIPE_API_KEY, webhook_url=webhook_url)
+        
+        success_url = f"{host_url}/pricing?session_id={{CHECKOUT_SESSION_ID}}&success=true"
+        cancel_url = f"{host_url}/pricing?cancelled=true"
+        
+        checkout_request = CheckoutSessionRequest(
+            stripe_price_id=package.stripe_price_id,
+            quantity=1,
+            success_url=success_url,
+            cancel_url=cancel_url,
+            metadata={
+                "user_id": user.id,
+                "user_email": user.email,
+                "package_id": package.id,
+                "tokens_to_add": str(package.tokens),
+                "type": "token_purchase"
+            }
+        )
+        
+        session = await stripe_checkout.create_checkout_session(checkout_request)
+        
+        # Create payment transaction record
+        transaction = PaymentTransaction(
+            user_id=user.id,
+            user_email=user.email,
+            session_id=session.session_id,
+            plan_id=package.id,
+            amount=package.price,
+            currency="usd",
+            status="pending",
+            payment_status="pending",
+            metadata={
+                "package_name": package.name,
+                "tokens_to_add": str(package.tokens),
+                "type": "token_purchase"
+            }
+        )
+        
+        await db.payment_transactions.insert_one(transaction.model_dump())
+        
+        return {"url": session.url, "session_id": session.session_id}
+        
+    except Exception as e:
+        logging.error(f"Token checkout error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Payment error: {str(e)}")
+
+@api_router.get("/tokens/checkout/status/{session_id}")
+async def get_token_checkout_status(session_id: str, http_request: Request, user: User = Depends(require_auth)):
+    """Check status of a token purchase checkout session"""
+    try:
+        transaction = await db.payment_transactions.find_one({"session_id": session_id})
+        
+        if not transaction:
+            raise HTTPException(status_code=404, detail="Transaction not found")
+        
+        if transaction.get("user_id") != user.id:
+            raise HTTPException(status_code=403, detail="Unauthorized")
+        
+        webhook_url = f"{str(http_request.base_url).rstrip('/')}/api/webhook/stripe"
+        stripe_checkout = StripeCheckout(api_key=STRIPE_API_KEY, webhook_url=webhook_url)
+        
+        status = await stripe_checkout.get_checkout_status(session_id)
+        
+        # If paid and not already processed, add tokens
+        if status.payment_status == "paid" and transaction.get("payment_status") != "paid":
+            tokens_to_add = int(transaction.get("metadata", {}).get("tokens_to_add", 0))
+            
+            if tokens_to_add > 0:
+                await db.users.update_one(
+                    {"id": user.id},
+                    {"$inc": {"tokens": tokens_to_add}}
+                )
+            
+            await db.payment_transactions.update_one(
+                {"session_id": session_id},
+                {"$set": {
+                    "status": "completed",
+                    "payment_status": "paid",
+                    "updated_at": datetime.now(timezone.utc).isoformat()
+                }}
+            )
+            
+            logging.info(f"Tokens added for user {user.id}: +{tokens_to_add}")
+        
+        return {
+            "status": status.status,
+            "payment_status": status.payment_status,
+            "amount_total": status.amount_total,
+            "currency": status.currency
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Token checkout status error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Status check error: {str(e)}")
 
 @api_router.post("/tokens/add-free")
 async def add_free_tokens(user: User = Depends(require_auth)):
-    """Add free tokens (for testing/promo - will be removed in production)"""
-    # Add 10 free tokens
+    """Add free tokens (for testing/promo)"""
     await db.users.update_one(
         {"id": user.id},
         {"$inc": {"tokens": 10}}

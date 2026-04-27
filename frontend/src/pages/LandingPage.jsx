@@ -1,323 +1,348 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Zap, Target, Brain, Shield } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Send, Loader2, Coins, User, Zap, Sun, Moon } from 'lucide-react';
+import { v4 as uuidv4 } from 'uuid';
+import axios from 'axios';
+import { cn } from '@/lib/utils';
 
-const JUDGY_AVATAR = "https://images.unsplash.com/photo-1654086763373-090dff157f5c?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjY2NzZ8MHwxfHNlYXJjaHw0fHxzdGF0dWUlMjBzY3VscHR1cmUlMjBkYXJrJTIwZWRneXxlbnwwfHx8fDE3NzUxNTk2NTl8MA&ixlib=rb-4.1.0&q=85&w=400";
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API = `${BACKEND_URL}/api`;
 
 const LandingPage = () => {
-  return (
-    <div className="min-h-screen bg-[#0A0A0A] text-white">
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 glass-header">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 sm:gap-3 group">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[#FF2E4C] flex items-center justify-center">
-              <span className="font-display font-black text-lg sm:text-xl">J</span>
-            </div>
-            <span className="font-display font-bold text-base sm:text-xl tracking-tight hidden xs:block">THE JUDGY</span>
-          </Link>
-          
-          <div className="hidden md:flex items-center gap-8">
-            <Link to="/tools" className="text-zinc-400 hover:text-white transition-colors text-sm uppercase tracking-wider">Tools</Link>
-            <Link to="/pricing" className="text-zinc-400 hover:text-white transition-colors text-sm uppercase tracking-wider">Pricing</Link>
-            <Link to="/wall" className="text-zinc-400 hover:text-white transition-colors text-sm uppercase tracking-wider">Wall</Link>
-          </div>
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [sessionId] = useState(() => localStorage.getItem('anon_session_id') || uuidv4());
+  const [remainingMessages, setRemainingMessages] = useState(5);
+  const [showSignupPrompt, setShowSignupPrompt] = useState(false);
+  const messagesEndRef = useRef(null);
+  const textareaRef = useRef(null);
+  
+  const { isAuthenticated, user, tokens, refreshTokens } = useAuth();
+  const { isDark, toggleTheme } = useTheme();
+  const navigate = useNavigate();
 
-          <div className="flex items-center gap-2 sm:gap-4">
-            <Link to="/login">
-              <Button variant="ghost" className="text-zinc-400 hover:text-white hover:bg-white/5 text-xs sm:text-sm uppercase tracking-wider px-2 sm:px-4" data-testid="nav-signin-btn">
-                Sign In
-              </Button>
-            </Link>
-            <Link to="/chat">
-              <Button className="bg-[#FF2E4C] hover:bg-[#E01F3D] text-white shadow-brutal text-xs sm:text-sm uppercase tracking-wider font-bold px-3 sm:px-4" data-testid="nav-start-btn">
-                <span className="hidden sm:inline">Get Judged</span>
-                <span className="sm:hidden">Start</span>
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </nav>
+  useEffect(() => {
+    localStorage.setItem('anon_session_id', sessionId);
+  }, [sessionId]);
 
-      {/* Hero Section */}
-      <section className="pt-24 sm:pt-32 pb-16 sm:pb-24 px-4 sm:px-6 relative overflow-hidden">
-        {/* Background elements */}
-        <div className="absolute top-1/4 left-0 w-64 sm:w-96 h-64 sm:h-96 bg-[#FF2E4C]/10 blur-[120px] pointer-events-none" />
-        <div className="absolute bottom-0 right-0 w-64 sm:w-[500px] h-64 sm:h-[500px] bg-[#FFB800]/5 blur-[150px] pointer-events-none" />
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 150)}px`;
+    }
+  }, [input]);
+
+  const sendMessage = useCallback(async () => {
+    if (!input.trim() || isLoading) return;
+
+    const userMessage = {
+      id: uuidv4(),
+      role: 'user',
+      content: input.trim(),
+      timestamp: new Date()
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setInput('');
+    setIsLoading(true);
+
+    try {
+      let response;
+      
+      if (isAuthenticated) {
+        response = await axios.post(`${API}/chat`, {
+          session_id: sessionId,
+          message: userMessage.content
+        });
+        refreshTokens();
+      } else {
+        response = await axios.post(`${API}/chat/anonymous`, {
+          session_id: sessionId,
+          message: userMessage.content
+        });
         
-        <div className="max-w-6xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-            {/* Left - Content */}
-            <div className="space-y-6 sm:space-y-8">
-              <div className="inline-block">
-                <span className="tag-brutal text-[10px] sm:text-xs" data-testid="hero-tag">
-                  AI That Doesn't Sugarcoat
-                </span>
-              </div>
-              
-              <h1 className="font-display text-4xl sm:text-5xl lg:text-7xl font-black leading-[0.9] tracking-tight">
-                <span className="text-white">THE TRUTH</span>
-                <br />
-                <span className="text-gradient">HURTS.</span>
-                <br />
-                <span className="text-zinc-500">GOOD.</span>
-              </h1>
-              
-              <p className="text-base sm:text-lg text-zinc-400 max-w-md leading-relaxed">
-                Stop asking AI that agrees with everything. Get brutally honest advice from an AI that judges you, roasts you, and then actually helps you.
-              </p>
+        setRemainingMessages(response.data.remaining_messages);
+        
+        if (response.data.requires_signup) {
+          setShowSignupPrompt(true);
+        }
+      }
 
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                <Link to="/chat" className="w-full sm:w-auto">
-                  <Button 
-                    size="lg" 
-                    className="bg-[#FF2E4C] hover:bg-[#E01F3D] text-white shadow-brutal h-12 sm:h-14 px-6 sm:px-8 text-sm sm:text-base uppercase tracking-wider font-bold w-full"
-                    data-testid="hero-cta-btn"
-                  >
-                    Get Roasted
-                    <ArrowRight className="w-4 sm:w-5 h-4 sm:h-5 ml-2" />
-                  </Button>
-                </Link>
-                <Link to="/tools" className="w-full sm:w-auto">
-                  <Button 
-                    size="lg" 
-                    variant="outline" 
-                    className="border-zinc-700 hover:border-[#FF2E4C] hover:bg-[#FF2E4C]/10 text-white h-12 sm:h-14 px-6 sm:px-8 text-sm sm:text-base uppercase tracking-wider font-bold w-full"
-                    data-testid="hero-tools-btn"
-                  >
-                    Try Free Tools
-                  </Button>
-                </Link>
-              </div>
+      const aiMessage = {
+        id: response.data.message_id,
+        role: 'assistant',
+        content: response.data.response,
+        timestamp: new Date()
+      };
 
-              {/* Stats */}
-              <div className="flex gap-6 sm:gap-12 pt-6 sm:pt-8 border-t border-zinc-800">
-                <div>
-                  <div className="stat-brutal text-2xl sm:text-5xl" data-testid="stat-roasts">10K+</div>
-                  <div className="text-[10px] sm:text-xs text-zinc-500 uppercase tracking-wider mt-1">Roasts</div>
-                </div>
-                <div>
-                  <div className="stat-brutal text-2xl sm:text-5xl" data-testid="stat-truths">100%</div>
-                  <div className="text-[10px] sm:text-xs text-zinc-500 uppercase tracking-wider mt-1">Honest</div>
-                </div>
-                <div>
-                  <div className="stat-brutal text-2xl sm:text-5xl" data-testid="stat-filter">0</div>
-                  <div className="text-[10px] sm:text-xs text-zinc-500 uppercase tracking-wider mt-1">Filter</div>
-                </div>
-              </div>
-            </div>
+      setMessages(prev => [...prev, aiMessage]);
+      
+    } catch (error) {
+      console.error('Error sending message:', error);
+      
+      if (error.response?.status === 403) {
+        setShowSignupPrompt(true);
+      } else {
+        const errorMessage = {
+          id: uuidv4(),
+          role: 'assistant',
+          content: 'Something went wrong. Try again.',
+          timestamp: new Date(),
+          isError: true
+        };
+        setMessages(prev => [...prev, errorMessage]);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }, [input, isLoading, isAuthenticated, sessionId, refreshTokens]);
 
-            {/* Right - Visual */}
-            <div className="relative hidden lg:block">
-              <div className="relative">
-                {/* Terminal-style preview */}
-                <div className="bg-[#141414] border border-zinc-800 p-6 space-y-4">
-                  <div className="flex gap-2 mb-4">
-                    <div className="w-3 h-3 rounded-full bg-[#FF2E4C]"></div>
-                    <div className="w-3 h-3 rounded-full bg-[#FFB800]"></div>
-                    <div className="w-3 h-3 rounded-full bg-zinc-600"></div>
-                  </div>
-                  
-                  <div className="space-y-4 font-mono text-sm">
-                    <div className="flex gap-3">
-                      <span className="text-[#FFB800]">you:</span>
-                      <span className="text-zinc-300">Should I text my ex?</span>
-                    </div>
-                    <div className="flex gap-3">
-                      <span className="text-[#FF2E4C]">judgy:</span>
-                      <span className="text-zinc-300">No. Delete their number. Touch grass. Get a hobby. The audacity of even asking this...</span>
-                    </div>
-                    <div className="flex gap-3">
-                      <span className="text-[#FFB800]">you:</span>
-                      <span className="text-zinc-300">But what if they've changed?</span>
-                    </div>
-                    <div className="flex gap-3">
-                      <span className="text-[#FF2E4C]">judgy:</span>
-                      <span className="text-zinc-300">They haven't. You know this. I know this. The universe knows this. Move on.</span>
-                    </div>
-                    <div className="h-4 w-2 bg-[#FF2E4C] animate-pulse"></div>
-                  </div>
-                </div>
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  };
 
-                {/* Decorative elements */}
-                <div className="absolute -top-4 -right-4 w-24 h-24 border border-[#FF2E4C]/30"></div>
-                <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-[#FFB800]/20"></div>
-              </div>
-            </div>
+  const handleGoogleSignIn = () => {
+    const redirectUrl = window.location.origin + '/chat';
+    window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
+  };
+
+  const quickPrompts = [
+    "Should I text my ex?",
+    "Roast my life choices",
+    "Am I being underpaid?",
+    "Give me tough love",
+    "Rate my dating profile bio",
+    "Am I the toxic one?",
+    "Judge my morning routine",
+    "Is my business idea stupid?"
+  ];
+
+  return (
+    <div className="min-h-screen bg-background text-foreground flex flex-col" data-testid="landing-page">
+      {/* Header */}
+      <header className="glass-header px-4 py-3 flex items-center justify-between" data-testid="landing-header">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 bg-[#FF2E4C] flex items-center justify-center rounded-sm">
+            <span className="font-display font-bold text-lg text-white">J</span>
           </div>
+          <span className="font-display font-bold text-lg tracking-tight text-foreground">THE JUDGY</span>
         </div>
-      </section>
-
-      {/* Tools Section */}
-      <section className="py-16 sm:py-24 px-4 sm:px-6 border-t border-zinc-900">
-        <div className="max-w-6xl mx-auto">
-          <div className="mb-10 sm:mb-16">
-            <span className="tag-brutal mb-4 inline-block text-[10px] sm:text-xs">Free Tools</span>
-            <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight">
-              VIRAL JUDGMENT TOOLS
-            </h2>
-          </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            {/* Roast My Bio */}
-            <Link to="/tools" className="group" data-testid="tool-roast-card">
-              <div className="card-brutal p-6 sm:p-8 h-full">
-                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-orange-500/10 border border-orange-500/30 flex items-center justify-center mb-4 sm:mb-6 group-hover:bg-orange-500/20 transition-colors">
-                  <Zap className="w-6 h-6 sm:w-8 sm:h-8 text-orange-500" />
-                </div>
-                <h3 className="font-display text-xl sm:text-2xl font-bold mb-2 sm:mb-3">ROAST MY BIO</h3>
-                <p className="text-zinc-400 text-xs sm:text-sm leading-relaxed mb-4 sm:mb-6">
-                  Paste your dating or LinkedIn bio. Get absolutely destroyed. Then get it fixed.
-                </p>
-                <div className="flex items-center text-orange-500 text-xs sm:text-sm font-bold uppercase tracking-wider">
-                  Get Roasted <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                </div>
+        
+        <div className="flex items-center gap-2">
+          <Button 
+            variant="ghost" 
+            size="icon"
+            onClick={toggleTheme}
+            className="text-muted-foreground hover:text-foreground hover:bg-muted"
+            data-testid="theme-toggle"
+          >
+            {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+          </Button>
+          
+          {isAuthenticated ? (
+            <>
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-muted border border-border rounded-md">
+                <Coins className="w-3 h-3 text-[#FFB800]" />
+                <span className="text-sm font-bold text-foreground">{tokens}</span>
               </div>
-            </Link>
-
-            {/* Red Flag Detector */}
-            <Link to="/tools" className="group" data-testid="tool-redflag-card">
-              <div className="card-brutal p-6 sm:p-8 h-full">
-                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-red-500/10 border border-red-500/30 flex items-center justify-center mb-4 sm:mb-6 group-hover:bg-red-500/20 transition-colors">
-                  <Target className="w-6 h-6 sm:w-8 sm:h-8 text-red-500" />
-                </div>
-                <h3 className="font-display text-xl sm:text-2xl font-bold mb-2 sm:mb-3">RED FLAG DETECTOR</h3>
-                <p className="text-zinc-400 text-xs sm:text-sm leading-relaxed mb-4 sm:mb-6">
-                  Paste that text conversation. Find every red flag you're pretending not to see.
-                </p>
-                <div className="flex items-center text-red-500 text-xs sm:text-sm font-bold uppercase tracking-wider">
-                  Expose Flags <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                </div>
-              </div>
-            </Link>
-
-            {/* Who's Right */}
-            <Link to="/tools" className="group sm:col-span-2 lg:col-span-1" data-testid="tool-whos-right-card">
-              <div className="card-brutal p-6 sm:p-8 h-full">
-                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-purple-500/10 border border-purple-500/30 flex items-center justify-center mb-4 sm:mb-6 group-hover:bg-purple-500/20 transition-colors">
-                  <Brain className="w-6 h-6 sm:w-8 sm:h-8 text-purple-500" />
-                </div>
-                <h3 className="font-display text-xl sm:text-2xl font-bold mb-2 sm:mb-3">WHO'S RIGHT?</h3>
-                <p className="text-zinc-400 text-xs sm:text-sm leading-relaxed mb-4 sm:mb-6">
-                  Submit your argument. Get the verdict. Settle it once and for all.
-                </p>
-                <div className="flex items-center text-purple-500 text-xs sm:text-sm font-bold uppercase tracking-wider">
-                  Get Verdict <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                </div>
-              </div>
-            </Link>
-          </div>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => navigate('/chat')}
+                className="text-muted-foreground hover:text-foreground"
+                data-testid="full-chat-btn"
+              >
+                Full Chat
+              </Button>
+            </>
+          ) : (
+            <>
+              <span className="text-xs text-muted-foreground hidden sm:inline" data-testid="remaining-messages">
+                {remainingMessages} free left
+              </span>
+              <Link to="/login">
+                <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground text-sm" data-testid="landing-signin-btn">
+                  Sign In
+                </Button>
+              </Link>
+            </>
+          )}
         </div>
-      </section>
+      </header>
 
-      {/* Why Section */}
-      <section className="py-16 sm:py-24 px-4 sm:px-6 bg-[#0D0D0D] border-t border-zinc-900">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-            <div>
-              <span className="tag-brutal mb-4 inline-block text-[10px] sm:text-xs">Why The Judgy?</span>
-              <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight mb-6 sm:mb-8">
-                NOT YOUR AVERAGE
-                <br />
-                <span className="text-[#FF2E4C]">AI ASSISTANT</span>
-              </h2>
-              
-              <div className="space-y-4 sm:space-y-6">
-                <div className="flex gap-3 sm:gap-4">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#FF2E4C]/10 border border-[#FF2E4C]/30 flex items-center justify-center flex-shrink-0">
-                    <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-[#FF2E4C]" />
-                  </div>
-                  <div>
-                    <h3 className="font-display font-bold text-base sm:text-lg mb-1">BRUTALLY HONEST</h3>
-                    <p className="text-zinc-400 text-xs sm:text-sm">No sugarcoating. No fake positivity. Just the truth you need to hear.</p>
-                  </div>
+      {/* Chat Area */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <ScrollArea className="flex-1 px-4">
+          <div className="max-w-2xl mx-auto py-6">
+            {messages.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-12 text-center animate-fade-in">
+                <div className="w-16 h-16 bg-[#FF2E4C] flex items-center justify-center rounded-sm mb-6">
+                  <span className="font-display font-bold text-3xl text-white">J</span>
                 </div>
                 
-                <div className="flex gap-3 sm:gap-4">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#FFB800]/10 border border-[#FFB800]/30 flex items-center justify-center flex-shrink-0">
-                    <Brain className="w-5 h-5 sm:w-6 sm:h-6 text-[#FFB800]" />
-                  </div>
-                  <div>
-                    <h3 className="font-display font-bold text-base sm:text-lg mb-1">ACTUALLY HELPFUL</h3>
-                    <p className="text-zinc-400 text-xs sm:text-sm">Behind the roasts is real wisdom. We judge, then we guide.</p>
-                  </div>
-                </div>
+                <h1 className="font-display text-3xl sm:text-5xl font-bold mb-3 text-foreground" data-testid="welcome-heading">
+                  THE TRUTH <span className="text-[#FF2E4C]">HURTS.</span>
+                </h1>
+                <p className="text-muted-foreground text-sm sm:text-base mb-6 max-w-md">
+                  Ask me anything. I'll give you brutally honest advice with zero sugarcoating.
+                </p>
                 
-                <div className="flex gap-3 sm:gap-4">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
-                    <Target className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-500" />
+                {!isAuthenticated && (
+                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-muted border border-border rounded-md mb-8" data-testid="free-messages-badge">
+                    <Zap className="w-3 h-3 text-[#FFB800]" />
+                    <span className="text-xs text-muted-foreground">{remainingMessages} free messages — no signup needed</span>
                   </div>
-                  <div>
-                    <h3 className="font-display font-bold text-base sm:text-lg mb-1">REAL RESULTS</h3>
-                    <p className="text-zinc-400 text-xs sm:text-sm">Users make better decisions when they stop lying to themselves.</p>
-                  </div>
+                )}
+
+                <div className="flex flex-wrap justify-center gap-2 max-w-xl">
+                  {quickPrompts.map((prompt, i) => (
+                    <button 
+                      key={i}
+                      onClick={() => setInput(prompt)}
+                      className="px-3 py-2 text-xs sm:text-sm bg-card border border-border hover:border-[#FF2E4C] text-muted-foreground hover:text-foreground transition-all rounded-md shadow-card"
+                      data-testid={`quick-prompt-${i}`}
+                    >
+                      {prompt}
+                    </button>
+                  ))}
                 </div>
               </div>
-            </div>
+            ) : (
+              <div className="space-y-6">
+                {messages.map((message) => (
+                  <div 
+                    key={message.id}
+                    className={cn(
+                      "flex gap-3 animate-slide-up",
+                      message.role === 'user' ? "flex-row-reverse" : "flex-row"
+                    )}
+                    data-testid={`message-${message.role}`}
+                  >
+                    <div className={cn(
+                      "w-8 h-8 shrink-0 flex items-center justify-center rounded-sm",
+                      message.role === 'user' ? "bg-muted" : "bg-[#FF2E4C]"
+                    )}>
+                      {message.role === 'user' ? (
+                        <User className="w-4 h-4 text-muted-foreground" />
+                      ) : (
+                        <Zap className="w-4 h-4 text-white" />
+                      )}
+                    </div>
+                    <div className={cn(
+                      "max-w-[80%] px-4 py-3 text-sm rounded-lg",
+                      message.role === 'user' 
+                        ? "bg-primary/10 border border-primary/20 text-foreground" 
+                        : message.isError 
+                          ? "bg-destructive/10 border border-destructive/30 text-destructive"
+                          : "bg-card border border-border text-card-foreground shadow-card"
+                    )}>
+                      {message.content}
+                    </div>
+                  </div>
+                ))}
+                
+                {isLoading && (
+                  <div className="flex gap-3">
+                    <div className="w-8 h-8 bg-[#FF2E4C] flex items-center justify-center rounded-sm">
+                      <Zap className="w-4 h-4 text-white" />
+                    </div>
+                    <div className="bg-card border border-border px-4 py-3 rounded-lg shadow-card">
+                      <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
+                    </div>
+                  </div>
+                )}
+                
+                <div ref={messagesEndRef} />
+              </div>
+            )}
+          </div>
+        </ScrollArea>
 
-            <div className="relative hidden lg:block">
-              <img 
-                src={JUDGY_AVATAR} 
-                alt="The Judgy" 
-                className="w-full max-w-md mx-auto grayscale contrast-125 opacity-80"
+        {/* Signup Prompt */}
+        {showSignupPrompt && !isAuthenticated && (
+          <div className="px-4 py-4 bg-[#FF2E4C]/5 border-t border-[#FF2E4C]/20" data-testid="signup-prompt">
+            <div className="max-w-2xl mx-auto flex flex-col sm:flex-row items-center gap-4">
+              <div className="flex-1 text-center sm:text-left">
+                <h3 className="font-display font-bold text-foreground mb-1">Want more brutal honesty?</h3>
+                <p className="text-sm text-muted-foreground">Sign up free and get 50 tokens to continue</p>
+              </div>
+              <div className="flex gap-2">
+                <Button 
+                  onClick={handleGoogleSignIn}
+                  className="bg-white hover:bg-gray-50 text-black font-bold flex items-center gap-2 border border-gray-200"
+                  data-testid="google-signup-prompt-btn"
+                >
+                  <svg className="w-4 h-4" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                  </svg>
+                  Continue with Google
+                </Button>
+                <Link to="/register">
+                  <Button variant="outline" data-testid="email-signup-prompt-btn">
+                    Email
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Input */}
+        <div className="border-t border-border bg-background/80 backdrop-blur-sm p-4" data-testid="chat-input-area">
+          <div className="max-w-2xl mx-auto">
+            <div className="flex items-end gap-2 bg-card border border-border focus-within:border-[#FF2E4C] rounded-lg transition-colors shadow-card">
+              <Textarea
+                ref={textareaRef}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Ask me anything... I won't hold back."
+                disabled={isLoading || (showSignupPrompt && !isAuthenticated)}
+                className="flex-1 min-h-[48px] max-h-[150px] resize-none border-0 bg-transparent focus-visible:ring-0 text-foreground placeholder:text-muted-foreground py-3 px-4 text-sm"
+                rows={1}
+                data-testid="landing-chat-input"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0D0D0D] via-transparent to-transparent"></div>
+              <Button
+                onClick={sendMessage}
+                disabled={!input.trim() || isLoading || (showSignupPrompt && !isAuthenticated)}
+                size="icon"
+                className={cn(
+                  "h-10 w-10 m-1 rounded-md transition-colors",
+                  input.trim() && !isLoading
+                    ? "bg-[#FF2E4C] hover:bg-[#E01F3D] text-white"
+                    : "bg-muted text-muted-foreground"
+                )}
+                data-testid="landing-send-btn"
+              >
+                {isLoading ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Send className="w-4 h-4" />
+                )}
+              </Button>
             </div>
+            <p className="text-[10px] text-muted-foreground mt-2 text-center">
+              Press Enter to send — Brutally honest AI
+            </p>
           </div>
         </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-16 sm:py-24 px-4 sm:px-6 border-t border-zinc-900">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight mb-4 sm:mb-6">
-            READY TO FACE
-            <br />
-            <span className="text-[#FF2E4C]">THE TRUTH?</span>
-          </h2>
-          <p className="text-base sm:text-xl text-zinc-400 mb-8 sm:mb-10 max-w-xl mx-auto">
-            Most people can't handle honesty. That's why they keep making the same mistakes. Don't be most people.
-          </p>
-          <Link to="/chat">
-            <Button 
-              size="lg" 
-              className="bg-[#FF2E4C] hover:bg-[#E01F3D] text-white shadow-brutal h-12 sm:h-16 px-8 sm:px-12 text-sm sm:text-lg uppercase tracking-wider font-bold"
-              data-testid="cta-judge-btn"
-            >
-              Judge Me Now
-              <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 ml-2 sm:ml-3" />
-            </Button>
-          </Link>
-          <p className="mt-4 sm:mt-6 text-xs sm:text-sm text-zinc-600 uppercase tracking-wider">
-            Free to try • No filter • Real advice
-          </p>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="py-8 sm:py-12 px-4 sm:px-6 border-t border-zinc-900 bg-[#080808]">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col gap-6 sm:gap-0 sm:flex-row justify-between items-center">
-            <div className="flex items-center gap-2 sm:gap-3">
-              <div className="w-6 h-6 sm:w-8 sm:h-8 bg-[#FF2E4C] flex items-center justify-center">
-                <span className="font-display font-black text-xs sm:text-sm">J</span>
-              </div>
-              <span className="font-display font-bold tracking-tight text-sm sm:text-base">THE JUDGY</span>
-            </div>
-            
-            <div className="flex items-center gap-4 sm:gap-8 text-xs sm:text-sm text-zinc-500">
-              <Link to="/tools" className="hover:text-white transition-colors uppercase tracking-wider">Tools</Link>
-              <Link to="/pricing" className="hover:text-white transition-colors uppercase tracking-wider">Tokens</Link>
-              <Link to="/wall" className="hover:text-white transition-colors uppercase tracking-wider">Wall</Link>
-            </div>
-            
-            <div className="text-xs sm:text-sm text-zinc-600">
-              © 2025 The Judgy
-            </div>
-          </div>
-        </div>
-      </footer>
+      </div>
     </div>
   );
 };

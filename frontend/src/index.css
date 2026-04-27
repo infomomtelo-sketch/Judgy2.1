@@ -2,79 +2,105 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Brutalist Tech Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
 body {
     margin: 0;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Inter', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: #0A0A0A;
-    color: #FFFFFF;
-}
-
-/* Heading font */
-.font-display {
-    font-family: 'Unbounded', sans-serif;
 }
 
 code {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Inter', monospace;
 }
 
 @layer base {
     :root {
-        /* Brutalist Dark Theme */
-        --background: 0 0% 4%;
-        --foreground: 0 0% 100%;
-        --card: 0 0% 8%;
-        --card-foreground: 0 0% 100%;
-        --popover: 0 0% 8%;
-        --popover-foreground: 0 0% 100%;
-        
-        /* Primary - Neon Red */
-        --primary: 351 100% 59%;
+        /* Light Theme — Warm Courtroom */
+        --background: 40 20% 98%;
+        --foreground: 220 15% 12%;
+        --card: 40 10% 99%;
+        --card-foreground: 220 15% 12%;
+        --popover: 0 0% 100%;
+        --popover-foreground: 220 15% 12%;
+        --primary: 351 85% 52%;
         --primary-foreground: 0 0% 100%;
-        
-        /* Secondary - Warning Yellow */
-        --secondary: 43 100% 50%;
-        --secondary-foreground: 0 0% 0%;
-        
-        /* Muted */
-        --muted: 0 0% 12%;
-        --muted-foreground: 240 5% 65%;
-        
-        /* Accent */
-        --accent: 43 100% 50%;
-        --accent-foreground: 0 0% 0%;
-        
-        --destructive: 351 100% 59%;
+        --secondary: 42 85% 50%;
+        --secondary-foreground: 0 0% 100%;
+        --accent: 40 20% 95%;
+        --accent-foreground: 220 15% 12%;
+        --muted: 40 12% 93%;
+        --muted-foreground: 220 10% 42%;
+        --destructive: 0 70% 50%;
         --destructive-foreground: 0 0% 100%;
-        
-        --success: 160 84% 39%;
+        --success: 150 50% 40%;
         --success-foreground: 0 0% 100%;
-        
-        --border: 0 0% 18%;
-        --input: 0 0% 12%;
-        --ring: 351 100% 59%;
-        
-        /* Chat colors */
-        --chat-user: 351 100% 59%;
-        --chat-ai: 0 0% 10%;
-        --chat-ai-border: 0 0% 20%;
-        
-        --radius: 0.125rem;
-        
-        --chart-1: 351 100% 59%;
-        --chart-2: 43 100% 50%;
-        --chart-3: 160 84% 39%;
-        --chart-4: 280 65% 60%;
-        --chart-5: 200 80% 50%;
-    }
-}
+        --border: 35 12% 87%;
+        --input: 40 10% 95%;
+        --ring: 351 85% 52%;
+        --radius: 0.5rem;
 
-@layer base {
+        --chart-1: 351 85% 52%;
+        --chart-2: 42 85% 50%;
+        --chart-3: 220 40% 25%;
+        --chart-4: 150 50% 40%;
+        --chart-5: 280 40% 50%;
+
+        --chat-user: 351 85% 52%;
+        --chat-ai: 40 10% 99%;
+        --chat-ai-border: 35 12% 87%;
+        --sidebar-bg: 40 15% 96%;
+        --sidebar-border: 35 12% 87%;
+
+        --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+        --shadow-md: 0 4px 14px rgba(0,0,0,0.07);
+        --shadow-lg: 0 10px 30px rgba(0,0,0,0.1);
+        --shadow-glow: 0 0 20px rgba(201,168,108,0.15);
+    }
+
+    .dark {
+        /* Dark Theme — Night Court */
+        --background: 228 15% 7%;
+        --foreground: 40 15% 92%;
+        --card: 228 12% 11%;
+        --card-foreground: 40 15% 92%;
+        --popover: 228 12% 13%;
+        --popover-foreground: 40 15% 92%;
+        --primary: 351 85% 56%;
+        --primary-foreground: 0 0% 100%;
+        --secondary: 42 85% 52%;
+        --secondary-foreground: 0 0% 100%;
+        --accent: 228 10% 15%;
+        --accent-foreground: 40 15% 92%;
+        --muted: 228 10% 14%;
+        --muted-foreground: 228 5% 55%;
+        --destructive: 0 70% 55%;
+        --destructive-foreground: 0 0% 100%;
+        --success: 150 50% 45%;
+        --success-foreground: 0 0% 100%;
+        --border: 228 10% 17%;
+        --input: 228 10% 13%;
+        --ring: 351 85% 56%;
+
+        --chart-1: 351 85% 56%;
+        --chart-2: 42 85% 52%;
+        --chart-3: 220 40% 45%;
+        --chart-4: 150 50% 45%;
+        --chart-5: 280 40% 55%;
+
+        --chat-user: 228 10% 17%;
+        --chat-ai: 228 12% 13%;
+        --chat-ai-border: 228 10% 19%;
+        --sidebar-bg: 228 12% 9%;
+        --sidebar-border: 228 10% 17%;
+
+        --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+        --shadow-md: 0 4px 14px rgba(0,0,0,0.35);
+        --shadow-lg: 0 10px 30px rgba(0,0,0,0.45);
+        --shadow-glow: 0 0 20px rgba(255,46,76,0.12);
+    }
+
     * {
         @apply border-border;
     }
@@ -83,7 +109,7 @@ code {
     }
 }
 
-/* Grain texture overlay */
+/* Subtle courtroom grain texture */
 body::before {
     content: '';
     position: fixed;
@@ -93,87 +119,38 @@ body::before {
     height: 100%;
     pointer-events: none;
     z-index: 9999;
-    opacity: 0.03;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    opacity: 0.018;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 }
 
-/* Custom utilities */
+.dark body::before {
+    opacity: 0.008;
+}
+
 @layer utilities {
-    /* Neo-brutalist shadow */
-    .shadow-brutal {
-        box-shadow: 4px 4px 0 #FF2E4C;
+    .shadow-elegant {
+        box-shadow: var(--shadow-md);
     }
-    
-    .shadow-brutal-yellow {
-        box-shadow: 4px 4px 0 #FFB800;
+    .shadow-card {
+        box-shadow: var(--shadow-sm);
     }
-    
-    .shadow-brutal-sm {
-        box-shadow: 2px 2px 0 #FF2E4C;
-    }
-    
-    /* Text gradient */
     .text-gradient {
-        background: linear-gradient(135deg, #FF2E4C, #FFB800);
+        background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)));
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
     }
-    
-    .text-gradient-red {
-        background: linear-gradient(135deg, #FF2E4C, #E01F3D);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+    .glow-warm {
+        box-shadow: var(--shadow-glow);
     }
-    
-    /* Glow effects */
-    .glow-red {
-        box-shadow: 0 0 30px rgba(255, 46, 76, 0.3);
-    }
-    
-    .glow-yellow {
-        box-shadow: 0 0 30px rgba(255, 184, 0, 0.3);
-    }
-    
-    .text-glow-red {
-        text-shadow: 0 0 20px rgba(255, 46, 76, 0.5);
-    }
-    
-    /* Border utilities */
-    .border-brutal {
-        border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    /* Scrollbar */
-    .scrollbar-thin::-webkit-scrollbar {
-        width: 6px;
-        height: 6px;
-    }
-    
-    .scrollbar-thin::-webkit-scrollbar-track {
-        background: #141414;
-    }
-    
-    .scrollbar-thin::-webkit-scrollbar-thumb {
-        background: #2E2E2E;
-    }
-    
-    .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-        background: #FF2E4C;
-    }
-    
-    /* Animations */
     .animate-fade-in {
-        animation: fadeIn 0.3s ease-out forwards;
+        animation: fadeIn 0.4s ease-out forwards;
     }
-    
     .animate-slide-up {
-        animation: slideUp 0.4s ease-out forwards;
+        animation: slideUp 0.5s ease-out forwards;
     }
-    
-    .animate-pulse-red {
-        animation: pulseRed 2s ease-in-out infinite;
+    .animate-breathe {
+        animation: breathe 4s ease-in-out infinite;
     }
 }
 
@@ -183,146 +160,76 @@ body::before {
 }
 
 @keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes pulseRed {
-    0%, 100% { box-shadow: 0 0 20px rgba(255, 46, 76, 0.3); }
-    50% { box-shadow: 0 0 40px rgba(255, 46, 76, 0.6); }
+@keyframes breathe {
+    0%, 100% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.02); opacity: 1; }
 }
 
-/* Terminal-style chat messages */
-.message-user {
-    background: linear-gradient(135deg, #FF2E4C, #E01F3D);
-    color: white;
-    border-radius: 2px;
-    font-family: 'JetBrains Mono', monospace;
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+}
+::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground));
 }
 
-.message-ai {
-    background: #141414;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #FFFFFF;
-    border-radius: 2px;
-    font-family: 'JetBrains Mono', monospace;
-}
-
-.message-ai::before {
-    content: '>';
-    color: #FF2E4C;
-    margin-right: 8px;
-    font-weight: bold;
-}
-
-/* Brutalist buttons */
-.btn-brutal {
-    background: #FF2E4C;
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    font-family: 'JetBrains Mono', monospace;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    box-shadow: 4px 4px 0 #000;
-    transition: transform 0.1s, box-shadow 0.1s;
-}
-
-.btn-brutal:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0 #000;
-}
-
-.btn-brutal:active {
-    transform: translate(2px, 2px);
-    box-shadow: 2px 2px 0 #000;
-}
-
-/* Input styles */
-input, textarea {
-    background: #141414 !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    color: #FFFFFF !important;
-    font-family: 'JetBrains Mono', monospace !important;
-}
-
-input:focus, textarea:focus {
-    border-color: #FF2E4C !important;
-    box-shadow: 0 0 0 2px rgba(255, 46, 76, 0.2) !important;
-    outline: none !important;
-}
-
-/* Card hover effects */
-.card-brutal {
-    background: #141414;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: border-color 0.2s, transform 0.2s;
-}
-
-.card-brutal:hover {
-    border-color: #FF2E4C;
-    transform: translate(-2px, -2px);
-}
-
-/* Glassmorphism for headers */
+/* Glass header */
 .glass-header {
-    background: rgba(10, 10, 10, 0.8);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* Bento grid */
-.bento-grid {
-    display: grid;
-    gap: 1rem;
+    background: hsl(var(--background) / 0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid hsl(var(--border));
 }
 
 /* Selection */
 ::selection {
-    background: #FF2E4C;
+    background: hsl(var(--primary));
     color: white;
 }
 
 /* Focus states */
 button:focus-visible, a:focus-visible {
-    outline: 2px solid #FF2E4C;
+    outline: 2px solid hsl(var(--primary));
     outline-offset: 2px;
 }
 
-/* Label/tag styles */
-.tag-brutal {
-    font-family: 'JetBrains Mono', monospace;
+/* Tag styles */
+.tag-elegant {
     font-size: 0.75rem;
-    font-weight: 700;
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    padding: 4px 12px;
-    background: rgba(255, 46, 76, 0.1);
-    border: 1px solid #FF2E4C;
-    color: #FF2E4C;
+    padding: 6px 16px;
+    background: hsl(var(--muted));
+    border: 1px solid hsl(var(--border));
+    color: hsl(var(--muted-foreground));
+    border-radius: 20px;
 }
 
-/* Stats/numbers */
-.stat-brutal {
-    font-family: 'Unbounded', sans-serif;
-    font-weight: 900;
-    line-height: 1;
-    color: #FF2E4C;
+/* Decorative line */
+.decorative-line {
+    height: 3px;
+    background: linear-gradient(90deg, transparent, hsl(var(--secondary)), transparent);
 }
 
-/* Verdict badge */
-.verdict-badge {
-    font-family: 'Unbounded', sans-serif;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+/* Gavel bounce */
+.gavel-bounce {
+    animation: gavelBounce 2s ease-in-out infinite;
+}
+@keyframes gavelBounce {
+    0%, 100% { transform: rotate(-5deg); }
+    50% { transform: rotate(5deg); }
 }
 
 @layer base {

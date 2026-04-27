@@ -6,12 +6,12 @@ import WelcomeMessage from './WelcomeMessage';
 
 const ChatMessages = ({ messages, isLoading, messagesEndRef }) => {
   return (
-    <ScrollArea className="flex-1 relative overflow-hidden bg-[#0A0A0A]">
+    <ScrollArea className="flex-1 relative overflow-hidden bg-background">
       {/* Subtle grid background */}
-      <div className="absolute inset-0 opacity-5">
+      <div className="absolute inset-0 opacity-[0.02]">
         <div className="w-full h-full" style={{
-          backgroundImage: `linear-gradient(rgba(255,46,76,0.3) 1px, transparent 1px),
-                           linear-gradient(90deg, rgba(255,46,76,0.3) 1px, transparent 1px)`,
+          backgroundImage: `linear-gradient(hsl(var(--border)) 1px, transparent 1px),
+                           linear-gradient(90deg, hsl(var(--border)) 1px, transparent 1px)`,
           backgroundSize: '50px 50px'
         }}></div>
       </div>

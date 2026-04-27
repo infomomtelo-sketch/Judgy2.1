@@ -1,6 +1,7 @@
 import "@/App.css";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
+import { ThemeProvider } from "./context/ThemeContext";
 import LandingPage from "./pages/LandingPage";
 import ChatPage from "./pages/ChatPage";
 import LoginPage from "./pages/LoginPage";
@@ -14,12 +15,9 @@ import CommunityFeedPage from "./pages/CommunityFeedPage";
 import AuthCallback from "./pages/AuthCallback";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 
-// Router component that handles OAuth callback detection
 function AppRouter() {
   const location = useLocation();
   
-  // Check URL fragment for session_id (OAuth callback)
-  // This runs synchronously during render to prevent race conditions
   if (location.hash?.includes('session_id=')) {
     return <AuthCallback />;
   }
@@ -49,13 +47,15 @@ function AppRouter() {
 
 function App() {
   return (
-    <div className="App min-h-screen bg-background">
-      <AuthProvider>
-        <BrowserRouter>
-          <AppRouter />
-        </BrowserRouter>
-      </AuthProvider>
-    </div>
+    <ThemeProvider>
+      <div className="App min-h-screen bg-background">
+        <AuthProvider>
+          <BrowserRouter>
+            <AppRouter />
+          </BrowserRouter>
+        </AuthProvider>
+      </div>
+    </ThemeProvider>
   );
 }
 
