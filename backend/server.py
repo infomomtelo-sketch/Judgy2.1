@@ -1410,8 +1410,8 @@ async def create_token_checkout(request: TokenCheckoutRequest, http_request: Req
         cancel_url = f"{host_url}/pricing?cancelled=true"
         
         checkout_request = CheckoutSessionRequest(
-            stripe_price_id=package.stripe_price_id,
-            quantity=1,
+            amount=package.price,
+            currency="usd",
             success_url=success_url,
             cancel_url=cancel_url,
             metadata={
