@@ -2011,24 +2011,26 @@ class CoachRequest(BaseModel):
     context: str = ""
 
 @api_router.post("/growth/generate-content")
-async def generate_content(request: ContentGeneratorRequest):
+async def generate_content(request: ContentGeneratorRequest, user: User = Depends(require_admin)):
     """AI-powered content generator for social media"""
     try:
-        prompt = f"""You are a viral social media content expert for JudgyGPT - a sassy AI that roasts bios, detects red flags, and settles arguments.
+        prompt = f"""You are a viral social media content expert for The Judgy (thejudgy.com) - an AI platform with 6 expert personas (The Judgy for sarcastic advice, LinguaBot for translations, PropWhiz for real estate, CodeForge for coding, ViralMind for social media, IronCoach for fitness) plus viral tools (Roast My Bio, Red Flag Detector, Who's Right).
 
 Generate a {request.content_type} for {request.platform} about: {request.topic}
 
 The content should be:
-- Engaging and shareable
-- Have a hook that stops the scroll
-- Include a call-to-action to try JudgyGPT
-- Match the platform's style ({request.platform})
+- Engaging and shareable, written to go viral
+- Have a hook that stops the scroll in the first line
+- Include a call-to-action to try The Judgy at thejudgy.com
+- Match the platform's style and character limits ({request.platform})
+- Feel authentic, not like an ad
 
 Respond in JSON format:
 {{
-    "content": "The actual content/caption/hook",
+    "content": "The actual content/caption/hook ready to copy-paste and post",
     "hashtags": ["#hashtag1", "#hashtag2", "#hashtag3", "#hashtag4", "#hashtag5"],
-    "tips": ["posting tip 1", "posting tip 2"]
+    "tips": ["posting tip 1", "posting tip 2"],
+    "best_time": "recommended posting time"
 }}"""
 
         chat = LlmChat(
@@ -2049,33 +2051,34 @@ Respond in JSON format:
             return json.loads(cleaned)
         except:
             return {
-                "content": f"🔥 POV: You just discovered the sassiest AI on the internet\n\nI asked @JudgyGPT to roast my {request.topic} and I'm SCREAMING 😭\n\nTry it yourself 👉 judgygptonline.com",
-                "hashtags": ["#judgygpt", "#viral", "#fyp", "#relatable", "#aitools"],
-                "tips": ["Post during peak hours (7-9 PM)", "Engage with comments in first hour"]
+                "content": f"POV: You just discovered an AI that has 6 expert personalities\n\nI asked The Judgy to roast my {request.topic} and I'm SCREAMING\n\nTry it yourself at thejudgy.com",
+                "hashtags": ["#thejudgy", "#ai", "#viral", "#fyp", "#aitools"],
+                "tips": ["Post during peak hours (7-9 PM)", "Engage with comments in first hour"],
+                "best_time": "7-9 PM local time"
             }
     except Exception as e:
         logging.error(f"Content generation error: {str(e)}")
         return {
-            "content": f"Ready to get roasted? 🔥\n\nJudgyGPT just told me the truth about my {request.topic} and honestly... they're not wrong 💀\n\nLink in bio to try it yourself!",
-            "hashtags": ["#judgygpt", "#viral", "#fyp"],
-            "tips": ["Be authentic", "Share your reaction"]
+            "content": f"Ready to get roasted?\n\nThe Judgy just told me the truth about my {request.topic} and honestly... they're not wrong\n\nthejudgy.com to try it yourself!",
+            "hashtags": ["#thejudgy", "#viral", "#fyp"],
+            "tips": ["Be authentic", "Share your reaction"],
+            "best_time": "Evening"
         }
 
 @api_router.post("/growth/generate-calendar")
-async def generate_calendar(request: CalendarRequest):
+async def generate_calendar(request: CalendarRequest, user: User = Depends(require_admin)):
     """Generate a content calendar"""
     try:
-        prompt = f"""Create a {request.weeks}-week social media content calendar for JudgyGPT - an AI app with 3 viral tools:
-1. Roast My Bio - roasts dating/LinkedIn bios
-2. Red Flag Detector - finds red flags in conversations
-3. Who's Right - settles arguments
+        prompt = f"""Create a {request.weeks}-week social media content calendar for The Judgy (thejudgy.com) - an AI platform with:
+- 6 AI experts: The Judgy (sarcastic advice), LinguaBot (translator), PropWhiz (real estate), CodeForge (coding), ViralMind (social media), IronCoach (fitness)
+- 3 viral tools: Roast My Bio, Red Flag Detector, Who's Right
 
-Generate a posting schedule with specific content ideas for each day.
+Generate a daily posting schedule with specific, ready-to-execute content ideas. Each should have high viral potential.
 
 Respond in JSON:
 {{
     "schedule": [
-        {{"day": "Monday", "content": "content idea", "platform": "TikTok", "time": "7 PM"}},
+        {{"day": "Monday", "content": "specific content idea with hook", "platform": "TikTok", "time": "7 PM", "expert": "which expert to feature"}},
         ...
     ]
 }}"""
