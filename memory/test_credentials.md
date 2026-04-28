@@ -1,9 +1,9 @@
 # Test Credentials
 
-## Admin User Account
+## Admin Account
 - Email: hello@thejudgy.com
 - Password: admin123456
-- Role: Admin (can access /admin dashboard)
+- Access: Full admin dashboard at /admin
 
 ## Test User Account
 - Email: test@thejudgy.com
@@ -17,4 +17,4 @@
 ## Auth Notes
 - Google OAuth redirects via https://auth.emergentagent.com
 - JWT tokens stored in localStorage as 'auth_token'
-- Admin access gated by ADMIN_EMAIL env var (hello@thejudgy.com)
+- Admin access gated by ADMIN_EMAIL env variable (hello@thejudgy.com)
