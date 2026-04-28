@@ -12,6 +12,7 @@ import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import ViralToolsPage from "./pages/ViralToolsPage";
 import CommunityFeedPage from "./pages/CommunityFeedPage";
+import AdminDashboard from "./pages/AdminDashboard";
 import AuthCallback from "./pages/AuthCallback";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 
@@ -30,6 +31,7 @@ function AppRouter() {
       <Route path="/pricing" element={<PricingPage />} />
       <Route path="/growth" element={<GrowthHubPage />} />
       <Route path="/tools" element={<ViralToolsPage />} />
+      <Route path="/admin" element={<AdminDashboard />} />
       <Route path="/wall" element={<CommunityFeedPage />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/reset-password" element={<ResetPasswordPage />} />

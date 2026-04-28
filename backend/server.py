@@ -1514,6 +1514,150 @@ async def add_free_tokens(user: User = Depends(require_auth)):
 
 
 
+# ============== ADMIN DASHBOARD ==============
+
+async def require_admin(credentials: HTTPAuthorizationCredentials = Depends(security)) -> User:
+    user = await get_current_user(credentials)
+    if not user:
+        raise HTTPException(status_code=401, detail="Authentication required")
+    if user.email != ADMIN_EMAIL:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    return user
+
+@api_router.get("/admin/stats")
+async def admin_stats(user: User = Depends(require_admin)):
+    """Get overview dashboard stats"""
+    now = datetime.now(timezone.utc)
+    today_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
+    week_start = today_start - timedelta(days=7)
+    month_start = today_start - timedelta(days=30)
+
+    total_users = await db.users.count_documents({})
+    signups_today = await db.users.count_documents({"created_at": {"$gte": today_start.isoformat()}})
+    signups_week = await db.users.count_documents({"created_at": {"$gte": week_start.isoformat()}})
+    signups_month = await db.users.count_documents({"created_at": {"$gte": month_start.isoformat()}})
+
+    # Revenue from paid transactions
+    paid_txns = await db.payment_transactions.find({"payment_status": "paid"}).to_list(None)
+    total_revenue = sum(t.get("amount", 0) for t in paid_txns)
+    revenue_month = sum(t.get("amount", 0) for t in paid_txns if t.get("created_at", "") >= month_start.isoformat())
+
+    # Token stats
+    pipeline = [{"$group": {"_id": None, "total_tokens": {"$sum": "$tokens"}}}]
+    token_agg = await db.users.aggregate(pipeline).to_list(1)
+    total_tokens_held = token_agg[0]["total_tokens"] if token_agg else 0
+
+    # Chat messages
+    total_messages = await db.chat_messages.count_documents({})
+    anon_sessions = await db.anonymous_sessions.count_documents({})
+
+    return {
+        "users": {
+            "total": total_users,
+            "today": signups_today,
+            "this_week": signups_week,
+            "this_month": signups_month
+        },
+        "revenue": {
+            "total": round(total_revenue, 2),
+            "this_month": round(revenue_month, 2),
+            "transactions": len(paid_txns)
+        },
+        "tokens": {
+            "total_held": total_tokens_held
+        },
+        "engagement": {
+            "total_messages": total_messages,
+            "anonymous_sessions": anon_sessions
+        }
+    }
+
+@api_router.get("/admin/expert-usage")
+async def admin_expert_usage(user: User = Depends(require_admin)):
+    """Get usage stats per AI expert"""
+    pipeline = [
+        {"$group": {"_id": "$session_id", "count": {"$sum": 1}}},
+    ]
+    # Count messages by personality from chat_messages
+    all_messages = await db.chat_messages.find({}, {"_id": 0, "session_id": 1}).to_list(None)
+
+    expert_counts = {}
+    for msg in all_messages:
+        sid = msg.get("session_id", "")
+        # Session IDs contain expert key like "uuid_coder"
+        parts = sid.rsplit("_", 1)
+        expert = parts[-1] if len(parts) > 1 and parts[-1] in ("judgy", "translator", "realtor", "coder", "social", "fitness", "diplomat") else "judgy"
+        expert_counts[expert] = expert_counts.get(expert, 0) + 1
+
+    # Also count anonymous sessions
+    anon_sessions = await db.anonymous_sessions.find({}, {"_id": 0, "session_id": 1, "message_count": 1}).to_list(None)
+    for sess in anon_sessions:
+        sid = sess.get("session_id", "")
+        parts = sid.rsplit("_", 1)
+        expert = parts[-1] if len(parts) > 1 and parts[-1] in ("judgy", "translator", "realtor", "coder", "social", "fitness", "diplomat") else "judgy"
+        expert_counts[expert] = expert_counts.get(expert, 0) + sess.get("message_count", 0)
+
+    return {"expert_usage": expert_counts}
+
+@api_router.get("/admin/recent-signups")
+async def admin_recent_signups(user: User = Depends(require_admin), limit: int = 20):
+    """Get recent user signups"""
+    users = await db.users.find(
+        {},
+        {"_id": 0, "password_hash": 0}
+    ).sort("created_at", -1).limit(limit).to_list(limit)
+
+    return [
+        {
+            "id": u.get("id"),
+            "name": u.get("name", ""),
+            "email": u.get("email", ""),
+            "tokens": u.get("tokens", 0),
+            "auth_provider": u.get("auth_provider", "email"),
+            "created_at": u.get("created_at", "")
+        }
+        for u in users
+    ]
+
+@api_router.get("/admin/recent-transactions")
+async def admin_recent_transactions(user: User = Depends(require_admin), limit: int = 20):
+    """Get recent payment transactions"""
+    txns = await db.payment_transactions.find(
+        {},
+        {"_id": 0}
+    ).sort("created_at", -1).limit(limit).to_list(limit)
+
+    return [
+        {
+            "id": t.get("id"),
+            "user_email": t.get("user_email", ""),
+            "amount": t.get("amount", 0),
+            "currency": t.get("currency", "usd"),
+            "plan_id": t.get("plan_id", ""),
+            "status": t.get("status", ""),
+            "payment_status": t.get("payment_status", ""),
+            "metadata": t.get("metadata", {}),
+            "created_at": t.get("created_at", "")
+        }
+        for t in txns
+    ]
+
+@api_router.get("/admin/daily-signups")
+async def admin_daily_signups(user: User = Depends(require_admin), days: int = 30):
+    """Get daily signup counts for chart"""
+    now = datetime.now(timezone.utc)
+    result = []
+    for i in range(days - 1, -1, -1):
+        day = now - timedelta(days=i)
+        day_start = day.replace(hour=0, minute=0, second=0, microsecond=0)
+        day_end = day_start + timedelta(days=1)
+        count = await db.users.count_documents({
+            "created_at": {"$gte": day_start.isoformat(), "$lt": day_end.isoformat()}
+        })
+        result.append({"date": day_start.strftime("%b %d"), "signups": count})
+    return result
+
+
 # ============== VIRAL TOOLS ROUTES ==============
 
 class RoastBioRequest(BaseModel):
