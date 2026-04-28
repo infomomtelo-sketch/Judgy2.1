@@ -1,53 +1,51 @@
 # JudgyGPT (The Judgy) - Product Requirements Document
 
 ## Product Overview
-A full-stack AI chat application with a sarcastic, "judgy" but helpful personality. Built for thejudgy.com. Users get brutally honest advice with a sophisticated courtroom-themed UI.
+A multi-expert AI chat platform at thejudgy.com. 6 AI experts with unique personalities give real, expert-level answers. Built for viral sharing and organic growth.
 
 ## Core Requirements
-1. **Landing = Chat**: Landing page serves directly as the chat interface. 5 free anonymous messages before requiring signup.
-2. **Token Economy**: 50 free tokens on signup. 1 token per message. No subscriptions.
-3. **Stripe Payments**: One-time token purchases via Stripe Checkout (Starter $5/50 tokens, Growth $15/200 tokens, Power $50/500 tokens).
-4. **Light/Dark Mode**: Warm courtroom light theme (default) with dark mode toggle.
-5. **Auth**: Email/password + Google OAuth. Resend-based password recovery.
+1. **Multi-Expert Chat**: 6 AI experts — The Judgy (sarcastic advice), LinguaBot (translator), PropWhiz (real estate), CodeForge (coding), ViralMind (social media), IronCoach (fitness)
+2. **Landing Page Flow**: Hero → Meet the Experts → Sample Conversations → Viral Tools → Social Proof → How it Works → Chat
+3. **Token Economy**: 50 free tokens on signup. 1 token per message. One-time Stripe purchases.
+4. **Viral Tools**: Roast My Bio, Red Flag Detector, Who's Right — all with shareable results (Twitter, native share, download image, copy text)
+5. **Light/Dark Mode**: Warm courtroom theme (default light) with toggle
+6. **Auth**: Email/password + Google OAuth. Resend-based password recovery.
 
 ## Architecture
 - **Frontend**: React + Tailwind CSS + Shadcn/UI
-- **Backend**: Python FastAPI (monolithic server.py)
+- **Backend**: Python FastAPI (server.py)
 - **Database**: MongoDB
-- **Integrations**: OpenAI (Emergent LLM Key), Resend (emails), Google OAuth (Emergent Auth), Stripe (payments)
+- **Integrations**: OpenAI via Emergent LLM Key, Resend, Google OAuth, Stripe
 
 ## What's Implemented
-- [x] Anonymous chat (5 free messages) on landing page
+- [x] 6 AI expert personas with unique system prompts
+- [x] Guided landing page (Hero → Experts → Samples → Tools → Social Proof → How it Works → Chat)
+- [x] Anonymous chat with 5 free messages per expert
 - [x] Light/Dark mode toggle with courtroom aesthetic
 - [x] Token-based economy (50 free on signup, 1 per message)
-- [x] Stripe one-time token purchases (3 packages)
+- [x] Stripe one-time token purchases (3 packages: $5/$15/$50)
+- [x] Viral tools: Roast My Bio, Red Flag Detector, Who's Right
+- [x] Share results: Twitter, native share, download image, copy text
+- [x] SEO meta tags, Open Graph, Twitter Cards for thejudgy.com
+- [x] Structured data (schema.org) for search engines
+- [x] Social proof stats on landing page
 - [x] Google OAuth sign-in/sign-up
 - [x] Email/password authentication
 - [x] Password reset via Resend
-- [x] Pricing page with live Buy buttons
-- [x] Chat page with token tracking
-- [x] Theme persists across sessions (localStorage)
 
 ## Backlog
 - [ ] (P1) Apple Sign-In (requires Apple Developer account)
-- [ ] (P2) Refactor server.py into modular routes (auth, chat, payments, viral_tools)
-- [ ] (P2) Admin Dashboard (track signups, tokens, messages)
-- [ ] (P2) Viral marketing tools (Roast My Bio, Red Flag Detector)
-- [ ] (P3) Community/Wall of Shame feature
+- [ ] (P2) Refactor server.py into modular routes
+- [ ] (P2) Admin Dashboard
+- [ ] (P2) Form builder / mini-DocuSign feature
+- [ ] (P3) Community Wall of Shame
 
 ## Key API Endpoints
-- `POST /api/chat/anonymous` - Anonymous chat (5 free)
+- `GET /api/experts` - List all 6 AI expert personas
+- `POST /api/chat/anonymous` - Anonymous chat with personality param
 - `POST /api/chat` - Authenticated chat (1 token/msg)
 - `GET /api/tokens/packages` - List token packages
-- `POST /api/tokens/checkout` - Create Stripe checkout session
-- `GET /api/tokens/checkout/status/{session_id}` - Poll payment status
-- `POST /api/webhook/stripe` - Stripe webhook handler
-- `POST /api/auth/register` / `POST /api/auth/login`
-- `GET /api/auth/me` - Current user + token balance
-- `POST /api/auth/forgot-password` / `POST /api/auth/reset-password`
-
-## DB Schema
-- `users`: {id, email, name, password_hash, tokens, auth_provider, subscription_plan, created_at}
-- `payment_transactions`: {session_id, user_id, user_email, plan_id, amount, currency, status, payment_status, metadata}
-- `password_reset_tokens`: {token, email, expires_at}
-- `chat_messages`: {session_id, role, content, timestamp}
+- `POST /api/tokens/checkout` - Stripe checkout for tokens
+- `POST /api/viral/roast-bio` - Roast a bio
+- `POST /api/viral/red-flags` - Detect red flags
+- `POST /api/viral/whos-right` - Settle an argument
