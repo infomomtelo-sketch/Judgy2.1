@@ -207,6 +207,7 @@ const ChatPage = () => {
               <DropdownMenuItem onClick={() => navigate('/')} className="cursor-pointer"><Home className="w-4 h-4 mr-2" />Home</DropdownMenuItem>
               <DropdownMenuItem onClick={() => navigate('/pricing')} className="cursor-pointer"><CreditCard className="w-4 h-4 mr-2" />Get Tokens</DropdownMenuItem>
               <DropdownMenuItem onClick={() => navigate('/tools')} className="cursor-pointer"><Zap className="w-4 h-4 mr-2" />Viral Tools</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/admin')} className="cursor-pointer"><TrendingUp className="w-4 h-4 mr-2" />Admin</DropdownMenuItem>
               <DropdownMenuSeparator className="bg-border" />
               <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-destructive"><LogOut className="w-4 h-4 mr-2" />Sign out</DropdownMenuItem>
             </DropdownMenuContent>

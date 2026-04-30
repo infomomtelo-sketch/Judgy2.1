@@ -37,7 +37,7 @@ const AuthCallback = () => {
         const { access_token, user } = response.data;
 
         // Store token and user
-        localStorage.setItem('token', access_token);
+        localStorage.setItem('auth_token', access_token);
         localStorage.setItem('user', JSON.stringify(user));
         
         // Update auth context
@@ -59,10 +59,10 @@ const AuthCallback = () => {
   }, [navigate, setUserAndToken]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0A0A0A]">
+    <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="text-center">
         <Loader2 className="w-8 h-8 animate-spin text-[#FF2E4C] mx-auto mb-4" />
-        <p className="text-zinc-400 font-mono text-sm uppercase tracking-wider">Signing you in...</p>
+        <p className="text-muted-foreground text-sm uppercase tracking-wider">Signing you in...</p>
       </div>
     </div>
   );
