@@ -75,8 +75,8 @@ export const isHubPage = () => {
   
   // Main domain without subdomain, or explicit /choose path
   return (
-    hostname === 'judgygptonline.com' ||
-    hostname === 'www.judgygptonline.com' ||
+    hostname === 'thejudgy.com' ||
+    hostname === 'www.thejudgy.com' ||
     path === '/choose' ||
     path === '/'
   );

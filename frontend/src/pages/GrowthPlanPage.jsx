@@ -220,7 +220,7 @@ const GrowthPlanPage = () => {
           <TaskItem id="w1_2" icon={Globe} link="https://search.google.com/search-console">Set up Google Search Console</TaskItem>
           <TaskItem id="w1_3" icon={Globe}>Submit sitemap to Google</TaskItem>
           <TaskItem id="w1_4" icon={TikTokIcon} link="https://tiktok.com">Create TikTok account @judgygpt</TaskItem>
-          <TaskItem id="w1_5" icon={Instagram} link="https://instagram.com">Create Instagram @judgygptonline</TaskItem>
+          <TaskItem id="w1_5" icon={Instagram} link="https://instagram.com">Create Instagram @thejudgy</TaskItem>
           <TaskItem id="w1_6" icon={MessageSquare} link="https://twitter.com">Create Twitter/X @judgygpt</TaskItem>
           <TaskItem id="w1_7" icon={Youtube} link="https://youtube.com">Create YouTube channel</TaskItem>
           <TaskItem id="w1_8" icon={Video}>Post first TikTok video</TaskItem>
