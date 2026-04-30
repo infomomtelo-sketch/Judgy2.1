@@ -225,12 +225,12 @@ const LandingPage = () => {
               </div>
               
               <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold mb-4 text-foreground leading-tight" data-testid="hero-heading">
-                Ask the experts.<br />
-                <span className="text-[#FF2E4C]">Get real answers.</span>
+                Free AI Experts.<br />
+                <span className="text-[#FF2E4C]">Real Answers. No Signup.</span>
               </h1>
               
               <p className="text-muted-foreground text-base sm:text-lg mb-8 max-w-xl mx-auto leading-relaxed">
-                From brutally honest life advice to code debugging, language translation to fitness plans — pick your expert and start chatting. No signup required.
+                From code debugging AI to fitness coaching, language translation to real estate advice — pick your AI expert and start chatting. No signup required.
               </p>
               
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -240,7 +240,7 @@ const LandingPage = () => {
                   className="bg-[#FF2E4C] hover:bg-[#E01F3D] text-white h-12 px-8 text-sm uppercase tracking-wider font-bold"
                   data-testid="hero-cta"
                 >
-                  <MessageSquare className="w-4 h-4 mr-2" /> Start Chatting Free
+                  <MessageSquare className="w-4 h-4 mr-2" /> Chat with AI Experts Free
                 </Button>
                 <span className="text-xs text-muted-foreground">5 free messages — no signup needed</span>
               </div>
@@ -273,6 +273,7 @@ const LandingPage = () => {
                       )}
                       style={{ '--expert-color': expert.color }}
                       data-testid={`expert-card-${expertKey}`}
+                      aria-label={`${expert.name} - ${expert.tagline}`}
                     >
                       <div 
                         className="w-12 h-12 rounded-lg flex items-center justify-center mb-3 transition-transform group-hover:scale-110"
@@ -418,30 +419,36 @@ const LandingPage = () => {
             <div className="max-w-3xl mx-auto">
               <div className="text-center mb-10">
                 <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">How It Works</h2>
-                <p className="text-muted-foreground text-sm sm:text-base">Three steps to expert advice</p>
+                <p className="text-muted-foreground text-sm sm:text-base">Three steps to free expert advice</p>
               </div>
               
-              <div className="grid sm:grid-cols-3 gap-6">
-                <div className="text-center">
-                  <div className="w-14 h-14 bg-[#FF2E4C] flex items-center justify-center mx-auto mb-4 rounded-lg">
-                    <span className="font-display font-bold text-2xl text-white">1</span>
+              <div className="space-y-4 sm:space-y-0 sm:grid sm:grid-cols-3 sm:gap-6">
+                <div className="flex sm:flex-col items-center sm:text-center gap-4 sm:gap-0 bg-card sm:bg-transparent border sm:border-0 border-border rounded-lg p-4 sm:p-0">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-[#FF2E4C] flex items-center justify-center rounded-lg flex-shrink-0 sm:mx-auto sm:mb-4">
+                    <span className="font-display font-bold text-xl sm:text-2xl text-white">1</span>
                   </div>
-                  <h3 className="font-bold text-foreground mb-1">Pick an Expert</h3>
-                  <p className="text-muted-foreground text-sm">Choose from 6 AI specialists, each with deep domain knowledge</p>
+                  <div className="sm:text-center">
+                    <h3 className="font-bold text-foreground mb-0.5 text-sm sm:text-base">Pick an AI Expert</h3>
+                    <p className="text-muted-foreground text-xs sm:text-sm">Choose from 6 specialized AI assistants</p>
+                  </div>
                 </div>
-                <div className="text-center">
-                  <div className="w-14 h-14 bg-[#FFB800] flex items-center justify-center mx-auto mb-4 rounded-lg">
-                    <span className="font-display font-bold text-2xl text-black">2</span>
+                <div className="flex sm:flex-col items-center sm:text-center gap-4 sm:gap-0 bg-card sm:bg-transparent border sm:border-0 border-border rounded-lg p-4 sm:p-0">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-[#FFB800] flex items-center justify-center rounded-lg flex-shrink-0 sm:mx-auto sm:mb-4">
+                    <span className="font-display font-bold text-xl sm:text-2xl text-black">2</span>
                   </div>
-                  <h3 className="font-bold text-foreground mb-1">Ask Anything</h3>
-                  <p className="text-muted-foreground text-sm">5 free messages to try. No signup. No credit card.</p>
+                  <div className="sm:text-center">
+                    <h3 className="font-bold text-foreground mb-0.5 text-sm sm:text-base">Ask Anything Free</h3>
+                    <p className="text-muted-foreground text-xs sm:text-sm">5 free messages. No signup. No credit card.</p>
+                  </div>
                 </div>
-                <div className="text-center">
-                  <div className="w-14 h-14 bg-muted border border-border flex items-center justify-center mx-auto mb-4 rounded-lg">
-                    <span className="font-display font-bold text-2xl text-foreground">3</span>
+                <div className="flex sm:flex-col items-center sm:text-center gap-4 sm:gap-0 bg-card sm:bg-transparent border sm:border-0 border-border rounded-lg p-4 sm:p-0">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-muted border border-border flex items-center justify-center rounded-lg flex-shrink-0 sm:mx-auto sm:mb-4">
+                    <span className="font-display font-bold text-xl sm:text-2xl text-foreground">3</span>
                   </div>
-                  <h3 className="font-bold text-foreground mb-1">Get Real Answers</h3>
-                  <p className="text-muted-foreground text-sm">Detailed, expert-level responses tailored to your situation</p>
+                  <div className="sm:text-center">
+                    <h3 className="font-bold text-foreground mb-0.5 text-sm sm:text-base">Get Expert Answers</h3>
+                    <p className="text-muted-foreground text-xs sm:text-sm">Detailed, expert-level responses tailored to you</p>
+                  </div>
                 </div>
               </div>
 
