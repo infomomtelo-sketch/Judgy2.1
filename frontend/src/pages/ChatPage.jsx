@@ -15,6 +15,7 @@ import {
   TrendingUp, Dumbbell, MessageSquarePlus, LogOut, Share2, CreditCard,
   ArrowRight
 } from 'lucide-react';
+import { VoiceButton, ImageUploadButton, ImagePreview } from '../components/chat/MediaInputs';
 import axios from 'axios';
 import { cn } from '@/lib/utils';
 
@@ -33,6 +34,7 @@ const ChatPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedExpert, setSelectedExpert] = useState('judgy');
   const [experts, setExperts] = useState([]);
+  const [attachedImage, setAttachedImage] = useState(null);
   const [baseSessionId] = useState(() => {
     const stored = localStorage.getItem('chat_session_id');
     return stored || uuidv4();
@@ -94,19 +96,35 @@ const ChatPage = () => {
   }, [input]);
 
   const sendMessage = useCallback(async () => {
-    if (!input.trim() || isLoading || tokens <= 0) return;
+    if ((!input.trim() && !attachedImage) || isLoading || tokens <= 0) return;
 
-    const userMessage = { id: uuidv4(), role: 'user', content: input.trim(), timestamp: new Date() };
+    const userMessage = { id: uuidv4(), role: 'user', content: input.trim() || '(Image sent)', timestamp: new Date(), hasImage: !!attachedImage };
     setMessages(prev => [...prev, userMessage]);
+    const currentInput = input;
+    const currentImage = attachedImage;
     setInput('');
+    setAttachedImage(null);
     setIsLoading(true);
 
     try {
-      const response = await axios.post(`${API}/chat`, {
-        session_id: sessionId,
-        message: userMessage.content,
-        personality: selectedExpert
-      });
+      let response;
+      
+      if (currentImage) {
+        // Send with image
+        const formData = new FormData();
+        formData.append('file', currentImage);
+        formData.append('message', currentInput);
+        formData.append('session_id', sessionId);
+        formData.append('personality', selectedExpert);
+        response = await axios.post(`${API}/chat/with-image`, formData);
+      } else {
+        response = await axios.post(`${API}/chat`, {
+          session_id: sessionId,
+          message: userMessage.content,
+          personality: selectedExpert
+        });
+      }
+      
       setMessages(prev => [...prev, {
         id: response.data.message_id, role: 'assistant',
         content: response.data.response, timestamp: new Date()
@@ -125,7 +143,7 @@ const ChatPage = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [input, isLoading, tokens, sessionId, selectedExpert, refreshTokens]);
+  }, [input, isLoading, tokens, sessionId, selectedExpert, refreshTokens, attachedImage]);
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
@@ -336,20 +354,29 @@ const ChatPage = () => {
             )}
 
             <div className={cn("flex items-end gap-2 bg-card border rounded-lg transition-colors shadow-card", isOutOfTokens ? "border-border opacity-50" : "border-border focus-within:border-[#FF2E4C]")}>
-              <Textarea
-                ref={textareaRef}
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder={isOutOfTokens ? "Get tokens to continue..." : `Ask ${currentExpert?.name || 'The Judgy'} anything...`}
-                disabled={isLoading || isOutOfTokens}
-                className="flex-1 min-h-[52px] max-h-[200px] resize-none border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 text-foreground placeholder:text-muted-foreground py-4 px-4 text-sm"
-                rows={1}
-                data-testid="chat-input"
-              />
-              <div className="flex items-center gap-1 p-2">
-                <Button type="button" size="icon" onClick={sendMessage} disabled={!input.trim() || isLoading || isOutOfTokens}
-                  className={cn("h-10 w-10 rounded-md transition-colors", input.trim() && !isLoading && !isOutOfTokens ? "bg-[#FF2E4C] hover:bg-[#E01F3D] text-white" : "bg-muted text-muted-foreground")}
+              <div className="flex-1 min-w-0">
+                {attachedImage && (
+                  <div className="px-4 pt-3">
+                    <ImagePreview file={attachedImage} onRemove={() => setAttachedImage(null)} />
+                  </div>
+                )}
+                <Textarea
+                  ref={textareaRef}
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder={isOutOfTokens ? "Get tokens to continue..." : `Ask ${currentExpert?.name || 'The Judgy'} anything...`}
+                  disabled={isLoading || isOutOfTokens}
+                  className="min-h-[52px] max-h-[200px] resize-none border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 text-foreground placeholder:text-muted-foreground py-4 px-4 text-sm"
+                  rows={1}
+                  data-testid="chat-input"
+                />
+              </div>
+              <div className="flex items-center gap-0.5 p-2">
+                <VoiceButton onTranscription={(text) => setInput(prev => prev + text)} disabled={isLoading || isOutOfTokens} />
+                <ImageUploadButton onImageSelected={(file) => setAttachedImage(file)} disabled={isLoading || isOutOfTokens} />
+                <Button type="button" size="icon" onClick={sendMessage} disabled={(!input.trim() && !attachedImage) || isLoading || isOutOfTokens}
+                  className={cn("h-10 w-10 rounded-md transition-colors", (input.trim() || attachedImage) && !isLoading && !isOutOfTokens ? "bg-[#FF2E4C] hover:bg-[#E01F3D] text-white" : "bg-muted text-muted-foreground")}
                   data-testid="send-btn"
                 >
                   {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}

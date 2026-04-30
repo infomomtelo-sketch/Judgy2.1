@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Depends, Request, Cookie
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, Request, Cookie, UploadFile, File, Form
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.responses import Response, JSONResponse
 from dotenv import load_dotenv
@@ -14,6 +14,7 @@ from typing import List, Optional, Dict
 import uuid
 from datetime import datetime, timezone, timedelta
 from emergentintegrations.llm.chat import LlmChat, UserMessage
+from emergentintegrations.llm.openai import OpenAISpeechToText
 from emergentintegrations.payments.stripe.checkout import StripeCheckout, CheckoutSessionResponse, CheckoutStatusResponse, CheckoutSessionRequest
 import hashlib
 import secrets
@@ -1357,6 +1358,120 @@ async def create_new_session(user: User = Depends(require_auth)):
     """Create a new chat session"""
     session_id = str(uuid.uuid4())
     return {"session_id": session_id}
+
+
+# ============== VOICE & IMAGE ROUTES ==============
+
+@api_router.post("/voice/transcribe")
+async def transcribe_audio(file: UploadFile = File(...)):
+    """Transcribe audio to text using Whisper"""
+    allowed_types = ['audio/webm', 'audio/mp3', 'audio/mpeg', 'audio/mp4', 'audio/wav', 'audio/ogg', 'audio/m4a', 'video/webm']
+    
+    if file.content_type not in allowed_types:
+        raise HTTPException(status_code=400, detail=f"Unsupported audio format: {file.content_type}")
+    
+    # Check file size (25MB limit)
+    content = await file.read()
+    if len(content) > 25 * 1024 * 1024:
+        raise HTTPException(status_code=400, detail="File too large. Max 25MB.")
+    
+    try:
+        import tempfile
+        import os as _os
+        
+        # Save to temp file
+        suffix = '.webm' if 'webm' in (file.content_type or '') else '.mp3'
+        with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
+            tmp.write(content)
+            tmp_path = tmp.name
+        
+        stt = OpenAISpeechToText(api_key=EMERGENT_LLM_KEY)
+        
+        with open(tmp_path, "rb") as audio_file:
+            response = await stt.transcribe(
+                file=audio_file,
+                model="whisper-1",
+                response_format="json"
+            )
+        
+        _os.unlink(tmp_path)
+        
+        return {"text": response.text, "success": True}
+        
+    except Exception as e:
+        logging.error(f"Transcription error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Transcription failed: {str(e)}")
+
+@api_router.post("/chat/with-image")
+async def chat_with_image(
+    file: UploadFile = File(...),
+    message: str = Form(default=""),
+    session_id: str = Form(...),
+    personality: str = Form(default="judgy")
+):
+    """Chat with an image attachment — uses GPT-4o vision"""
+    allowed_types = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp', 'image/gif']
+    
+    if file.content_type not in allowed_types:
+        raise HTTPException(status_code=400, detail=f"Unsupported image format: {file.content_type}")
+    
+    content = await file.read()
+    if len(content) > 10 * 1024 * 1024:
+        raise HTTPException(status_code=400, detail="Image too large. Max 10MB.")
+    
+    try:
+        import base64
+        
+        # Convert to base64 for vision API
+        b64_image = base64.b64encode(content).decode('utf-8')
+        mime_type = file.content_type
+        
+        # Build prompt with expert context
+        system_msg = SYSTEM_MESSAGES.get(personality, JUDGY_SYSTEM_MESSAGE)
+        
+        user_text = message.strip() if message.strip() else "What do you see in this image? Give me your expert take."
+        
+        # Use GPT-4o with vision via LlmChat
+        chat = LlmChat(
+            api_key=EMERGENT_LLM_KEY,
+            session_id=f"{session_id}_vision",
+            system_message=system_msg + "\n\nThe user has shared an image with you. Analyze it and respond in your expert persona."
+        ).with_model("openai", "gpt-4o")
+        
+        # Send message with image
+        vision_message = f"[Image attached: data:{mime_type};base64,{b64_image[:100]}...]\n\n{user_text}"
+        
+        # For vision, we need to use the openai client directly
+        from openai import AsyncOpenAI
+        
+        client = AsyncOpenAI(api_key=EMERGENT_LLM_KEY, base_url="https://api.emergentmind.com/v1")
+        
+        response = await client.chat.completions.create(
+            model="gpt-4o",
+            messages=[
+                {"role": "system", "content": system_msg + "\n\nThe user has shared an image. Analyze it and respond in your expert persona."},
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": user_text},
+                        {"type": "image_url", "image_url": {"url": f"data:{mime_type};base64,{b64_image}"}}
+                    ]
+                }
+            ],
+            max_tokens=1000
+        )
+        
+        ai_response = response.choices[0].message.content
+        
+        return {
+            "response": ai_response,
+            "message_id": str(uuid.uuid4()),
+            "success": True
+        }
+        
+    except Exception as e:
+        logging.error(f"Vision chat error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Image analysis failed: {str(e)}")
 
 
 # ============== TOKEN SYSTEM ==============

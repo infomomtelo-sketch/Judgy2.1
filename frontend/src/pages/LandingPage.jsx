@@ -5,7 +5,8 @@ import { useTheme } from '../context/ThemeContext';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Send, Loader2, Coins, User, Zap, Sun, Moon, Globe, Home, Code, TrendingUp, Dumbbell, ArrowDown, ChevronRight, MessageSquare, Flame, AlertTriangle, Scale, Users } from 'lucide-react';
+import { Send, Loader2, Coins, User, Zap, Sun, Moon, Globe, Home, Code, TrendingUp, Dumbbell, ArrowDown, ChevronRight, MessageSquare, Flame, AlertTriangle, Scale, Users, Mic, Image } from 'lucide-react';
+import { VoiceButton, ImageUploadButton, ImagePreview } from '../components/chat/MediaInputs';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 import { cn } from '@/lib/utils';
@@ -36,6 +37,7 @@ const LandingPage = () => {
   const [selectedExpert, setSelectedExpert] = useState('judgy');
   const [experts, setExperts] = useState([]);
   const [chatStarted, setChatStarted] = useState(false);
+  const [attachedImage, setAttachedImage] = useState(null);
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
   const chatSectionRef = useRef(null);
@@ -83,24 +85,35 @@ const LandingPage = () => {
   };
 
   const sendMessage = useCallback(async () => {
-    if (!input.trim() || isLoading) return;
+    if ((!input.trim() && !attachedImage) || isLoading) return;
 
     setChatStarted(true);
     const userMessage = {
       id: uuidv4(),
       role: 'user',
-      content: input.trim(),
-      timestamp: new Date()
+      content: input.trim() || '(Image sent)',
+      timestamp: new Date(),
+      hasImage: !!attachedImage
     };
 
     setMessages(prev => [...prev, userMessage]);
+    const currentInput = input;
+    const currentImage = attachedImage;
     setInput('');
+    setAttachedImage(null);
     setIsLoading(true);
 
     try {
       let response;
       
-      if (isAuthenticated) {
+      if (currentImage) {
+        const formData = new FormData();
+        formData.append('file', currentImage);
+        formData.append('message', currentInput);
+        formData.append('session_id', `${sessionId}_${selectedExpert}`);
+        formData.append('personality', selectedExpert);
+        response = await axios.post(`${API}/chat/with-image`, formData);
+      } else if (isAuthenticated) {
         response = await axios.post(`${API}/chat`, {
           session_id: `${sessionId}_${selectedExpert}`,
           message: userMessage.content,
@@ -145,7 +158,7 @@ const LandingPage = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [input, isLoading, isAuthenticated, sessionId, refreshTokens, selectedExpert]);
+  }, [input, isLoading, isAuthenticated, sessionId, refreshTokens, selectedExpert, attachedImage]);
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -637,34 +650,45 @@ const LandingPage = () => {
         <div className="border-t border-border bg-background/80 backdrop-blur-sm p-4" data-testid="chat-input-area">
           <div className="max-w-2xl mx-auto">
             <div className="flex items-end gap-2 bg-card border border-border focus-within:border-[#FF2E4C] rounded-lg transition-colors shadow-card">
-              <Textarea
-                ref={textareaRef}
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder={`Ask ${experts.find(e => Object.keys(EXPERT_PERSONAS_MAP).find(k => EXPERT_PERSONAS_MAP[k] === e.name) === selectedExpert)?.name || 'The Judgy'} anything...`}
-                disabled={isLoading || (showSignupPrompt && !isAuthenticated)}
-                className="flex-1 min-h-[48px] max-h-[150px] resize-none border-0 bg-transparent focus-visible:ring-0 text-foreground placeholder:text-muted-foreground py-3 px-4 text-sm"
-                rows={1}
-                data-testid="landing-chat-input"
-              />
-              <Button
-                onClick={sendMessage}
-                disabled={!input.trim() || isLoading || (showSignupPrompt && !isAuthenticated)}
-                size="icon"
-                className={cn(
-                  "h-10 w-10 m-1 rounded-md transition-colors",
-                  input.trim() && !isLoading
-                    ? "bg-[#FF2E4C] hover:bg-[#E01F3D] text-white"
-                    : "bg-muted text-muted-foreground"
+              <div className="flex-1 min-w-0">
+                {attachedImage && (
+                  <div className="px-4 pt-3">
+                    <ImagePreview file={attachedImage} onRemove={() => setAttachedImage(null)} />
+                  </div>
                 )}
-                data-testid="landing-send-btn"
-              >
-                {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-              </Button>
+                <Textarea
+                  ref={textareaRef}
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder={`Ask ${experts.find(e => Object.keys(EXPERT_PERSONAS_MAP).find(k => EXPERT_PERSONAS_MAP[k] === e.name) === selectedExpert)?.name || 'The Judgy'} anything...`}
+                  disabled={isLoading || (showSignupPrompt && !isAuthenticated)}
+                  className="min-h-[48px] max-h-[150px] resize-none border-0 bg-transparent focus-visible:ring-0 text-foreground placeholder:text-muted-foreground py-3 px-4 text-sm"
+                  rows={1}
+                  data-testid="landing-chat-input"
+                />
+              </div>
+              <div className="flex items-center gap-0.5 p-1.5">
+                <VoiceButton onTranscription={(text) => setInput(prev => prev + text)} disabled={isLoading || (showSignupPrompt && !isAuthenticated)} />
+                <ImageUploadButton onImageSelected={(file) => setAttachedImage(file)} disabled={isLoading || (showSignupPrompt && !isAuthenticated)} />
+                <Button
+                  onClick={sendMessage}
+                  disabled={(!input.trim() && !attachedImage) || isLoading || (showSignupPrompt && !isAuthenticated)}
+                  size="icon"
+                  className={cn(
+                    "h-10 w-10 rounded-md transition-colors",
+                    (input.trim() || attachedImage) && !isLoading
+                      ? "bg-[#FF2E4C] hover:bg-[#E01F3D] text-white"
+                      : "bg-muted text-muted-foreground"
+                  )}
+                  data-testid="landing-send-btn"
+                >
+                  {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                </Button>
+              </div>
             </div>
             <p className="text-[10px] text-muted-foreground mt-2 text-center">
-              Press Enter to send — 1 token per message
+              Press Enter to send — Voice & image supported
             </p>
           </div>
         </div>
